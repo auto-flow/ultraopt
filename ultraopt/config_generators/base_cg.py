@@ -8,8 +8,8 @@ import numpy as np
 from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
 
-from oxygen.structure import Job
-from oxygen.utils.logging_ import get_logger
+from ultraopt.structure import Job
+from ultraopt.utils.logging_ import get_logger
 
 
 class BaseConfigGenerator():

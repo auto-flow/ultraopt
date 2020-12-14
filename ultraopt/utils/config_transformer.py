@@ -13,7 +13,7 @@ from ConfigSpace.util import deactivate_inactive_hyperparameters
 from sklearn.preprocessing import LabelEncoder
 from tabular_nn.base_tnn import get_embed_dims
 
-from oxygen.utils.config_space import deactivate
+from ultraopt.utils.config_space import deactivate
 
 
 class ConfigurationTransformer():

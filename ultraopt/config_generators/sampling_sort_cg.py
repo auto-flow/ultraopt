@@ -14,11 +14,11 @@ from ConfigSpace import Configuration
 from ConfigSpace.util import get_one_exchange_neighbourhood
 from skopt.learning.forest import ExtraTreesRegressor
 
-from oxygen.config_generators.base_cg import BaseConfigGenerator
-from oxygen.config_generators.config_evaluator import ConfigEvaluator
-from oxygen.utils.config_space import add_configs_origin
-from oxygen.utils.config_transformer import ConfigurationTransformer
-from oxygen.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
+from ultraopt.config_generators.base_cg import BaseConfigGenerator
+from ultraopt.config_generators.config_evaluator import ConfigEvaluator
+from ultraopt.utils.config_space import add_configs_origin
+from ultraopt.utils.config_transformer import ConfigurationTransformer
+from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
 
 get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0.05, num_neighbors=8)
 

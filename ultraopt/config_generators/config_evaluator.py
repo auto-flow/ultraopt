@@ -13,8 +13,8 @@ from scipy.stats import norm
 # todo:  PI LCB
 from sklearn.utils import check_random_state
 
-from oxygen.utils.logging_ import get_logger
-from oxygen.utils.misc import pprint_budget
+from ultraopt.utils.logging_ import get_logger
+from ultraopt.utils.misc import pprint_budget
 
 class LogEI():
     def __init__(self, xi=0.01):
