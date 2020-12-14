@@ -6,6 +6,7 @@ from copy import deepcopy
 
 import numpy as np
 from ConfigSpace import Configuration
+from sklearn.utils.validation import check_random_state
 
 from oxygen.structure import Job
 from oxygen.utils.logging_ import get_logger
@@ -20,11 +21,16 @@ class BaseConfigGenerator():
         self.config_space = config_space
         self.budgets = budgets
         if budget2obvs is None:
-            budget2obvs = {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
+            budget2obvs = self.get_initial_budget2obvs(self.budgets)
         self.budget2obvs = budget2obvs
         # other variable
+        self.rng = check_random_state(self.random_state)
         self.initial_points_index = 0
         self.logger = get_logger(self)
+
+    @classmethod
+    def get_initial_budget2obvs(cls, budgets):
+        return {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
 
     def new_result(self, job: Job, update_model=True, should_update_weight=0):
         ##############################
@@ -52,9 +58,11 @@ class BaseConfigGenerator():
         ###################################################################
         ### 2. Judge whether the EPM training conditions are satisfied  ###
         ###################################################################
+        if not update_model:
+            return
         self.new_result_(vectors, losses, update_model, should_update_weight)
 
-    def new_result_(self, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
+    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
         raise NotImplementedError
 
     def get_config(self, budget):
@@ -73,9 +81,9 @@ class BaseConfigGenerator():
                 if not self.is_config_exist(budget, initial_point):
                     self.logger.info(f"Using initial points [{self.initial_points_index - 1}]")
                     return self.process_config_info_pair(initial_point, {}, budget)
-        self.get_config_(max_budget)
+        self.get_config_(budget, max_budget)
 
-    def get_config_(self, max_budget):
+    def get_config_(self, budget, max_budget):
         raise NotImplementedError
 
     def is_config_exist(self, budget, config: Configuration):
@@ -109,3 +117,10 @@ class BaseConfigGenerator():
             "origin": config.origin
         })
         return config.get_dictionary(), info_dict
+
+
+if __name__ == '__main__':
+    res = BaseConfigGenerator.get_initial_budget2obvs([1, 2, 3])
+    res2 = BaseConfigGenerator.get_initial_budget2obvs([1, 2, 3])
+    print(id(res))
+    print(id(res2))

@@ -7,6 +7,7 @@ from copy import deepcopy
 
 import numpy as np
 from ConfigSpace import Configuration
+from typing import List
 
 
 def is_top_level_activated(config_space, config, hp_name, hp_value=None):
@@ -31,3 +32,9 @@ def deactivate(config_space, vector):
             result[i] = np.nan
     result_config = Configuration(configuration_space=config_space, vector=result)
     return result_config
+
+def add_configs_origin(configs: List[Configuration], origin):
+    if isinstance(configs, Configuration):
+        configs = [configs]
+    for config in configs:
+        config.origin = origin
