@@ -10,24 +10,24 @@ from oxygen.config_generators.sampling_sort_cg import SamplingSortConfigGenerato
 from oxygen.structure import Job
 
 from hpolib.benchmarks.synthetic_functions.goldstein_price import GoldsteinPrice
-# from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
-# from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
-# from hpolib.benchmarks.synthetic_functions.levy import Levy1D
-# from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
-# from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
-# from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
+from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
+from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
+from hpolib.benchmarks.synthetic_functions.levy import Levy1D
+from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
+from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
+from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
 
 synthetic_functions = [
-    # Bohachevsky,
-    # Camelback,
-    # Forrester,
+    Bohachevsky,
+    Camelback,
+    Forrester,
     GoldsteinPrice,
-    # Hartmann3,
-    # Hartmann6,
-    # Levy1D,
-    # Rosenbrock2D,
-    # SinOne,
-    # SinTwo,
+    Hartmann3,
+    Hartmann6,
+    Levy1D,
+    Rosenbrock2D,
+    SinOne,
+    SinTwo,
 ]
 import json
 from pathlib import Path
