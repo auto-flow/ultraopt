@@ -45,9 +45,9 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         self.budget2epm = {budget: None for budget in budgets}
         # experiment performance model
         self.epm = epm if epm is not None else ExtraTreesRegressor()
-        self.emp_copied = deepcopy(self.epm)
         # config transformer
         self.config_transformer = config_transformer if config_transformer is not None else ConfigurationTransformer()
+        self.config_transformer.fit(config_space)
         # loss transformer
         if loss_transformer is None:
             self.loss_transformer = LossTransformer()
@@ -350,6 +350,5 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
             return -rewards_sorted, configs_sorted
         return configs_sorted
 
+    # todo: develop and test weight update
 
-if __name__ == '__main__':
-    pass

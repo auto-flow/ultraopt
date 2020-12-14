@@ -60,7 +60,7 @@ class BaseConfigGenerator():
         ###################################################################
         if not update_model:
             return
-        self.new_result_(vectors, losses, update_model, should_update_weight)
+        self.new_result_(budget, vectors, losses, update_model, should_update_weight)
 
     def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
         raise NotImplementedError
@@ -81,7 +81,7 @@ class BaseConfigGenerator():
                 if not self.is_config_exist(budget, initial_point):
                     self.logger.info(f"Using initial points [{self.initial_points_index - 1}]")
                     return self.process_config_info_pair(initial_point, {}, budget)
-        self.get_config_(budget, max_budget)
+        return self.get_config_(budget, max_budget)
 
     def get_config_(self, budget, max_budget):
         raise NotImplementedError
