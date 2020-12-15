@@ -79,3 +79,34 @@ def initial_design(cs, n_configs):
             break
         samples.append(cs.get_default_configuration())
     return samples
+
+def initial_design_cat(cs, n_configs):
+    n_choices_list = []
+    for hp in cs.get_hyperparameters():
+        if isinstance(hp, CategoricalHyperparameter):
+            n_choices_list.append(len(hp.choices))
+        else:
+            n_choices_list.append(0)
+    samples = cs.sample_configuration(n_configs)
+    # rng = check_random_state(rng)
+    vectors = np.array([sample.get_array() for sample in samples])
+    for i, n_choices in enumerate(n_choices_list):
+        if n_choices > 0:
+            counter = Counter(vectors[:, i])
+            most_common = counter.most_common()
+            if len(most_common) < n_choices:
+                instances = [item[0] for item in most_common]
+                sub = np.setdiff1d(np.arange(n_choices), instances)
+                idx = 0
+                for j in range(vectors.shape[0]):
+                    if idx >= len(sub):
+                        break
+                    obj = vectors[j, i]
+                    if counter[obj] > 1:
+                        vectors[j, i] = sub[idx]
+                        idx += 1
+                        counter[obj] -= 1
+    results = []
+    for i in range(vectors.shape[0]):
+        results.append(Configuration(cs, vector=vectors[i, :]))
+    return results

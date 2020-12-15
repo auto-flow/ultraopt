@@ -11,7 +11,7 @@ from tabular_nn import EquidistanceEncoder
 
 from ultraopt.config_generators.base_cg import BaseConfigGenerator
 from ultraopt.learning.tpe import TreeStructuredParzenEstimator
-from ultraopt.utils.config_space import add_configs_origin, initial_design
+from ultraopt.utils.config_space import add_configs_origin
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
@@ -23,6 +23,7 @@ class TPEConfigGenerator(BaseConfigGenerator):
             # model related
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
+            gamma=1.2, max_try=3,
             # several hyper-parameters
             min_points_in_model=20,
             n_candidates=None, n_candidates_factor=4, sort_by_EI=True, bandwidth_factor=1,
@@ -31,6 +32,8 @@ class TPEConfigGenerator(BaseConfigGenerator):
     ):
         super(TPEConfigGenerator, self).__init__(config_space, budgets, random_state, initial_points,
                                                  budget2obvs)
+        self.max_try = max_try
+        self.gamma = gamma
         self.min_points_in_model = min_points_in_model
         self.bandwidth_factor = bandwidth_factor
         self.sort_by_EI = sort_by_EI
@@ -66,29 +69,35 @@ class TPEConfigGenerator(BaseConfigGenerator):
             self.n_candidates = self.config_transformer.n_variables_embedded * self.n_candidates_factor
         # 初始化样本
         # todo: 考虑热启动时初始化得到的观测
-        self.initial_design_configs = initial_design(self.config_space, self.min_points_in_model)
-        self.initial_design_ix = 0
-        updated_min_points_in_model = len(self.initial_design_configs)
-        if updated_min_points_in_model != self.min_points_in_model:
-            self.logger.info(f"Update min_points_in_model from {self.min_points_in_model} "
-                             f"to {updated_min_points_in_model}")
-            self.min_points_in_model = updated_min_points_in_model
+        # self.initial_design_configs = initial_design(self.config_space, self.min_points_in_model)
+        # self.initial_design_ix = 0
+        # updated_min_points_in_model = len(self.initial_design_configs)
+        # if updated_min_points_in_model != self.min_points_in_model:
+        #     self.logger.info(f"Update min_points_in_model from {self.min_points_in_model} "
+        #                      f"to {updated_min_points_in_model}")
+        #     self.min_points_in_model = updated_min_points_in_model
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
-        samples = epm.sample(
-            n_candidates=self.n_candidates,
-            sort_by_EI=self.sort_by_EI,
-            random_state=self.rng,
-            bandwidth_factor=self.bandwidth_factor
-        )
-        for i, sample in enumerate(samples):
-            if self.is_config_exist(budget, sample):
-                self.logger.info(f"The sample already exists and needs to be resampled. "
-                                 f"It's the {i}-th time sampling in thompson sampling. ")
-            else:
-                add_configs_origin(sample, "TPE sampling")
-                return sample, info_dict
+        for try_id in range(self.max_try):
+            samples = epm.sample(
+                n_candidates=self.n_candidates,
+                sort_by_EI=self.sort_by_EI,
+                random_state=self.rng,
+                bandwidth_factor=self.bandwidth_factor
+            )
+            for i, sample in enumerate(samples):
+                if self.is_config_exist(budget, sample):
+                    self.logger.info(f"The sample already exists and needs to be resampled. "
+                                     f"It's the {i}-th time sampling in thompson sampling. ")
+                else:
+                    add_configs_origin(sample, "TPE sampling")
+                    return sample, info_dict
+            old_db = self.bandwidth_factor
+            self.bandwidth_factor *= self.gamma
+            self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
+                             f"Update bandwidth_factor from {old_db} to {self.bandwidth_factor} by "
+                             f"multiply gamma ({self.gamma}).")
         sample = self.config_space.sample_configuration()
         add_configs_origin(sample, "Random Search")
         info_dict = {"model_based_pick": False}
@@ -99,11 +108,12 @@ class TPEConfigGenerator(BaseConfigGenerator):
         epm = self.budget2epm[max_budget]
         # random sampling
         if epm is None:
-            info_dict = {"model_based_pick": False}
-            config = self.initial_design_configs[self.initial_design_ix]
-            add_configs_origin(config, "Initial Design")
-            self.initial_design_ix += 1
-            return self.process_config_info_pair(config, info_dict, budget)
+            return self.pick_random_initial_config(budget)
+            # info_dict = {"model_based_pick": False}
+            # config = self.initial_design_configs[self.initial_design_ix]
+            # add_configs_origin(config, "Initial Design")
+            # self.initial_design_ix += 1
+            # return self.process_config_info_pair(config, info_dict, budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
         return self.process_config_info_pair(config, info_dict, budget)
