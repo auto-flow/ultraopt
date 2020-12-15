@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : tqichun@gmail.com
-# from skopt.learning.forest import RandomForestRegressor, ExtraTreesRegressor
-# from skopt.learning.gbrt import GradientBoostingQuantileRegressor
 from copy import deepcopy
 from time import time
 

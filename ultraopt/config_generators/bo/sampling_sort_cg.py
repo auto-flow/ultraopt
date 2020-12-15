@@ -15,9 +15,9 @@ from ConfigSpace.util import get_one_exchange_neighbourhood
 from skopt.learning.forest import ExtraTreesRegressor
 
 from ultraopt.config_generators.base_cg import BaseConfigGenerator
-from ultraopt.config_generators.config_evaluator import ConfigEvaluator
+from ultraopt.config_generators.bo.config_evaluator import ConfigEvaluator
 from ultraopt.utils.config_space import add_configs_origin
-from ultraopt.utils.config_transformer import ConfigurationTransformer
+from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
 
 get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0.05, num_neighbors=8)
@@ -46,7 +46,7 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         # experiment performance model
         self.epm = epm if epm is not None else ExtraTreesRegressor()
         # config transformer
-        self.config_transformer = config_transformer if config_transformer is not None else ConfigurationTransformer()
+        self.config_transformer = config_transformer if config_transformer is not None else ConfigTransformer()
         self.config_transformer.fit(config_space)
         # loss transformer
         if loss_transformer is None:

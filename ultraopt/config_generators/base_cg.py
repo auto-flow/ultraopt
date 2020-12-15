@@ -119,8 +119,4 @@ class BaseConfigGenerator():
         return config.get_dictionary(), info_dict
 
 
-if __name__ == '__main__':
-    res = BaseConfigGenerator.get_initial_budget2obvs([1, 2, 3])
-    res2 = BaseConfigGenerator.get_initial_budget2obvs([1, 2, 3])
-    print(id(res))
-    print(id(res2))
+

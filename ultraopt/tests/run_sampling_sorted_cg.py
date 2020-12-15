@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : tqichun@gmail.com
-from hpolib.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
-from hpolib.benchmarks.synthetic_functions.camelback import Camelback
-from hpolib.benchmarks.synthetic_functions.forrester import Forrester
 
-from ultraopt.config_generators.sampling_sort_cg import SamplingSortConfigGenerator
+from ultraopt.config_generators.bo.sampling_sort_cg import SamplingSortConfigGenerator
 from ultraopt.structure import Job
 
 from hpolib.benchmarks.synthetic_functions.goldstein_price import GoldsteinPrice
@@ -18,9 +15,9 @@ from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
 from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
 
 synthetic_functions = [
-    Bohachevsky,
-    Camelback,
-    Forrester,
+    # Bohachevsky,
+    # Camelback,
+    # Forrester,
     GoldsteinPrice,
     Hartmann3,
     Hartmann6,

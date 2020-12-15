@@ -16,7 +16,7 @@ from tabular_nn.base_tnn import get_embed_dims
 from ultraopt.utils.config_space import deactivate
 
 
-class ConfigurationTransformer():
+class ConfigTransformer():
     def __init__(self, impute: Optional[float] = -1, encoder=None):
         self.impute = impute
         self.encoder = encoder
