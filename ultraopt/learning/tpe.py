@@ -8,12 +8,12 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration
+from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import KFold
 from sklearn.neighbors import KernelDensity
 from sklearn.utils import check_random_state
-from sklearn.base import BaseEstimator
 
 from ultraopt.utils.config_space import add_configs_origin
 from ultraopt.utils.config_transformer import ConfigTransformer
@@ -48,26 +48,23 @@ def estimate_bw(data, bw_method="scott", cv_times=100):
 class TreeStructuredParzenEstimator(BaseEstimator):
     def __init__(
             self,
-            top_n_percent=15, bandwidth_factor=3, min_bandwidth=1e-3,
-            bw_estimation="normal_reference", min_points_in_kde=2,
+            top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
-
-            fill_deactivated_value=False
+            # fill_deactivated_value=False
     ):
         self.min_points_in_kde = min_points_in_kde
-        self.bw_estimation = bw_estimation
-        self.min_bandwidth = min_bandwidth
-        self.bandwidth_factor = bandwidth_factor
+        # self.bw_estimation = bw_estimation
+        # self.min_bandwidth = min_bandwidth
+        # self.bandwidth_factor = bandwidth_factor
         self.top_n_percent = top_n_percent
-        self.config_transformer: Optional[ConfigTransformer]= None
-        self.logger=get_logger(self)
+        self.config_transformer: Optional[ConfigTransformer] = None
+        self.logger = get_logger(self)
         self.kde_sample_weight_scaler = kde_sample_weight_scaler
         self.cv_times = cv_times
         self.bw_method = bw_method
-        self.fill_deactivated_value = fill_deactivated_value
+        # self.fill_deactivated_value = fill_deactivated_value
         self.good_kdes = None
         self.bad_kdes = None
-
 
     def set_config_transformer(self, config_transformer):
         self.config_transformer = config_transformer

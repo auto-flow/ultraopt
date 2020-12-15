@@ -9,6 +9,7 @@ from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
 
 from ultraopt.structure import Job
+from ultraopt.utils.config_space import add_configs_origin
 from ultraopt.utils.logging_ import get_logger
 
 
@@ -118,5 +119,24 @@ class BaseConfigGenerator():
         })
         return config.get_dictionary(), info_dict
 
+    def process_all_configs_exist(self, info_dict, budget):
+        seed = self.rng.randint(1, 8888)
+        self.config_space.seed(seed)
+        config = self.config_space.sample_configuration()
+        add_configs_origin(config, "Initial Design")
+        info_dict.update({"sampling_different_samples_failed": True, "seed": seed})
+        return self.process_config_info_pair(config, info_dict, budget)
 
-
+    def pick_random_config(self, budget, max_sample=1000):
+        i = 0
+        info_dict = {"model_based_pick": False}
+        while i < max_sample:
+            i += 1
+            config = self.config_space.sample_configuration()
+            add_configs_origin(config, "Initial Design")
+            if self.is_config_exist(budget, config):
+                self.logger.info(f"The sample already exists and needs to be resampled. "
+                                 f"It's the {i}-th time sampling in random sampling. ")
+            else:
+                return self.process_config_info_pair(config, info_dict, budget)
+        return self.process_all_configs_exist(info_dict, budget)

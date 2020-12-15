@@ -67,7 +67,7 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
         )
 
 
-class GbrtConfigGenerator(SamplingSortConfigGenerator):
+class GBRTConfigGenerator(SamplingSortConfigGenerator):
     def __init__(
             self,
             # basic params
@@ -80,7 +80,7 @@ class GbrtConfigGenerator(SamplingSortConfigGenerator):
             acq_func="LogEI", xi=0
 
     ):
-        super(GbrtConfigGenerator, self).__init__(
+        super(GBRTConfigGenerator, self).__init__(
             config_space=config_space,
             budgets=budgets,
             random_state=random_state,

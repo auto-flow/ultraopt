@@ -75,29 +75,12 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         self.budget2epm[budget] = epm.fit(X_obvs, y_obvs)
 
     def get_config_(self, budget, max_budget):
-        # random sampling
+        # choose model from max-budget
         epm = self.budget2epm[max_budget]
+        # random sampling
         if epm is None:
-            max_sample = 1000
-            i = 0
-            info_dict = {"model_based_pick": False}
-            while i < max_sample:
-                i += 1
-                config = self.config_space.sample_configuration()
-                add_configs_origin(config, "Initial Design")
-                if self.is_config_exist(budget, config):
-                    self.logger.info(f"The sample already exists and needs to be resampled. "
-                                     f"It's the {i}-th time sampling in random sampling. ")
-                else:
-                    return self.process_config_info_pair(config, info_dict, budget)
-            # todo: 收纳这个代码块
-            seed = self.rng.randint(1, 8888)
-            self.config_space.seed()
-            config = self.config_space.sample_configuration()
-            add_configs_origin(config, "Initial Design")
-            info_dict.update({"sampling_different_samples_failed": True, "seed": seed})
-            return self.process_config_info_pair(config, info_dict, budget)
-
+            return self.pick_random_config(budget)
+        # model based pick
         info_dict = {"model_based_pick": True}
         # using config_evaluator evaluate random samples
         configs = self.config_space.sample_configuration(self.n_samples)
@@ -121,19 +104,9 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
             if self.is_config_exist(budget, config):
                 self.logger.info(f"The sample already exists and needs to be resampled. "
                                  f"It's the {i}-th time sampling in bayesian sampling. ")
-                # 超过 max_repeated_samples ， 用TS算法采样
-                # if i >= self.max_repeated_samples and self.explore_degree > 0:
-                #     ts_config, ts_info_dict = self.explore_sampling(max_budget, info_dict, True)
-                #     return self.process_config_info_pair(ts_config, ts_info_dict, budget)
             else:
                 return self.process_config_info_pair(config, info_dict, budget)
-        # todo: 收纳这个代码块
-        seed = self.rng.randint(1, 8888)
-        self.config_space.seed(seed)
-        config = self.config_space.sample_configuration()
-        add_configs_origin(config, "Initial Design")
-        info_dict.update({"sampling_different_samples_failed": True, "seed": seed})
-        return self.process_config_info_pair(config, info_dict, budget)
+        return self.process_all_configs_exist(info_dict, budget)
 
     def get_available_max_budget(self):
         budgets = [budget for budget in self.budget2epm.keys() if budget > 0]
@@ -351,4 +324,3 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         return configs_sorted
 
     # todo: develop and test weight update
-
