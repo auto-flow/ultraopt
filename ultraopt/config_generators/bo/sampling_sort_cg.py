@@ -79,7 +79,7 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         epm = self.budget2epm[max_budget]
         # random sampling
         if epm is None:
-            return self.pick_random_config(budget)
+            return self.pick_random_initial_config(budget)
         # model based pick
         info_dict = {"model_based_pick": True}
         # using config_evaluator evaluate random samples

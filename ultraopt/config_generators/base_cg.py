@@ -20,6 +20,7 @@ class BaseConfigGenerator():
         self.initial_points = initial_points
         self.random_state = random_state
         self.config_space = config_space
+        self.config_space.seed(random_state)
         self.budgets = budgets
         if budget2obvs is None:
             budget2obvs = self.get_initial_budget2obvs(self.budgets)
@@ -127,7 +128,7 @@ class BaseConfigGenerator():
         info_dict.update({"sampling_different_samples_failed": True, "seed": seed})
         return self.process_config_info_pair(config, info_dict, budget)
 
-    def pick_random_config(self, budget, max_sample=1000):
+    def pick_random_initial_config(self, budget, max_sample=1000):
         i = 0
         info_dict = {"model_based_pick": False}
         while i < max_sample:

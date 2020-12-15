@@ -11,7 +11,7 @@ from tabular_nn import EquidistanceEncoder
 
 from ultraopt.config_generators.base_cg import BaseConfigGenerator
 from ultraopt.learning.tpe import TreeStructuredParzenEstimator
-from ultraopt.utils.config_space import add_configs_origin
+from ultraopt.utils.config_space import add_configs_origin, initial_design
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
@@ -48,8 +48,8 @@ class TPEConfigGenerator(BaseConfigGenerator):
             encoder = EquidistanceEncoder()
         elif isinstance(embedding_encoder, str):
             if embedding_encoder == "auto":
-                raise NotImplementedError
-                # todo： 赋值
+                encoder = EmbeddingEncoder(
+                    max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=0)
             else:
                 raise ValueError(f"Invalid Indicate string '{embedding_encoder} for embedding_encoder'")
         else:
@@ -64,6 +64,15 @@ class TPEConfigGenerator(BaseConfigGenerator):
         self.budget2epm = {budget: None for budget in budgets}
         if self.n_candidates is None:
             self.n_candidates = self.config_transformer.n_variables_embedded * self.n_candidates_factor
+        # 初始化样本
+        # todo: 考虑热启动时初始化得到的观测
+        self.initial_design_configs = initial_design(self.config_space, self.min_points_in_model)
+        self.initial_design_ix = 0
+        updated_min_points_in_model = len(self.initial_design_configs)
+        if updated_min_points_in_model != self.min_points_in_model:
+            self.logger.info(f"Update min_points_in_model from {self.min_points_in_model} "
+                             f"to {updated_min_points_in_model}")
+            self.min_points_in_model = updated_min_points_in_model
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
@@ -90,7 +99,11 @@ class TPEConfigGenerator(BaseConfigGenerator):
         epm = self.budget2epm[max_budget]
         # random sampling
         if epm is None:
-            return self.pick_random_config(budget)
+            info_dict = {"model_based_pick": False}
+            config = self.initial_design_configs[self.initial_design_ix]
+            add_configs_origin(config, "Initial Design")
+            self.initial_design_ix += 1
+            return self.process_config_info_pair(config, info_dict, budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
         return self.process_config_info_pair(config, info_dict, budget)
@@ -139,4 +152,5 @@ class TPEConfigGenerator(BaseConfigGenerator):
 
     @property
     def has_embedding_encoder(self):
-        return isinstance(self.config_transformer.encoder, EmbeddingEncoder)
+        return isinstance(self.config_transformer.encoder, EmbeddingEncoder) and \
+               len(self.config_transformer.high_r_cols) > 0
