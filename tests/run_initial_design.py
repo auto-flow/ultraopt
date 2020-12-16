@@ -3,8 +3,9 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-16
 # @Contact    : tqichun@gmail.com
-from ultraopt.hdl import HDL2CS
 import pandas as pd
+
+from ultraopt.hdl import HDL2CS
 from ultraopt.utils.config_space import get_array_from_configs
 from ultraopt.utils.config_space import initial_design_2
 
@@ -45,4 +46,4 @@ cs = HDL2CS().recursion({
 })
 configs = initial_design_2(cs, 1, 1)
 arr = get_array_from_configs(configs)
-print(pd.Series(arr[:, 0]).nunique()==3)
+print(pd.Series(arr[:, 0]).nunique() == 3)

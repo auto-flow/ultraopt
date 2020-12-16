@@ -3,7 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-16
 # @Contact    : tqichun@gmail.com
-from ultraopt.hdl import HDL2CS
+from ultraopt.hdl import HDL2CS, config2dict
 
 # 测试嵌套依赖
 cs = HDL2CS()({
@@ -47,4 +47,53 @@ cs = HDL2CS()({
 })
 print(cs)
 
-# 测试
+# 测试conditional
+cs = HDL2CS()({
+    "model(choice)": {
+        "linearsvc": {
+            "max_iter": {"_type": "int_quniform", "_value": [300, 3000, 100], "_default": 600},
+            "penalty": {"_type": "choice", "_value": ["l1", "l2"], "_default": "l2"},
+            "dual": {"_type": "choice", "_value": [True, False], "_default": False},
+            "loss": {"_type": "choice", "_value": ["hinge", "squared_hinge"], "_default": "squared_hinge"},
+            "C": {"_type": "loguniform", "_value": [0.01, 10000], "_default": 1.0},
+            "multi_class": "ovr",
+            "random_state": 42,
+            # "__forbidden": [
+            #     {"penalty": "l1", "loss": "hinge"},
+            #     {"penalty": "l2", "dual": False, "loss": "hinge"},
+            #     {"penalty": "l1", "dual": False},
+            #     {"penalty": "l1", "dual": True, "loss": "squared_hinge"},
+            # ]
+        },
+        "svc": {
+            "C": {"_type": "loguniform", "_value": [0.01, 10000], "_default": 1.0},
+            "kernel": {"_type": "choice", "_value": ["rbf", "poly", "sigmoid"], "_default": "rbf"},
+            "degree": {"_type": "int_uniform", "_value": [2, 5], "_default": 3},
+            "gamma": {"_type": "loguniform", "_value": [1e-05, 8], "_default": 0.1},
+            "coef0": {"_type": "quniform", "_value": [-1, 1], "_default": 0},
+            "shrinking": {"_type": "choice", "_value": [True, False], "_default": True},
+            "class_weight": None,
+            "probability": True,
+            "decision_function_shape": "ovr",
+            # "__activate": {
+            #     "kernel": {
+            #         "rbf": ["gamma"],
+            #         "sigmoid": ["gamma", "coef0"],
+            #         "poly": ["degree", "gamma", "coef0"]
+            #     }
+            # },
+            "random_state": 42
+        },
+    }
+})
+print(cs)
+configs = []
+# for i in range(10):
+#     try:
+#         configs += [cs.sample_configuration()]
+#     except Exception as e:
+#         print(e)
+cs.sample_configuration(2)
+res=[config2dict(config) for config in configs]
+print(res)
+print("OK")
