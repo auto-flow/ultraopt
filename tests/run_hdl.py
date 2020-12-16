@@ -87,11 +87,6 @@ cs = HDL2CS()({
     }
 })
 print(cs)
-# for i in range(10):
-#     try:
-#         configs += [cs.sample_configuration()]
-#     except Exception as e:
-#         print(e)
 configs=cs.sample_configuration(200)
 res=[config2dict(config) for config in configs]
 print(len(res))

@@ -63,6 +63,8 @@ class TPEConfigGenerator(BaseConfigGenerator):
         # todo: auto_enrich_initial_points
         self.config_transformer = ConfigTransformer(impute=None, encoder=encoder)
         self.config_transformer.fit(self.config_space)
+        if len(self.config_transformer.high_r_cols) == 0:
+            self.config_transformer.encoder = None
         if embedding_encoder is None:
             vectors = np.array([config.get_array() for config in self.config_space.sample_configuration(5000)])
             self.config_transformer.fit_encoder(vectors)
