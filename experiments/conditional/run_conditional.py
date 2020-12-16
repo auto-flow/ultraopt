@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
+# @Date    : 2020-12-16
 # @Contact    : tqichun@gmail.com
 from collections import Counter
 
@@ -9,49 +10,48 @@ import pandas as pd
 from ConfigSpace import Configuration
 
 from ultraopt.config_generators import TPEConfigGenerator
-from ultraopt.hdl import HDL2CS
+from ultraopt.hdl import HDL2CS, config2dict
 from ultraopt.structure import Job
 
-# experiment = "GB1"
-experiment = "PhoQ"
+experiment = "GB1"
+# experiment = "PhoQ"
 # experiment = "RNA"
 
-if experiment == "GB1":
-    df = pd.read_csv("GB1.csv")
-    df2 = df.copy()
-    df2.index = df2.pop('Variants')
-    y = df.pop("Fitness")
-    for i in range(4):
-        df[f'X{i}'] = df['Variants'].str[i]
-    df.pop('Variants')
 
-    choices = sorted(Counter(df['X0']).keys())
-    hdl = {
-        f"X{i}": {"_type": "choice", "_value": choices} for i in range(4)
+df = pd.read_csv("GB1.csv")
+df2 = df.copy()
+df2.index = df2.pop('Variants')
+y = df.pop("Fitness")
+for i in range(4):
+    df[f'X{i}'] = df['Variants'].str[i]
+df.pop('Variants')
+
+n_top = 3
+choices = sorted(Counter(df['X0']).keys())
+hdl = {
+    "parent(choice)": {
+        f"C{j}": {
+            f"X{i}": {"_type": "choice", "_value": choices} for i in range(4)
+        }
+        for j in range(n_top)
     }
-    config_space = HDL2CS().recursion(hdl)
+}
+config_space = HDL2CS().recursion(hdl)
+
+choice2coef = {
+    0: 0.8,
+    1: 0.7,
+    2: 1
+}
 
 
-    def evaluation(config: Configuration):
-        return -df2.loc["".join([config.get(f"X{i}") for i in range(4)]), 'Fitness']
-elif experiment == "PhoQ":
-    df = pd.read_csv("PhoQ.csv")
-    df2 = df.copy()
-    df2.index = df2.pop('Variants')
-    y = df.pop("Fitness")
-    for i in range(4):
-        df[f'X{i}'] = df['Variants'].str[i]
-    df.pop('Variants')
+def evaluation(config: Configuration):
+    dict_ = config2dict(config)
+    choice, sub_config = dict_['parent'].popitem()
+    coef = choice2coef[int(choice[-1])]
+    # print(choice)
+    return -df2.loc["".join([sub_config.get(f"X{i}") for i in range(4)]), 'Fitness'] * coef
 
-    choices = sorted(Counter(df['X0']).keys())
-    hdl = {
-        f"X{i}": {"_type": "choice", "_value": choices} for i in range(4)
-    }
-    config_space = HDL2CS().recursion(hdl)
-
-
-    def evaluation(config: Configuration):
-        return -df2.loc["".join([config.get(f"X{i}") for i in range(4)]), 'Fitness']
 
 repetitions = 10
 max_iter = 1000
@@ -77,14 +77,14 @@ def main():
             config, config_info = ambo.get_config(1)
             cur_loss = evaluation(config)
             loss = min(loss, cur_loss)
-            # print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
+            print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
             job = Job("")
             job.result = {"loss": cur_loss}
             job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
             ambo.new_result(job)
             res.loc[ix, f"trial-{trial}"] = cur_loss
         print(loss)
-    res.to_csv(f"{experiment}_6.csv", index=False)
+    res.to_csv(f"conditional_ultraopt.csv", index=False)
     print(res.min()[:repetitions].mean())
 
 

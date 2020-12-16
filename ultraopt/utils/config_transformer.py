@@ -32,6 +32,7 @@ class ConfigTransformer():
         n_top_levels = 0
         parents = []
         parent_values = []
+        is_child = []
         # todo: 划分parents与groups
         for hp in config_space.get_hyperparameters():
             if isinstance(hp, Constant) or \
@@ -60,7 +61,9 @@ class ConfigTransformer():
                     n_top_levels += 1
                     parents.append(None)
                     parent_values.append(None)
+                    is_child.append(False)
                 else:
+                    is_child.append(True)
                     parents.append(cur_parents[0])
                     parent_conditions = config_space.get_parent_conditions_of(hp.name)
                     parent_condition = parent_conditions[0]
@@ -68,6 +71,7 @@ class ConfigTransformer():
         groups_str = [f"{parent}-{parent_value}" for parent, parent_value in zip(parents, parent_values)]
         group_encoder = LabelEncoder()
         groups = group_encoder.fit_transform(groups_str)
+        self.is_child = is_child
         self.sequence_mapper = sequence_mapper
         self.is_ordinal_list = is_ordinal_list
         self.config_space = config_space
@@ -84,7 +88,13 @@ class ConfigTransformer():
         self.hp_names = pd.Series([hp.name for hp in config_space.get_hyperparameters()])[self.mask]
         high_r_mask = np.array(self.n_choices_list) > 2
         self.high_r_cols = self.hp_names[high_r_mask].to_list()
-        self.high_r_cats = [list(range(n_choices)) for n_choices in np.array(n_choices_list)[high_r_mask]]
+        self.high_r_cats = []
+        for ix in np.arange(n_variables)[high_r_mask]:
+            n_choices = n_choices_list[ix]
+            cat = list(range(n_choices))
+            if is_child[ix]:
+                cat.insert(0, -1)
+            self.high_r_cats.append(cat)
         if self.encoder is not None:
             self.encoder.cols = copy(self.high_r_cols)
             self.encoder.categories = copy(self.high_r_cats)
