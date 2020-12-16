@@ -18,7 +18,7 @@ handlers:
     class: logging.FileHandler
     level: DEBUG
     formatter: formal
-    filename: autoflow.log
+    filename: ultraopt.log
 
 # 如果设为DEBUG, sql也会下来
 root:

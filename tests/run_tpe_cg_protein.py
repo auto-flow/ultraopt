@@ -13,8 +13,8 @@ from ultraopt.config_generators import TPEConfigGenerator
 from ultraopt.structure import Job
 from ultraopt.utils.config_space import initial_design_cat
 
-# experiment = "GB1"
-experiment = "PhoQ"
+experiment = "GB1"
+# experiment = "PhoQ"
 # experiment = "RNA"
 
 if experiment == "GB1":
@@ -54,25 +54,24 @@ elif experiment == "PhoQ":
     def evaluation(config: Configuration):
         return -df2.loc["".join([config.get(f"X{i}") for i in range(4)]), 'Fitness']
 
-repetitions = 20
+repetitions = 10
 max_iter = 1000
 
 
 def main():
     res = pd.DataFrame(columns=[f"trial-{i}" for i in range(repetitions)], index=range(max_iter))
-    for trial in range(10):
+    for trial in range(repetitions):
         random_state = 50 + trial * 10
         # 设置超参空间的随机种子（会影响后面的采样）
         config_space.seed(random_state)
-
         print("==========================")
         print(f"= Trial -{trial:01d}-               =")
         print("==========================")
         print('iter |  loss    | config origin')
         print('----------------------------')
         ambo = TPEConfigGenerator(
-            config_space, [1], random_state=random_state, min_points_in_model=20,
-            initial_points=initial_design_cat(config_space, 20)
+            config_space, [1], random_state=random_state, min_points_in_model=40, bandwidth_factor=1
+            # initial_points=initial_design_cat(config_space, 20)
         )
         loss = np.inf
         for ix in range(max_iter):
@@ -85,7 +84,7 @@ def main():
             job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
             ambo.new_result(job)
             res.loc[ix, f"trial-{trial}"] = cur_loss
-    res.to_csv(f"{experiment}_1.csv", index=False)
+    res.to_csv(f"{experiment}_5.csv", index=False)
 
 
 if __name__ == '__main__':

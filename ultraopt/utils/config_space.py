@@ -10,6 +10,7 @@ from typing import List
 import numpy as np
 from ConfigSpace import CategoricalHyperparameter
 from ConfigSpace import Configuration
+from sklearn.utils.validation import check_random_state
 
 
 def is_top_level_activated(config_space, config, hp_name, hp_value=None):
@@ -41,7 +42,6 @@ def add_configs_origin(configs: List[Configuration], origin):
         configs = [configs]
     for config in configs:
         config.origin = origin
-
 
 
 def initial_design(cs, n_configs):
@@ -78,7 +78,43 @@ def initial_design(cs, n_configs):
         if ok:
             break
         samples.append(cs.get_default_configuration())
+    vec = np.array([sample.get_array() for sample in samples])
+    for i in range(4):
+        print(len(Counter(vec[:, i])))
     return samples
+
+
+def initial_design_2(cs, n_configs, rng):
+    cs = deepcopy(cs)
+    rng = check_random_state(rng)
+    hp2n_choices = {}
+    for hp in cs.get_hyperparameters():
+        if isinstance(hp, CategoricalHyperparameter) \
+                and len(cs.get_parents_of(hp.name)) == 0 \
+                and hp.num_choices >= 3:
+            hp2n_choices[hp.name] = hp.num_choices
+    # todo: 考虑没有高基离散变量的情况
+    n_configs = max(n_configs, max(list(hp2n_choices.values())))
+    matrix = np.zeros([n_configs, len(hp2n_choices)], dtype="int32")
+    for i, (hp, n_choices) in enumerate(hp2n_choices.items()):
+        col_vec = []
+        while len(col_vec) < n_configs:
+            col_vec.extend(np.arange(n_choices).tolist())
+        matrix[:, i] = rng.choice(col_vec, n_configs, replace=False)
+    samples = []
+    for i in range(matrix.shape[0]):
+        # todo: 开发一个固定几个变量，其他随机的函数
+        vec = matrix[i, :]
+        for j, (hp, n_choices) in enumerate(hp2n_choices.items()):
+            hp = cs.get_hyperparameter(hp)
+            hp.default_value = hp.choices[vec[j]]
+        samples.append(cs.get_default_configuration())
+    # todo: 把这个注释整理为一个单元测试
+    # vec = np.array([sample.get_array() for sample in samples])
+    # for i in range(4):
+    #     print(len(Counter(vec[:, i])))
+    return samples
+
 
 def initial_design_cat(cs, n_configs):
     n_choices_list = []
@@ -109,4 +145,7 @@ def initial_design_cat(cs, n_configs):
     results = []
     for i in range(vectors.shape[0]):
         results.append(Configuration(cs, vector=vectors[i, :]))
+    vec = np.array([sample.get_array() for sample in samples])
+    for i in range(4):
+        print(len(Counter(vec[:, i])))
     return results
