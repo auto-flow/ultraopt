@@ -67,10 +67,10 @@ def main():
         print("==========================")
         print(f"= Trial -{trial:01d}-               =")
         print("==========================")
-        print('iter |  loss    | config origin')
-        print('----------------------------')
+        # print('iter |  loss    | config origin')
+        # print('----------------------------')
         ambo = TPEConfigGenerator(
-            config_space, [1], random_state=random_state, min_points_in_model=40, bandwidth_factor=1
+            config_space, [1], random_state=random_state, min_points_in_model=20
             # initial_points=initial_design_cat(config_space, 20)
         )
         loss = np.inf
@@ -78,13 +78,15 @@ def main():
             config, config_info = ambo.get_config(1)
             cur_loss = evaluation(config)
             loss = min(loss, cur_loss)
-            print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
+            # print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
             job = Job("")
             job.result = {"loss": cur_loss}
             job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
             ambo.new_result(job)
             res.loc[ix, f"trial-{trial}"] = cur_loss
-    res.to_csv(f"{experiment}_5.csv", index=False)
+        print(loss)
+    res.to_csv(f"{experiment}_6.csv", index=False)
+    print(res.min()[:repetitions].mean())
 
 
 if __name__ == '__main__':

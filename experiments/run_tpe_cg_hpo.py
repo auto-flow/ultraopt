@@ -71,9 +71,9 @@ def main():
             config_space.seed(random_state)
             print("==========================")
             print(f"= Trial -{trial:01d}-               =")
-            print("==========================")
-            print('iter |  loss    | config origin')
-            print('----------------------------')
+            # print("==========================")
+            # print('iter |  loss    | config origin')
+            # print('----------------------------')
             cg = TPEConfigGenerator(
                 config_space, [1], min_points_in_model=25, embedding_encoder=None
             )
@@ -82,12 +82,13 @@ def main():
                 config, config_info = cg.get_config(1)
                 cur_loss = evaluation(config)
                 loss = min(loss, cur_loss)
-                print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
+                # print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
                 job = Job("")
                 job.result = {"loss": cur_loss}
                 job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
                 cg.new_result(job)
                 res.loc[ix, f"trial-{trial}"] = cur_loss
+            print(loss)
         res = raw2min(res)
         m = res.mean(1)
         s = res.std(1)

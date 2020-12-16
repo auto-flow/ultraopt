@@ -23,17 +23,19 @@ class TPEConfigGenerator(BaseConfigGenerator):
             # model related
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
-            gamma=1.2, max_try=3,
             # several hyper-parameters
-            min_points_in_model=20,
-            n_candidates=None, n_candidates_factor=4, sort_by_EI=True, bandwidth_factor=1,
+            gamma1=0.9, gamma2=3, max_try=3,
+            min_points_in_model=20, min_n_candidates=8,
+            n_candidates=None, n_candidates_factor=4, sort_by_EI=True, bandwidth_factor=3,
             # Embedding Encoder
-            embedding_encoder="auto"
+            embedding_encoder="default"
     ):
         super(TPEConfigGenerator, self).__init__(config_space, budgets, random_state, initial_points,
                                                  budget2obvs)
+        self.gamma1 = gamma1
+        self.min_n_candidates = min_n_candidates
         self.max_try = max_try
-        self.gamma = gamma
+        self.gamma2 = gamma2
         self.min_points_in_model = min_points_in_model
         self.bandwidth_factor = bandwidth_factor
         self.sort_by_EI = sort_by_EI
@@ -50,11 +52,11 @@ class TPEConfigGenerator(BaseConfigGenerator):
             # do not use embedding_encoder, use One Hot Encoder
             encoder = EquidistanceEncoder()
         elif isinstance(embedding_encoder, str):
-            if embedding_encoder == "auto":
+            if embedding_encoder == "default":
                 encoder = EmbeddingEncoder(
                     max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=0)
             else:
-                raise ValueError(f"Invalid Indicate string '{embedding_encoder} for embedding_encoder'")
+                raise ValueError(f"Invalid Indicate string '{embedding_encoder}' for embedding_encoder'")
         else:
             encoder = embedding_encoder
         # todo: 如果自动构建了Embedding encoder， 后续需要保证initial point覆盖所有的类别
@@ -66,7 +68,10 @@ class TPEConfigGenerator(BaseConfigGenerator):
             self.config_transformer.fit_encoder(vectors)
         self.budget2epm = {budget: None for budget in budgets}
         if self.n_candidates is None:
-            self.n_candidates = self.config_transformer.n_variables_embedded * self.n_candidates_factor
+            self.n_candidates = max(
+                self.config_transformer.n_variables_embedded * self.n_candidates_factor,
+                self.min_n_candidates
+            )
         # 初始化样本
         # todo: 考虑热启动时初始化得到的观测
         self.initial_design_configs = initial_design_2(self.config_space, self.min_points_in_model, self.rng)
@@ -84,7 +89,7 @@ class TPEConfigGenerator(BaseConfigGenerator):
                 n_candidates=self.n_candidates,
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
-                bandwidth_factor=self.bandwidth_factor
+                bandwidth_factor=self.bandwidth_factor + 1
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -94,10 +99,10 @@ class TPEConfigGenerator(BaseConfigGenerator):
                     add_configs_origin(sample, "TPE sampling")
                     return sample, info_dict
             old_db = self.bandwidth_factor
-            self.bandwidth_factor *= self.gamma
+            self.bandwidth_factor = (self.bandwidth_factor + 1) * self.gamma2 - 1
             self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
                                 f"Update bandwidth_factor from {old_db} to {self.bandwidth_factor} by "
-                                f"multiply gamma ({self.gamma}).")
+                                f"multiply gamma2 ({self.gamma2}).")
         sample = self.config_space.sample_configuration()
         add_configs_origin(sample, "Random Search")
         info_dict = {"model_based_pick": False}
@@ -116,6 +121,7 @@ class TPEConfigGenerator(BaseConfigGenerator):
             return self.process_config_info_pair(config, info_dict, budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
+        self.bandwidth_factor *= self.gamma1
         return self.process_config_info_pair(config, info_dict, budget)
 
     def get_available_max_budget(self):

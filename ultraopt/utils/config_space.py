@@ -8,7 +8,7 @@ from copy import deepcopy
 from typing import List
 
 import numpy as np
-from ConfigSpace import CategoricalHyperparameter
+from ConfigSpace import CategoricalHyperparameter, ConfigurationSpace
 from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
 
@@ -84,31 +84,72 @@ def initial_design(cs, n_configs):
     return samples
 
 
+def sample_vectors(cs, n_samples):
+    return np.array([sample.get_array() for sample in cs.sample_configuration(n_samples)])
+
+
+def sample_configuration_except_default(cs: ConfigurationSpace, idx2val: dict, is_child_list=None,
+                                        sampled_vectors=None, rng=None):
+    if is_child_list is None:
+        is_child_list = [True] * len(idx2val)
+    rng = check_random_state(rng)
+    if sampled_vectors is None:
+        sampled_vectors = sample_vectors(cs, 5000)
+    refined_vectors = sampled_vectors.copy()
+    while True:
+        ok = True
+        for i, (idx, val) in enumerate(idx2val.items()):
+            if is_child_list[i]:
+                refined_vectors[:, idx] = val
+            else:
+                refined_vectors = refined_vectors[refined_vectors[:, idx] == val, :]
+                if refined_vectors.shape[0] == 0:
+                    ok = False
+                    sampled_vectors = np.vstack([sampled_vectors, sample_vectors(cs, 5000)])
+                    break
+        if ok:
+            break
+    L = refined_vectors.shape[0]
+    which = rng.randint(0, L)
+    vector = refined_vectors[which, :]
+    return Configuration(cs, vector=vector), sampled_vectors
+
+
+def get_array_from_configs(configs: List[Configuration]):
+    return np.array([config.get_array() for config in configs])
+
+
 def initial_design_2(cs, n_configs, rng):
     cs = deepcopy(cs)
     rng = check_random_state(rng)
     hp2n_choices = {}
-    for hp in cs.get_hyperparameters():
+    idx_list = []
+    is_child_list = []
+    for idx, hp in enumerate(cs.get_hyperparameters()):
         if isinstance(hp, CategoricalHyperparameter) \
                 and len(cs.get_parents_of(hp.name)) == 0 \
-                and hp.num_choices >= 3:
-            hp2n_choices[hp.name] = hp.num_choices
+                and len(hp.choices) >= 3:
+            hp2n_choices[hp.name] = len(hp.choices)
+            idx_list.append(idx)
+            is_child_list.append(len(cs.get_child_conditions_of(hp)) == 0)
     # todo: 考虑没有高基离散变量的情况
-    n_configs = max(n_configs, max(list(hp2n_choices.values())))
+    if hp2n_choices:
+        n_configs = max(n_configs, max(list(hp2n_choices.values())))
     matrix = np.zeros([n_configs, len(hp2n_choices)], dtype="int32")
     for i, (hp, n_choices) in enumerate(hp2n_choices.items()):
         col_vec = []
         while len(col_vec) < n_configs:
             col_vec.extend(np.arange(n_choices).tolist())
-        matrix[:, i] = rng.choice(col_vec, n_configs, replace=False)
+        matrix[:, i] = rng.choice(col_vec[:n_configs], n_configs, replace=False)
     samples = []
+    sampled_vectors_ = sample_vectors(cs, 5000)
     for i in range(matrix.shape[0]):
         # todo: 开发一个固定几个变量，其他随机的函数
         vec = matrix[i, :]
-        for j, (hp, n_choices) in enumerate(hp2n_choices.items()):
-            hp = cs.get_hyperparameter(hp)
-            hp.default_value = hp.choices[vec[j]]
-        samples.append(cs.get_default_configuration())
+        idx2val = dict(zip(idx_list, vec.tolist()))
+        sample, sampled_vectors_ = sample_configuration_except_default(
+            cs, idx2val, is_child_list, sampled_vectors_, rng)
+        samples.append(sample)
     # todo: 把这个注释整理为一个单元测试
     # vec = np.array([sample.get_array() for sample in samples])
     # for i in range(4):
