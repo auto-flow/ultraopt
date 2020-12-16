@@ -58,12 +58,12 @@ cs = HDL2CS()({
             "C": {"_type": "loguniform", "_value": [0.01, 10000], "_default": 1.0},
             "multi_class": "ovr",
             "random_state": 42,
-            # "__forbidden": [
-            #     {"penalty": "l1", "loss": "hinge"},
-            #     {"penalty": "l2", "dual": False, "loss": "hinge"},
-            #     {"penalty": "l1", "dual": False},
-            #     {"penalty": "l1", "dual": True, "loss": "squared_hinge"},
-            # ]
+            "__forbidden": [
+                {"penalty": "l1", "loss": "hinge"},
+                {"penalty": "l2", "dual": False, "loss": "hinge"},
+                {"penalty": "l1", "dual": False},
+                {"penalty": "l1", "dual": True, "loss": "squared_hinge"},
+            ]
         },
         "svc": {
             "C": {"_type": "loguniform", "_value": [0.01, 10000], "_default": 1.0},
@@ -75,25 +75,24 @@ cs = HDL2CS()({
             "class_weight": None,
             "probability": True,
             "decision_function_shape": "ovr",
-            # "__activate": {
-            #     "kernel": {
-            #         "rbf": ["gamma"],
-            #         "sigmoid": ["gamma", "coef0"],
-            #         "poly": ["degree", "gamma", "coef0"]
-            #     }
-            # },
+            "__activate": {
+                "kernel": {
+                    "rbf": ["gamma"],
+                    "sigmoid": ["gamma", "coef0"],
+                    "poly": ["degree", "gamma", "coef0"]
+                }
+            },
             "random_state": 42
         },
     }
 })
 print(cs)
-configs = []
 # for i in range(10):
 #     try:
 #         configs += [cs.sample_configuration()]
 #     except Exception as e:
 #         print(e)
-cs.sample_configuration(2)
+configs=cs.sample_configuration(200)
 res=[config2dict(config) for config in configs]
-print(res)
+print(len(res))
 print("OK")

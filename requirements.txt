@@ -1,6 +1,6 @@
 numpy>=1.18.1
 pandas>=1.0.1
-ConfigSpace==0.4.12
+ConfigSpace==0.4.16
 joblib>=0.16.0
 category_encoders>=2.0.0
 scikit_learn>=0.22.2
