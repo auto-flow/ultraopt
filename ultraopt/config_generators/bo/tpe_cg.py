@@ -24,9 +24,9 @@ class TPEConfigGenerator(BaseConfigGenerator):
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            gamma1=0.9, gamma2=3, max_try=3,
+            gamma1=0.96, gamma2=3, bandwidth_factor=3, max_try=3,
             min_points_in_model=20, min_n_candidates=8,
-            n_candidates=None, n_candidates_factor=4, sort_by_EI=True, bandwidth_factor=3,
+            n_candidates=None, n_candidates_factor=4, sort_by_EI=True,
             # Embedding Encoder
             embedding_encoder="default"
     ):
@@ -101,7 +101,7 @@ class TPEConfigGenerator(BaseConfigGenerator):
             old_db = self.bandwidth_factor
             self.bandwidth_factor = (self.bandwidth_factor + 1) * self.gamma2 - 1
             self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
-                                f"Update bandwidth_factor from {old_db} to {self.bandwidth_factor} by "
+                                f"Update bandwidth_factor from {old_db:.4f} to {self.bandwidth_factor:.4f} by "
                                 f"multiply gamma2 ({self.gamma2}).")
         sample = self.config_space.sample_configuration()
         add_configs_origin(sample, "Random Search")

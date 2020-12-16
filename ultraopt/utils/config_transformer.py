@@ -82,9 +82,12 @@ class ConfigTransformer():
         self.n_variables_embedded = n_variables_embedded
         self.n_top_levels = n_top_levels
         self.hp_names = pd.Series([hp.name for hp in config_space.get_hyperparameters()])[self.mask]
-        self.high_r_cols = self.hp_names[np.array(self.n_choices_list) > 2].to_list()
+        high_r_mask = np.array(self.n_choices_list) > 2
+        self.high_r_cols = self.hp_names[high_r_mask].to_list()
+        self.high_r_cats = [list(range(n_choices)) for n_choices in np.array(n_choices_list)[high_r_mask]]
         if self.encoder is not None:
             self.encoder.cols = copy(self.high_r_cols)
+            self.encoder.categories = copy(self.high_r_cats)
         return self
 
     def fit_encoder(self, vectors, losses=None):

@@ -7,9 +7,9 @@ import pylab as plt
 
 start = 3
 history = []
-L = 100
+L = 200
 for i in range(L):
     history.append(start)
-    start *= 0.9
+    start *= 0.96
 plt.plot(range(L), history)
 plt.show()

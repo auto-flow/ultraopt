@@ -7,14 +7,13 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration
-from neon.hdl.hdl2cs import HDL2CS
+from ultraopt.hdl import HDL2CS
 
 from ultraopt.config_generators import TPEConfigGenerator
 from ultraopt.structure import Job
-from ultraopt.utils.config_space import initial_design_cat
 
-experiment = "GB1"
-# experiment = "PhoQ"
+# experiment = "GB1"
+experiment = "PhoQ"
 # experiment = "RNA"
 
 if experiment == "GB1":
@@ -70,8 +69,8 @@ def main():
         # print('iter |  loss    | config origin')
         # print('----------------------------')
         ambo = TPEConfigGenerator(
-            config_space, [1], random_state=random_state, min_points_in_model=20
-            # initial_points=initial_design_cat(config_space, 20)
+            config_space, [1], random_state=random_state, min_points_in_model=20,
+            # initial_points=config_space.sample_configuration(40)
         )
         loss = np.inf
         for ix in range(max_iter):
