@@ -6,11 +6,11 @@
 from skopt.learning.forest import ExtraTreesRegressor, RandomForestRegressor
 from skopt.learning.gbrt import GradientBoostingQuantileRegressor
 
-from ultraopt.config_generators.bo.sampling_sort_cg import SamplingSortConfigGenerator
+from ultraopt.optimizer.bo.sampling_sort_opt import SamplingSortOptimizer
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
-class ForestConfigGenerator(SamplingSortConfigGenerator):
+class ForestOptimizer(SamplingSortOptimizer):
     def __init__(
             self,
             # model related
@@ -34,7 +34,7 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
         else:
             raise ValueError(
                 f"forest_type should be 'ET' or 'RF', means 'ExtraTrees' and 'RandomForest', respectively. ")
-        super(ForestConfigGenerator, self).__init__(
+        super(ForestOptimizer, self).__init__(
             epm=forest_klass(
                 n_estimators=n_estimators,
                 max_depth=max_depth,
@@ -59,13 +59,13 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
             xi=xi
         )
 
-    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
-        super(ForestConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points,
-                                                      budget2obvs)
+    def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
+        super(ForestOptimizer, self).initialize(config_space, budgets, random_state, initial_points,
+                                                budget2obvs)
         self.epm.set_params(random_state=random_state)
 
 
-class GBRTConfigGenerator(SamplingSortConfigGenerator):
+class GBRTOptimizer(SamplingSortOptimizer):
     def __init__(
             self,
             # model related
@@ -74,9 +74,8 @@ class GBRTConfigGenerator(SamplingSortConfigGenerator):
             use_local_search=False, loss_transformer="log_scaled",
             min_points_in_model=15, n_samples=5000,
             acq_func="LogEI", xi=0
-
     ):
-        super(GBRTConfigGenerator, self).__init__(
+        super(GBRTOptimizer, self).__init__(
             epm=GradientBoostingQuantileRegressor(
                 n_jobs=n_jobs,
             ),
@@ -89,7 +88,7 @@ class GBRTConfigGenerator(SamplingSortConfigGenerator):
             xi=xi
         )
 
-    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
-        super(GBRTConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points,
-                                                    budget2obvs)
+    def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
+        super(GBRTOptimizer, self).initialize(config_space, budgets, random_state, initial_points,
+                                              budget2obvs)
         self.epm.set_params(random_state=random_state)

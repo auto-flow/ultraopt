@@ -4,7 +4,7 @@
 # @Contact    : tqichun@gmail.com
 from hpolib.benchmarks.synthetic_functions import Forrester, Bohachevsky, Camelback
 
-from ultraopt.config_generators.bo.sampling_sort_cg import SamplingSortConfigGenerator
+from ultraopt.optimizer.bo.sampling_sort_opt import SamplingSortOptimizer
 from ultraopt.structure import Job
 
 from hpolib.benchmarks.synthetic_functions.goldstein_price import GoldsteinPrice
@@ -74,7 +74,7 @@ def main():
             print("==========================")
             print('iter |  loss    | config origin')
             print('----------------------------')
-            cg = SamplingSortConfigGenerator(
+            cg = SamplingSortOptimizer(
                 config_space, [1], min_points_in_model=25, n_samples=2500
             )
             loss = np.inf

@@ -9,7 +9,7 @@ from typing import Callable, Union, Optional, List, Type
 
 from ConfigSpace import ConfigurationSpace, Configuration
 
-from ultraopt.config_generators.base_cg import BaseConfigGenerator
+from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.hdl import HDL2CS
 
 
@@ -17,7 +17,7 @@ from ultraopt.hdl import HDL2CS
 def fmin(
         eval_func: Callable,
         config_space: Union[ConfigurationSpace, dict],
-        config_generator: Union[BaseConfigGenerator, str, Type] = "TPE",
+        config_generator: Union[BaseOptimizer, str, Type] = "TPE",
         initial_points: Union[None, List[Configuration], List[dict]] = None,
         random_state=42,
         n_iterations=100,
@@ -40,21 +40,21 @@ def fmin(
         checked_budgets = list(budgets)
     # ------------ config_generator ---------------#
     if inspect.isclass(config_generator):
-        if not issubclass(config_generator, BaseConfigGenerator):
-            raise ValueError(f"config_generator {config_generator} is not subclass of BaseConfigGenerator")
+        if not issubclass(config_generator, BaseOptimizer):
+            raise ValueError(f"config_generator {config_generator} is not subclass of BaseOptimizer")
         checked_cg = config_generator()
-    elif isinstance(config_generator, BaseConfigGenerator):
+    elif isinstance(config_generator, BaseOptimizer):
         checked_cg = config_generator
     elif isinstance(config_generator, str):
         try:
-            checked_cg = getattr(importlib.import_module("ultraopt.config_generators"),
-                                 f"{config_generator}ConfigGenerator")()
+            checked_cg = getattr(importlib.import_module("ultraopt.optimizer"),
+                                 f"{config_generator}Optimizer")()
         except Exception:
             raise ValueError(f"Invalid config_generator string-indicator: {config_generator}")
     else:
         raise NotImplementedError
     # non-parallelism debug mode
-    if n_jobs == 1 and not multi_fidelity:
+    if n_jobs == 1 and (not multi_fidelity):
         checked_budgets = [1]
         checked_cg.initialize(checked_cs, checked_budgets, random_state, initial_points)
         pass

@@ -11,7 +11,7 @@ from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
 from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
 from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
 
-from ultraopt.config_generators import TPEConfigGenerator
+from ultraopt.optimizer import TPEOptimizer
 from ultraopt.structure import Job
 
 synthetic_functions = [
@@ -75,7 +75,7 @@ def main():
             print("==========================")
             # print('iter |  loss    | config origin')
             # print('----------------------------')
-            cg = TPEConfigGenerator(
+            cg = TPEOptimizer(
                 config_space, [1], min_points_in_model=20, random_state=random_state
             )
             loss = np.inf

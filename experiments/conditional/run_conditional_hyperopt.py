@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration
 
-from ultraopt.config_generators import TPEConfigGenerator
+from ultraopt.optimizer import TPEOptimizer
 from ultraopt.hdl import HDL2CS, config2dict
 from ultraopt.structure import Job
 from functools import partial

@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Contact    : tqichun@gmail.com
 from copy import deepcopy
+from typing import Tuple
 
 import numpy as np
 from ConfigSpace import Configuration
@@ -10,14 +11,15 @@ from sklearn.utils.validation import check_random_state
 
 from ultraopt.structure import Job
 from ultraopt.utils.config_space import add_configs_origin
+from ultraopt.utils.hash import get_hash_of_config
 from ultraopt.utils.logging_ import get_logger
 
 
-class BaseConfigGenerator():
+class BaseOptimizer():
     def __init__(self):
         self.logger = get_logger(self)
 
-    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
+    def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
         self.initial_points = initial_points
         self.random_state = random_state
         self.config_space = config_space
@@ -34,6 +36,18 @@ class BaseConfigGenerator():
     def get_initial_budget2obvs(cls, budgets):
         return {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
 
+    def tell(self, config: dict, loss: float, budget: float = 1):
+        job = Job(get_hash_of_config(config))
+        job.kwargs = {
+            "budget": budget,
+            "config": config,
+            "config_info": {}
+        }
+        job.result = {
+            "loss": loss
+        }
+        self.new_result(job)
+
     def new_result(self, job: Job, update_model=True, should_update_weight=0):
         ##############################
         ### 1. update observations ###
@@ -48,7 +62,7 @@ class BaseConfigGenerator():
             loss = job.result["loss"] if np.isfinite(job.result["loss"]) else np.inf
         budget = job.kwargs["budget"]
         config_dict = job.kwargs["config"]
-        config_info = job.kwargs["config_info"]
+        # config_info = job.kwargs["config_info"]
         config = Configuration(self.config_space, config_dict)
         # add lock (It may be added twice, but it does not affect)
         self.budget2obvs[budget]["locks"].append(config.get_array().copy())
@@ -67,7 +81,11 @@ class BaseConfigGenerator():
     def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
         raise NotImplementedError
 
-    def get_config(self, budget):
+    def ask(self, budget=1, n_points=None) -> Tuple[dict, dict]:
+        # todo: 实现 n_points (from skopt)
+        return self.get_config(budget)
+
+    def get_config(self, budget) -> Tuple[dict, dict]:
         # get max_budget
         # calc by budget2epm
         max_budget = self.get_available_max_budget()

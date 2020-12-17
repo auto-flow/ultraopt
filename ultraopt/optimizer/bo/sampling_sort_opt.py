@@ -14,8 +14,8 @@ from ConfigSpace import Configuration
 from ConfigSpace.util import get_one_exchange_neighbourhood
 from skopt.learning.forest import ExtraTreesRegressor
 
-from ultraopt.config_generators.base_cg import BaseConfigGenerator
-from ultraopt.config_generators.bo.config_evaluator import ConfigEvaluator
+from ultraopt.optimizer.base_opt import BaseOptimizer
+from ultraopt.optimizer.bo.config_evaluator import ConfigEvaluator
 from ultraopt.utils.config_space import add_configs_origin
 from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
@@ -23,7 +23,7 @@ from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransf
 get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0.05, num_neighbors=8)
 
 
-class SamplingSortConfigGenerator(BaseConfigGenerator):
+class SamplingSortOptimizer(BaseOptimizer):
     def __init__(
             self,
             # model related
@@ -33,7 +33,7 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
             min_points_in_model=15, n_samples=5000,
             acq_func="LogEI", xi=0
     ):
-        super(SamplingSortConfigGenerator, self).__init__()
+        super(SamplingSortOptimizer, self).__init__()
         # ----------member variables-----------------
         self.xi = xi
         self.acq_func = acq_func
@@ -55,8 +55,8 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
         else:
             raise NotImplementedError
 
-    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
-        super(SamplingSortConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+    def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
+        super(SamplingSortOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
         self.budget2epm = {budget: None for budget in budgets}
         self.config_transformer.fit(config_space)
         self.budget2confevt = {}

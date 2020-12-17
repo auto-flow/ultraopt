@@ -9,13 +9,13 @@ import numpy as np
 from tabular_nn import EmbeddingEncoder
 from tabular_nn import EquidistanceEncoder
 
-from ultraopt.config_generators.base_cg import BaseConfigGenerator
+from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.learning.tpe import TreeStructuredParzenEstimator
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
-class TPEConfigGenerator(BaseConfigGenerator):
+class TPEOptimizer(BaseOptimizer):
     def __init__(
             self,
             # model related
@@ -28,7 +28,7 @@ class TPEConfigGenerator(BaseConfigGenerator):
             # Embedding Encoder
             embedding_encoder="default"
     ):
-        super(TPEConfigGenerator, self).__init__()
+        super(TPEOptimizer, self).__init__()
         self.embedding_encoder = embedding_encoder
         self.gamma1 = gamma1
         self.min_n_candidates = min_n_candidates
@@ -47,8 +47,8 @@ class TPEConfigGenerator(BaseConfigGenerator):
             kde_sample_weight_scaler=kde_sample_weight_scaler
         )
 
-    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
-        super(TPEConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+    def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
+        super(TPEOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
         if not self.embedding_encoder:
             # do not use embedding_encoder, use One Hot Encoder
             encoder = EquidistanceEncoder()
