@@ -1,4 +1,4 @@
-from multiprocessing import Process
+import inspect
 import multiprocessing as mp
 # from billiard.context import Process
 import os
@@ -7,13 +7,12 @@ import socket
 import sys
 import threading
 import time
-import traceback
 from uuid import uuid4
 
 import Pyro4
 
-from autoflow.utils.logging_ import get_logger
-from autoflow.utils.sys_ import get_trance_back_msg
+# from autoflow.utils.sys_ import get_trance_back_msg
+from ultraopt.utils.logging_ import get_logger
 
 
 class Worker(object):
@@ -67,6 +66,8 @@ class Worker(object):
         self.manifest_id = uuid4().hex[-8:]
         self.timeout = timeout
         self.timer = None
+        self.eval_func = None
+        self.support_budget = False
         worker_id = str(worker_id)
         if not worker_id is None:
             self.worker_id += f".{worker_id}"
@@ -78,6 +79,10 @@ class Worker(object):
 
         self.busy = False
         self.thread_cond = threading.Condition(threading.Lock())
+
+    def initialize(self, eval_func):
+        self.eval_func = eval_func
+        self.support_budget = "budget" in inspect.signature(eval_func).parameters.keys()
 
     def load_nameserver_credentials(self, working_directory, num_tries=60, interval=1):
         """
@@ -207,9 +212,16 @@ class Worker(object):
                 - 'loss': a numerical value that is MINIMIZED
                 - 'info': This can be pretty much any build in python type, e.g. a dict with lists as value. Due to Pyro4 handling the remote function calls, 3rd party types like numpy arrays are not supported!
         """
-
-        raise NotImplementedError(
-            "Subclass ambo.distributed.worker and overwrite the compute method in your worker script")
+        if self.eval_func is None:
+            raise NotImplementedError(
+                "Subclass ambo.distributed.worker and overwrite the compute method in your worker script")
+        if self.support_budget:
+            loss = self.eval_func(config, budget=budget)
+        else:
+            loss = self.eval_func(config)
+        return {
+            "loss": loss
+        }
 
     @Pyro4.expose
     @Pyro4.oneway
@@ -230,12 +242,11 @@ class Worker(object):
         except Exception as e:
             self.logger.error(str(e))
             self.logger.error(kwargs)
-            failed_info = get_trance_back_msg()
             if self.debug:
                 self.logger.error("re-raise exception")
                 raise sys.exc_info()[1]
             result = {'result': None,
-                      'exception': failed_info}
+                      'exception': str(e)}
         finally:
             self.logger.debug('WORKER: done with job %s, trying to register it.' % str(config_id))
             with self.thread_cond:

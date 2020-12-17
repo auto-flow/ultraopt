@@ -204,7 +204,7 @@ class Master(object):
             self._queue_wait()
             cost_time = time.time() - start_time
             if cost_time > self.time_left_for_this_task:
-                self.logger.info(f"cost_time = {cost_time:.2f}, "
+                self.logger.warning(f"cost_time = {cost_time:.2f}, "
                                  f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
                 break
             next_run = None
@@ -225,7 +225,7 @@ class Master(object):
                     continue
             cost_time = time.time() - start_time
             if cost_time > self.time_left_for_this_task:
-                self.logger.info(f"cost_time = {cost_time:.2f}, "
+                self.logger.warning(f"cost_time = {cost_time:.2f}, "
                                  f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
                 break
             # at this point there is no immediate run that can be scheduled,
