@@ -5,7 +5,7 @@
 # @Contact    : tqichun@gmail.com
 from collections import Counter
 from copy import deepcopy
-from typing import List
+from typing import List, Union
 
 import numpy as np
 from ConfigSpace import CategoricalHyperparameter, ConfigurationSpace
@@ -118,6 +118,10 @@ def sample_configuration_except_default(cs: ConfigurationSpace, idx2val: dict, i
 def get_array_from_configs(configs: List[Configuration]):
     return np.array([config.get_array() for config in configs])
 
+def get_dict_from_config(config:Union[dict, Configuration]):
+    if isinstance(config, dict):
+        return config
+    return config.get_dictionary()
 
 def initial_design_2(cs, n_configs, rng):
     cs = deepcopy(cs)

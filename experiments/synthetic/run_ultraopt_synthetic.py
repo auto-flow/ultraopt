@@ -11,8 +11,8 @@ from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
 from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
 from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
 
+from ultraopt import fmin
 from ultraopt.optimizer import TPEOptimizer
-from ultraopt.structure import Job
 
 synthetic_functions = [
     Bohachevsky,
@@ -67,29 +67,20 @@ def main():
 
         # 对experiment_param的删除等操作放在存储后面
         res = pd.DataFrame(columns=[f"trial-{i}" for i in range(repetitions)], index=range(max_iter))
+        print(meta_info["name"])
         for trial in range(repetitions):
             random_state = base_random_state + trial * 10
             # 设置超参空间的随机种子（会影响后面的采样）
-            print("==========================")
-            print(f"= Trial -{trial:01d}-               =")
-            print("==========================")
+            ret = fmin(
+                evaluation, config_space, optimizer=TPEOptimizer(
+                    gamma2=0.95
+                ),
+                random_state=random_state, n_iterations=max_iter)
+            losses = ret["budget2obvs"][1]["losses"]
             # print('iter |  loss    | config origin')
             # print('----------------------------')
-            cg = TPEOptimizer(
-                config_space, [1], min_points_in_model=20, random_state=random_state
-            )
-            loss = np.inf
-            for ix in range(max_iter):
-                config, config_info = cg.get_config(1)
-                cur_loss = evaluation(config)
-                loss = min(loss, cur_loss)
-                # print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
-                job = Job("")
-                job.result = {"loss": cur_loss}
-                job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
-                cg.new_result(job)
-                res.loc[ix, f"trial-{trial}"] = cur_loss
-            print(loss)
+            print(ret["best_loss"])
+            res[f"trial-{trial}"] = losses
         res = raw2min(res)
         m = res.mean(1)
         s = res.std(1)

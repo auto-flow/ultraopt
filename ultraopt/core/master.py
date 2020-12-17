@@ -17,7 +17,7 @@ from ..utils.misc import print_incumbent_trajectory
 class Master(object):
     def __init__(self,
                  run_id,
-                 config_generator,
+                 optimizer,
                  working_directory='.',
                  ping_interval=60,
                  time_left_for_this_task=3600,  # 1 hours
@@ -41,7 +41,7 @@ class Master(object):
         run_id : string
             A unique identifier of that Hyperband run. Use, for example, the cluster's JobID when running multiple
             concurrent runs to separate them
-        config_generator: ambo.optimizer object
+        optimizer: ambo.optimizer object
             An object that can generate new configurations and registers results of executed runs
         working_directory: string
             The top level working directory accessible to all compute nodes(shared filesystem).
@@ -88,7 +88,7 @@ class Master(object):
 
         self.result_logger = result_logger
 
-        self.config_generator = config_generator
+        self.optimizer = optimizer
         self.time_ref = None
 
         self.iterations = []
@@ -106,7 +106,7 @@ class Master(object):
             self.warmstart_iteration = []
 
         else:
-            self.warmstart_iteration = [WarmStartIteration(previous_result, self.config_generator)]
+            self.warmstart_iteration = [WarmStartIteration(previous_result, self.optimizer)]
 
         # condition to synchronize the job_callback and the queue
         self.thread_cond = threading.Condition()
@@ -283,7 +283,7 @@ class Master(object):
             if not self.result_logger is None:
                 self.result_logger(job)
             self.iterations[job.id[0]].register_result(job)
-            self.config_generator.new_result(job)
+            self.optimizer.new_result(job)
 
             if self.num_running_jobs <= self.job_queue_sizes[0]:
                 self.logger.debug("HBMASTER: Trying to run another job!")

@@ -36,7 +36,7 @@ class BaseOptimizer():
     def get_initial_budget2obvs(cls, budgets):
         return {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
 
-    def tell(self, config: dict, loss: float, budget: float = 1):
+    def tell(self, config: dict, loss: float, budget: float = 1, update_model=True):
         job = Job(get_hash_of_config(config))
         job.kwargs = {
             "budget": budget,
@@ -46,9 +46,9 @@ class BaseOptimizer():
         job.result = {
             "loss": loss
         }
-        self.new_result(job)
+        self.new_result(job, update_model=update_model)
 
-    def new_result(self, job: Job, update_model=True, should_update_weight=0):
+    def new_result(self, job: Job, update_model=True):
         ##############################
         ### 1. update observations ###
         ##############################
@@ -76,9 +76,9 @@ class BaseOptimizer():
         ###################################################################
         if not update_model:
             return
-        self.new_result_(budget, vectors, losses, update_model, should_update_weight)
+        self.new_result_(budget, vectors, losses)
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
+    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
         raise NotImplementedError
 
     def ask(self, budget=1, n_points=None) -> Tuple[dict, dict]:

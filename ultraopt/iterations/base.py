@@ -240,7 +240,7 @@ class WarmStartIteration(BaseIteration):
     iteration that imports a privious Result for warm starting
     """
 
-    def __init__(self, result, config_generator):
+    def __init__(self, result, optimizer):
 
         self.is_finished = False
         self.stage = 0
@@ -265,8 +265,8 @@ class WarmStartIteration(BaseIteration):
 
                 self.register_result(j, skip_sanity_checks=True)
                 should_update = (i == len(id2conf) - 1)
-                config_generator.new_result(j, update_model=should_update, should_update_weight=-1)
-        config_generator.update_weight(should_update=1)
+                optimizer.new_result(j, update_model=should_update, should_update_weight=-1)
+        optimizer.update_weight(should_update=1)
 
         # mark as finished, as no more runs should be executed from these runs
         self.is_finished = True

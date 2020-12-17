@@ -65,7 +65,7 @@ class SamplingSortOptimizer(BaseOptimizer):
             self.budget2confevt[budget] = config_evaluator
         self.update_weight_cnt = 0
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
+    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
         if len(losses) < self.min_points_in_model:
             return
         X_obvs = self.config_transformer.transform(vectors)

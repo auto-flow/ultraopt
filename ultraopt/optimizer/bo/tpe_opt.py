@@ -22,20 +22,22 @@ class TPEOptimizer(BaseOptimizer):
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            gamma1=0.96, gamma2=3, bandwidth_factor=3, max_try=3,
+            gamma1=0.96, gamma2=3, max_bw_factor=4,min_bw_factor=1, max_try=3,
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=4, sort_by_EI=True,
             # Embedding Encoder
             embedding_encoder="default"
     ):
         super(TPEOptimizer, self).__init__()
+        self.min_bw_factor = min_bw_factor
+        self.max_bw_factor = max_bw_factor
         self.embedding_encoder = embedding_encoder
         self.gamma1 = gamma1
         self.min_n_candidates = min_n_candidates
         self.max_try = max_try
         self.gamma2 = gamma2
         self.min_points_in_model = min_points_in_model
-        self.bandwidth_factor = bandwidth_factor
+        self._bw_factor = max_bw_factor - min_bw_factor
         self.sort_by_EI = sort_by_EI
         self.n_candidates_factor = n_candidates_factor
         self.n_candidates = n_candidates
@@ -92,7 +94,7 @@ class TPEOptimizer(BaseOptimizer):
                 n_candidates=self.n_candidates,
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
-                bandwidth_factor=self.bandwidth_factor + 1
+                bandwidth_factor=self._bw_factor + self.min_bw_factor
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -101,10 +103,10 @@ class TPEOptimizer(BaseOptimizer):
                 else:
                     add_configs_origin(sample, "TPE sampling")
                     return sample, info_dict
-            old_db = self.bandwidth_factor
-            self.bandwidth_factor = (self.bandwidth_factor + 1) * self.gamma2 - 1
+            old_db = self._bw_factor
+            self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.gamma2 - self.min_bw_factor
             self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
-                                f"Update bandwidth_factor from {old_db:.4f} to {self.bandwidth_factor:.4f} by "
+                                f"Update bandwidth_factor from {old_db:.4f} to {self._bw_factor:.4f} by "
                                 f"multiply gamma2 ({self.gamma2}).")
         sample = self.config_space.sample_configuration()
         add_configs_origin(sample, "Random Search")
@@ -124,7 +126,7 @@ class TPEOptimizer(BaseOptimizer):
             return self.process_config_info_pair(config, info_dict, budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
-        self.bandwidth_factor *= self.gamma1
+        self._bw_factor *= self.gamma1
         return self.process_config_info_pair(config, info_dict, budget)
 
     def get_available_max_budget(self):
@@ -143,7 +145,7 @@ class TPEOptimizer(BaseOptimizer):
             return budget
         return None
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray, update_model=True, should_update_weight=0):
+    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
         if len(losses) < self.min_points_in_model:
             return
         vectors = self.budget2obvs[budget]["vectors"]

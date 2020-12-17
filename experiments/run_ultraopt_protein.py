@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration
 
+from ultraopt import fmin
 from ultraopt.optimizer import TPEOptimizer
 from ultraopt.hdl import HDL2CS
 from ultraopt.structure import Job
@@ -68,23 +69,15 @@ def main():
         print("==========================")
         # print('iter |  loss    | config origin')
         # print('----------------------------')
-        ambo = TPEOptimizer(
-            config_space, [1], random_state=random_state, min_points_in_model=20,
-            # initial_points=config_space.sample_configuration(40)
-        )
-        loss = np.inf
-        for ix in range(max_iter):
-            config, config_info = ambo.get_config(1)
-            cur_loss = evaluation(config)
-            loss = min(loss, cur_loss)
-            # print(f" {ix:03d}   {loss:.4f}    {config_info.get('origin')}")
-            job = Job("")
-            job.result = {"loss": cur_loss}
-            job.kwargs = {"budget": 1, "config": config, "config_info": config_info}
-            ambo.new_result(job)
-            res.loc[ix, f"trial-{trial}"] = cur_loss
-        print(loss)
-    res.to_csv(f"{experiment}_6.csv", index=False)
+        ret = fmin(
+            evaluation, config_space, optimizer=TPEOptimizer(
+                gamma1=0.95
+            ),
+            random_state=random_state, n_iterations=max_iter)
+        losses = ret["budget2obvs"][1]["losses"]
+        print(ret["best_loss"])
+        res[f"trial-{trial}"] = losses
+    res.to_csv(f"{experiment}_7.csv", index=False)
     print(res.min()[:repetitions].mean())
 
 
