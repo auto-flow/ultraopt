@@ -14,6 +14,7 @@ from sklearn.utils import check_random_state
 from ultraopt.utils.logging_ import get_logger
 from ultraopt.utils.misc import pprint_budget
 
+
 class LogEI():
     def __init__(self, xi=0.01):
         self.xi = xi
@@ -130,7 +131,7 @@ class ConfigEvaluator:
         weight = w.tolist()
         return dict(zip(budgets, weight))
 
-    def update_weight(self,budget2weight):
+    def update_weight(self, budget2weight):
         # self.budget2weight = dict(zip(budgets, weight))
         self.budget2weight = budget2weight
         msg = ""
