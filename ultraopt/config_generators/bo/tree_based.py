@@ -13,8 +13,6 @@ from ultraopt.utils.config_transformer import ConfigTransformer
 class ForestConfigGenerator(SamplingSortConfigGenerator):
     def __init__(
             self,
-            # basic params
-            config_space, budgets, random_state=42, initial_points=None, budget2obvs=None,
             # model related
             forest_type="ET",
             n_estimators=10, max_depth=None, max_features="auto",
@@ -37,11 +35,6 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
             raise ValueError(
                 f"forest_type should be 'ET' or 'RF', means 'ExtraTrees' and 'RandomForest', respectively. ")
         super(ForestConfigGenerator, self).__init__(
-            config_space=config_space,
-            budgets=budgets,
-            random_state=random_state,
-            initial_points=initial_points,
-            budget2obvs=budget2obvs,
             epm=forest_klass(
                 n_estimators=n_estimators,
                 max_depth=max_depth,
@@ -55,9 +48,9 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
                 oob_score=oob_score,
                 n_jobs=n_jobs,
                 min_variance=min_variance,
-                random_state=random_state,
+                # random_state=random_state,
             ),
-            config_transformer=ConfigTransformer(impute=1, encoder=None),
+            config_transformer=ConfigTransformer(impute=-1, encoder=None),
             use_local_search=use_local_search,
             loss_transformer=loss_transformer,
             min_points_in_model=min_points_in_model,
@@ -66,12 +59,15 @@ class ForestConfigGenerator(SamplingSortConfigGenerator):
             xi=xi
         )
 
+    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
+        super(ForestConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points,
+                                                      budget2obvs)
+        self.epm.set_params(random_state=random_state)
+
 
 class GBRTConfigGenerator(SamplingSortConfigGenerator):
     def __init__(
             self,
-            # basic params
-            config_space, budgets, random_state=42, initial_points=None, budget2obvs=None,
             # model related
             n_jobs=1,
             # several hyper-parameters
@@ -81,15 +77,10 @@ class GBRTConfigGenerator(SamplingSortConfigGenerator):
 
     ):
         super(GBRTConfigGenerator, self).__init__(
-            config_space=config_space,
-            budgets=budgets,
-            random_state=random_state,
-            initial_points=initial_points,
-            budget2obvs=budget2obvs,
             epm=GradientBoostingQuantileRegressor(
-                n_jobs=n_jobs, random_state=random_state,
+                n_jobs=n_jobs,
             ),
-            config_transformer=ConfigTransformer(impute=1, encoder=None),
+            config_transformer=ConfigTransformer(impute=-1, encoder=None),
             use_local_search=use_local_search,
             loss_transformer=loss_transformer,
             min_points_in_model=min_points_in_model,
@@ -97,3 +88,8 @@ class GBRTConfigGenerator(SamplingSortConfigGenerator):
             acq_func=acq_func,
             xi=xi
         )
+
+    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
+        super(GBRTConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points,
+                                                    budget2obvs)
+        self.epm.set_params(random_state=random_state)

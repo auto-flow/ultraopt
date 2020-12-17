@@ -18,8 +18,6 @@ from ultraopt.utils.config_transformer import ConfigTransformer
 class TPEConfigGenerator(BaseConfigGenerator):
     def __init__(
             self,
-            # basic params
-            config_space, budgets, random_state=42, initial_points=None, budget2obvs=None,
             # model related
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
@@ -30,8 +28,8 @@ class TPEConfigGenerator(BaseConfigGenerator):
             # Embedding Encoder
             embedding_encoder="default"
     ):
-        super(TPEConfigGenerator, self).__init__(config_space, budgets, random_state, initial_points,
-                                                 budget2obvs)
+        super(TPEConfigGenerator, self).__init__()
+        self.embedding_encoder = embedding_encoder
         self.gamma1 = gamma1
         self.min_n_candidates = min_n_candidates
         self.max_try = max_try
@@ -48,24 +46,27 @@ class TPEConfigGenerator(BaseConfigGenerator):
             cv_times=cv_times,
             kde_sample_weight_scaler=kde_sample_weight_scaler
         )
-        if not embedding_encoder:
+
+    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
+        super(TPEConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+        if not self.embedding_encoder:
             # do not use embedding_encoder, use One Hot Encoder
             encoder = EquidistanceEncoder()
-        elif isinstance(embedding_encoder, str):
-            if embedding_encoder == "default":
+        elif isinstance(self.embedding_encoder, str):
+            if self.embedding_encoder == "default":
                 encoder = EmbeddingEncoder(
                     max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=0)
             else:
-                raise ValueError(f"Invalid Indicate string '{embedding_encoder}' for embedding_encoder'")
+                raise ValueError(f"Invalid Indicate string '{self.embedding_encoder}' for embedding_encoder'")
         else:
-            encoder = embedding_encoder
+            encoder = self.embedding_encoder
         # todo: 如果自动构建了Embedding encoder， 后续需要保证initial point覆盖所有的类别
         # todo: auto_enrich_initial_points
         self.config_transformer = ConfigTransformer(impute=None, encoder=encoder)
-        self.config_transformer.fit(self.config_space)
+        self.config_transformer.fit(config_space)
         if len(self.config_transformer.high_r_cols) == 0:
             self.config_transformer.encoder = None
-        if embedding_encoder is None:
+        if self.embedding_encoder is None:
             vectors = np.array([config.get_array() for config in self.config_space.sample_configuration(5000)])
             self.config_transformer.fit_encoder(vectors)
         self.budget2epm = {budget: None for budget in budgets}

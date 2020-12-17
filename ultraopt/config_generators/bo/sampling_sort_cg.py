@@ -26,8 +26,6 @@ get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0
 class SamplingSortConfigGenerator(BaseConfigGenerator):
     def __init__(
             self,
-            # basic params
-            config_space, budgets, random_state=42, initial_points=None, budget2obvs=None,
             # model related
             epm=None, config_transformer=None,
             # several hyper-parameters
@@ -35,19 +33,18 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
             min_points_in_model=15, n_samples=5000,
             acq_func="LogEI", xi=0
     ):
-        super(SamplingSortConfigGenerator, self).__init__(config_space, budgets, random_state, initial_points,
-                                                          budget2obvs)
+        super(SamplingSortConfigGenerator, self).__init__()
         # ----------member variables-----------------
+        self.xi = xi
+        self.acq_func = acq_func
         self.use_local_search = use_local_search
         self.n_samples = n_samples
         self.min_points_in_model = min_points_in_model
         # ----------components-----------------
-        self.budget2epm = {budget: None for budget in budgets}
         # experiment performance model
         self.epm = epm if epm is not None else ExtraTreesRegressor()
         # config transformer
         self.config_transformer = config_transformer if config_transformer is not None else ConfigTransformer()
-        self.config_transformer.fit(config_space)
         # loss transformer
         if loss_transformer is None:
             self.loss_transformer = LossTransformer()
@@ -57,9 +54,14 @@ class SamplingSortConfigGenerator(BaseConfigGenerator):
             self.loss_transformer = ScaledLossTransformer()
         else:
             raise NotImplementedError
+
+    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
+        super(SamplingSortConfigGenerator, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+        self.budget2epm = {budget: None for budget in budgets}
+        self.config_transformer.fit(config_space)
         self.budget2confevt = {}
         for budget in budgets:
-            config_evaluator = ConfigEvaluator(self.budget2epm, budget, acq_func, {"xi": xi})
+            config_evaluator = ConfigEvaluator(self.budget2epm, budget, self.acq_func, {"xi": self.xi})
             self.budget2confevt[budget] = config_evaluator
         self.update_weight_cnt = 0
 

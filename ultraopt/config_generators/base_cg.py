@@ -14,9 +14,10 @@ from ultraopt.utils.logging_ import get_logger
 
 
 class BaseConfigGenerator():
-    def __init__(
-            self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None
-    ):
+    def __init__(self):
+        self.logger = get_logger(self)
+
+    def initialize(self, config_space, budgets, random_state=42, initial_points=None, budget2obvs=None):
         self.initial_points = initial_points
         self.random_state = random_state
         self.config_space = config_space
@@ -28,7 +29,6 @@ class BaseConfigGenerator():
         # other variable
         self.rng = check_random_state(self.random_state)
         self.initial_points_index = 0
-        self.logger = get_logger(self)
 
     @classmethod
     def get_initial_budget2obvs(cls, budgets):
