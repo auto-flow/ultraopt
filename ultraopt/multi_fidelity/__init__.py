@@ -3,4 +3,5 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-14
 # @Contact    : tqichun@gmail.com
-from ultraopt.multi_fidelity.iter.ws_iter import WarmStartIteration
+from .iter_gen.base_gen import BaseIterGenerator
+from .iter_gen.custom_gen import CustomIterGenerator

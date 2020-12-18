@@ -7,9 +7,11 @@ from typing import Dict
 
 import numpy as np
 
+from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
+from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.logging_ import get_logger
 from .dispatcher import Dispatcher
-from ultraopt.multi_fidelity import WarmStartIteration
+from ultraopt.multi_fidelity.iter import WarmStartIteration
 from ..result import Result
 from ..utils.misc import print_incumbent_trajectory
 
@@ -17,7 +19,8 @@ from ..utils.misc import print_incumbent_trajectory
 class Master(object):
     def __init__(self,
                  run_id,
-                 optimizer,
+                 optimizer:BaseOptimizer,
+                 iter_generator:BaseIterGenerator,
                  working_directory='.',
                  ping_interval=60,
                  time_left_for_this_task=np.inf,
@@ -76,10 +79,11 @@ class Master(object):
             the logger to output some (more or less meaningful) information
         result_logger: ambo.api.results.util.JsonResultLogger object
             a result logger that writes live results to disk
-        previous_result: ambo.core.result.Result object
+        previous_result: ambo.remote.result.Result object
             previous run to warmstart the run
         """
-
+        iter_generator.initialize(optimizer.get_config)
+        self.iter_generator = iter_generator
         self.time_left_for_this_task = time_left_for_this_task
         self.working_directory = working_directory
         os.makedirs(self.working_directory, exist_ok=True)
@@ -173,7 +177,7 @@ class Master(object):
             HB_iteration: a valid HB iteration object
         """
 
-        raise NotImplementedError('implement get_next_iteration for %s' % (type(self).__name__))
+        return self.iter_generator.get_next_iteration(iteration,**iteration_kwargs)
 
     def run(self, n_iterations=1, min_n_workers=1, iteration_kwargs={}, ):
         """

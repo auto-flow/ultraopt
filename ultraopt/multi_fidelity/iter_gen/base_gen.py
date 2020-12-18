@@ -17,6 +17,13 @@ class BaseIterGenerator():
             iter_klass = RankReductionIteration
         assert issubclass(iter_klass, BaseIteration)
         self.iter_klass: Type[BaseIteration] = iter_klass
+        self.config_sampler = None
+
+    def initialize(self, config_sampler):
+        self.config_sampler = config_sampler
 
     def get_next_iteration(self, iteration, **kwargs):
+        raise NotImplementedError
+
+    def get_budgets(self):
         raise NotImplementedError

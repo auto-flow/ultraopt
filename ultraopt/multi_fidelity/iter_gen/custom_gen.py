@@ -20,10 +20,7 @@ class CustomIterGenerator(BaseIterGenerator):
         self.num_configs = num_configs
         assert len(self.budgets) == len(self.num_configs), ValueError(
             "length of budgets and state configs should be equal.")
-        self.config_sampler = None
 
-    def initialize(self, config_sampler):
-        self.config_sampler = config_sampler
 
     def get_next_iteration(self, iteration, **kwargs):
         return self.iter_klass(
@@ -33,3 +30,6 @@ class CustomIterGenerator(BaseIterGenerator):
             config_sampler=self.config_sampler,
             **kwargs
         )
+
+    def get_budgets(self):
+        return self.budgets

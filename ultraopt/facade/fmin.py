@@ -10,14 +10,14 @@ from uuid import uuid4
 
 from ConfigSpace import ConfigurationSpace, Configuration
 
-from ultraopt.core.master import Master
-from ultraopt.core.nameserver import NameServer
-from ultraopt.core.worker import Worker
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
 from ultraopt.hdl import HDL2CS
+from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
+from ultraopt.remote.master import Master
+from ultraopt.remote.nameserver import NameServer
+from ultraopt.remote.worker import Worker
 from ultraopt.utils import progress
-# 设计目标：单机并行、多保真优化
 from ultraopt.utils.net import get_a_free_port
 
 
@@ -29,14 +29,13 @@ def fmin(
         random_state=42,
         n_iterations=100,
         n_jobs=1,
-        budgets: Optional[List[float]] = None,
-        stage_configs: Optional[List[float]] = None,
-        multi_fidelity: Optional[str] = None,
+        multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_budget2obvs=None,
         run_id=None,
         ns_host="127.0.0.1",
         ns_port=9090
 ):
+    # 设计目标：单机并行、多保真优化
     # ------------   config_space   ---------------#
     if isinstance(config_space, dict):
         cs_ = HDL2CS()(config_space)
@@ -45,10 +44,10 @@ def fmin(
     else:
         raise NotImplementedError
     # ------------      budgets     ---------------#
-    if budgets is None:
+    if multi_fidelity_iter_generator is None:
         budgets_ = [1]
     else:
-        budgets_ = list(budgets)
+        budgets_ = multi_fidelity_iter_generator.get_budgets()
     # ------------ optimizer ---------------#
     if inspect.isclass(optimizer):
         if not issubclass(optimizer, BaseOptimizer):
@@ -64,14 +63,14 @@ def fmin(
             raise ValueError(f"Invalid optimizer string-indicator: {optimizer}")
     else:
         raise NotImplementedError
-    # fixme: 返回值的设置
-    # x(config): 最优点
-    # best_loss: 最小的loss
-    # budget2obvs: 所有的观测结果
-    warm_start_optimizer(optimizer, previous_budget2obvs)
+    warm_start_optimizer(opt_, previous_budget2obvs)
     progress_callback = progress.default_callback
+    # 3种运行模式：
+    # 1. 串行，方便调试，不支持multi-fidelity
+    # 2. RPC，支持multi-fidelity
+    # 3. MapReduce，不支持multi-fidelity
     # non-parallelism debug mode
-    if n_jobs == 1 and (not multi_fidelity):
+    if n_jobs == 1 and multi_fidelity_iter_generator is None:
         budgets_ = [1]
         opt_.initialize(cs_, budgets_, random_state, initial_points)
         with progress_callback(
@@ -91,14 +90,18 @@ def fmin(
         NS = NameServer(run_id=run_id, host=ns_host, port=get_a_free_port(ns_port, ns_host))
         NS.start()
         # start n workers
-        workers = [Worker(run_id=run_id, nameserver=ns_host, nameserver_port=ns_port, host=ns_host, worker_id=i)
+        workers = [Worker(run_id=run_id, nameserver=ns_host, nameserver_port=ns_port,
+                          host=ns_host, worker_id=i)
                    for i in range(n_jobs)]
         for worker in workers:
             worker.initialize(eval_func)
             worker.run(True, "process")
+        # initialize optimizer
+        opt_.initialize(cs_, budgets_, random_state, initial_points)
         # start master
-        master = Master(run_id=run_id, optimizer=opt_, nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
-
+        master = Master(
+            run_id, opt_, multi_fidelity_iter_generator,
+            nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
         result = master.run(n_iterations)
 
     max_budget, best_loss, best_config = get_wanted(opt_)
@@ -108,5 +111,3 @@ def fmin(
         "budget2obvs": opt_.budget2obvs,
         "optimizer": opt_
     }
-
-
