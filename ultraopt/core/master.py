@@ -9,7 +9,7 @@ import numpy as np
 
 from ultraopt.utils.logging_ import get_logger
 from .dispatcher import Dispatcher
-from ..multi_fidelity import WarmStartIteration
+from ultraopt.multi_fidelity import WarmStartIteration
 from ..result import Result
 from ..utils.misc import print_incumbent_trajectory
 
@@ -177,7 +177,7 @@ class Master(object):
 
     def run(self, n_iterations=1, min_n_workers=1, iteration_kwargs={}, ):
         """
-            run n_iterations of SuccessiveHalvingIteration
+            run n_iterations of RankReductionIteration
 
         Parameters
         ----------
@@ -219,7 +219,7 @@ class Master(object):
                 continue
             else:
                 if n_iterations > 0:  # we might be able to start the next iteration
-                    # multi_fidelity 对象其实是 type: List[SuccessiveHalvingIteration]
+                    # multi_fidelity 对象其实是 type: List[RankReductionIteration]
                     self.iterations.append(self.get_next_iteration(len(self.iterations), iteration_kwargs))
                     n_iterations -= 1
                     continue
