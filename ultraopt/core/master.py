@@ -9,7 +9,7 @@ import numpy as np
 
 from ultraopt.utils.logging_ import get_logger
 from .dispatcher import Dispatcher
-from ..iterations import WarmStartIteration
+from ..multi_fidelity import WarmStartIteration
 from ..result import Result
 from ..utils.misc import print_incumbent_trajectory
 
@@ -20,7 +20,7 @@ class Master(object):
                  optimizer,
                  working_directory='.',
                  ping_interval=60,
-                 time_left_for_this_task=3600,  # 1 hours
+                 time_left_for_this_task=np.inf,
                  nameserver='127.0.0.1',
                  nameserver_port=None,
                  host=None,
@@ -159,7 +159,7 @@ class Master(object):
         """
         instantiates the next iteration
 
-        Overwrite this to change the iterations for different optimizers
+        Overwrite this to change the multi_fidelity for different optimizers
 
         Parameters
         ----------
@@ -177,12 +177,12 @@ class Master(object):
 
     def run(self, n_iterations=1, min_n_workers=1, iteration_kwargs={}, ):
         """
-            run n_iterations of SuccessiveHalving
+            run n_iterations of SuccessiveHalvingIteration
 
         Parameters
         ----------
         n_iterations: int
-            number of iterations to be performed in this run
+            number of multi_fidelity to be performed in this run
         min_n_workers: int
             minimum number of workers before starting the run
         """
@@ -219,7 +219,7 @@ class Master(object):
                 continue
             else:
                 if n_iterations > 0:  # we might be able to start the next iteration
-                    # iterations 对象其实是 type: List[SuccessiveHalving]
+                    # multi_fidelity 对象其实是 type: List[SuccessiveHalvingIteration]
                     self.iterations.append(self.get_next_iteration(len(self.iterations), iteration_kwargs))
                     n_iterations -= 1
                     continue
@@ -229,7 +229,7 @@ class Master(object):
                                  f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
                 break
             # at this point there is no immediate run that can be scheduled,
-            # so wait for some job to finish if there are active iterations
+            # so wait for some job to finish if there are active multi_fidelity
             if self.active_iterations():
                 self.thread_cond.wait()
             else:
@@ -321,7 +321,7 @@ class Master(object):
 
     def active_iterations(self):
         """
-        function to find active (not marked as finished) iterations
+        function to find active (not marked as finished) multi_fidelity
 
         Returns
         -------

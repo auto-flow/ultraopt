@@ -42,7 +42,7 @@ for log_scale in [True, False]:
             )
         plt.title(bench)
         index += 1
-        plt.xlabel("iterations")
+        plt.xlabel("multi_fidelity")
         plt.ylabel("losses")
         if log_scale:
             plt.yscale("log")

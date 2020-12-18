@@ -2,7 +2,7 @@ import logging
 
 import numpy as np
 
-from ..structure import Datum, Job
+from ultraopt.structure import Datum, Job
 
 
 class BaseIteration(object):
@@ -165,7 +165,7 @@ class BaseIteration(object):
         Function that implements the strategy to advance configs within this iteration
 
         Overload this to implement different strategies, like
-        SuccessiveHalving, SuccessiveResampling.
+        SuccessiveHalvingIteration, SuccessiveResampling.
 
         Parameters
         ----------
