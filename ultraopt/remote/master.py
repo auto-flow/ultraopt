@@ -7,11 +7,13 @@ from typing import Dict
 
 import numpy as np
 
+from ultraopt.facade.utils import get_wanted
+from ultraopt.multi_fidelity.iter import WarmStartIteration
 from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.logging_ import get_logger
+from ultraopt.utils.progress import no_progress_callback
 from .dispatcher import Dispatcher
-from ultraopt.multi_fidelity.iter import WarmStartIteration
 from ..result import Result
 from ..utils.misc import print_incumbent_trajectory
 
@@ -19,8 +21,9 @@ from ..utils.misc import print_incumbent_trajectory
 class Master(object):
     def __init__(self,
                  run_id,
-                 optimizer:BaseOptimizer,
-                 iter_generator:BaseIterGenerator,
+                 optimizer: BaseOptimizer,
+                 iter_generator: BaseIterGenerator,
+                 progress_callback=no_progress_callback,
                  working_directory='.',
                  ping_interval=60,
                  time_left_for_this_task=np.inf,
@@ -82,6 +85,7 @@ class Master(object):
         previous_result: ambo.remote.result.Result object
             previous run to warmstart the run
         """
+        self.progress_callback = progress_callback
         iter_generator.initialize(optimizer.get_config)
         self.iter_generator = iter_generator
         self.time_left_for_this_task = time_left_for_this_task
@@ -97,7 +101,6 @@ class Master(object):
 
         self.iterations = []
         self.jobs = []
-
         self.num_running_jobs = 0
         self.job_queue_sizes = job_queue_sizes
         self.user_job_queue_sizes = job_queue_sizes
@@ -177,7 +180,7 @@ class Master(object):
             HB_iteration: a valid HB iteration object
         """
 
-        return self.iter_generator.get_next_iteration(iteration,**iteration_kwargs)
+        return self.iter_generator.get_next_iteration(iteration, **iteration_kwargs)
 
     def run(self, n_iterations=1, min_n_workers=1, iteration_kwargs={}, ):
         """
@@ -190,7 +193,7 @@ class Master(object):
         min_n_workers: int
             minimum number of workers before starting the run
         """
-
+        self.progress_bar = self.progress_callback(0, self.iter_generator.num_all_configs * n_iterations)
         self.wait_for_workers(min_n_workers)
 
         iteration_kwargs.update({'result_logger': self.result_logger})
@@ -203,41 +206,42 @@ class Master(object):
 
         self.thread_cond.acquire()
         start_time = time.time()
-        while True:
+        with self.progress_bar as self.context:
+            while True:
 
-            self._queue_wait()
-            cost_time = time.time() - start_time
-            if cost_time > self.time_left_for_this_task:
-                self.logger.warning(f"cost_time = {cost_time:.2f}, "
-                                 f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
-                break
-            next_run = None
-            # find a new run to schedule
-            for i in self.active_iterations():  # 对self.iterations的过滤
-                next_run = self.iterations[i].get_next_run()
-                if not next_run is None: break  # 取出一个配置成功了，返回。
+                self._queue_wait()
+                cost_time = time.time() - start_time
+                if cost_time > self.time_left_for_this_task:
+                    self.logger.warning(f"cost_time = {cost_time:.2f}, "
+                                        f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
+                    break
+                next_run = None
+                # find a new run to schedule
+                for i in self.active_iterations():  # 对self.iterations的过滤
+                    next_run = self.iterations[i].get_next_run()
+                    if not next_run is None: break  # 取出一个配置成功了，返回。
 
-            if not next_run is None:
-                self.logger.debug('HBMASTER: schedule new run for iteration %i' % i)
-                self._submit_job(*next_run)
-                continue
-            else:
-                if n_iterations > 0:  # we might be able to start the next iteration
-                    # multi_fidelity 对象其实是 type: List[RankReductionIteration]
-                    self.iterations.append(self.get_next_iteration(len(self.iterations), iteration_kwargs))
-                    n_iterations -= 1
+                if not next_run is None:
+                    self.logger.debug('HBMASTER: schedule new run for iteration %i' % i)
+                    self._submit_job(*next_run)
                     continue
-            cost_time = time.time() - start_time
-            if cost_time > self.time_left_for_this_task:
-                self.logger.warning(f"cost_time = {cost_time:.2f}, "
-                                 f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
-                break
-            # at this point there is no immediate run that can be scheduled,
-            # so wait for some job to finish if there are active multi_fidelity
-            if self.active_iterations():
-                self.thread_cond.wait()
-            else:
-                break
+                else:
+                    if n_iterations > 0:  # we might be able to start the next iteration
+                        # multi_fidelity 对象其实是 type: List[RankReductionIteration]
+                        self.iterations.append(self.get_next_iteration(len(self.iterations), iteration_kwargs))
+                        n_iterations -= 1
+                        continue
+                cost_time = time.time() - start_time
+                if cost_time > self.time_left_for_this_task:
+                    self.logger.warning(f"cost_time = {cost_time:.2f}, "
+                                        f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
+                    break
+                # at this point there is no immediate run that can be scheduled,
+                # so wait for some job to finish if there are active multi_fidelity
+                if self.active_iterations():
+                    self.thread_cond.wait()
+                else:
+                    break
 
         self.thread_cond.release()
 
@@ -288,7 +292,9 @@ class Master(object):
                 self.result_logger(job)
             self.iterations[job.id[0]].register_result(job)
             self.optimizer.new_result(job)
-
+            max_budget, best_loss, _ = get_wanted(self.optimizer)
+            self.context.postfix = f"max budget: {max_budget}, best loss: {best_loss:.3f}"
+            self.context.update(1)
             if self.num_running_jobs <= self.job_queue_sizes[0]:
                 self.logger.debug("HBMASTER: Trying to run another job!")
                 self.thread_cond.notify()

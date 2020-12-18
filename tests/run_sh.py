@@ -39,6 +39,8 @@ for synthetic_function_cls in synthetic_functions:
     res = fmin(
         evaluation,
         config_space,
+        n_jobs=1,
+        n_iterations=100,
         multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
     )
-    print(res)
+    # print(res)

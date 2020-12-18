@@ -100,9 +100,12 @@ def fmin(
         opt_.initialize(cs_, budgets_, random_state, initial_points)
         # start master
         master = Master(
-            run_id, opt_, multi_fidelity_iter_generator,
+            run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress.default_callback,
             nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
         result = master.run(n_iterations)
+        master.shutdown(True)
+        NS.shutdown()
+        # todo: 将result添加到返回结果中
 
     max_budget, best_loss, best_config = get_wanted(opt_)
     return {

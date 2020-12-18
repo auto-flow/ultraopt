@@ -21,7 +21,6 @@ class CustomIterGenerator(BaseIterGenerator):
         assert len(self.budgets) == len(self.num_configs), ValueError(
             "length of budgets and state configs should be equal.")
 
-
     def get_next_iteration(self, iteration, **kwargs):
         return self.iter_klass(
             HPB_iter=iteration,
@@ -33,3 +32,7 @@ class CustomIterGenerator(BaseIterGenerator):
 
     def get_budgets(self):
         return self.budgets
+
+    @property
+    def num_all_configs(self) -> int:
+        return sum(self.num_configs)
