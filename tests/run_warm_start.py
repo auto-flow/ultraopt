@@ -32,8 +32,8 @@ def evaluation(config: dict, budget: float = 100):
            synthetic_function.get_meta_information()["f_opt"]
 
 
-optimizer = "TPE"
-n_iterations = 15
+optimizer = "Forest"
+n_iterations = 20
 p_res = fmin(
     evaluation,
     config_space,
@@ -46,11 +46,10 @@ for i in range(3):
     res = fmin(
         evaluation,
         config_space,
-        optimizer=p_res["optimizer"],
-        # optimizer=optimizer,
+        warm_start_strategy="continue",
         n_jobs=1,
         n_iterations=n_iterations,
-        # previous_budget2obvs=p_res["budget2obvs"]
+        previous_result=p_res
     )
     p_res = res
     print(len(res["budget2obvs"][1]["losses"]))

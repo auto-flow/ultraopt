@@ -175,7 +175,7 @@ class Worker(object):
         if len(dispatchers) == 0:
             self.logger.debug('WORKER: No dispatcher found. Waiting for one to initiate contact.')
 
-        self.logger.info(f"WORKER(worker_id='{self.worker_id}'): start listening for jobs")
+        self.logger.debug(f"WORKER(worker_id='{self.worker_id}'): start listening for jobs")
 
         self.pyro_daemon = Pyro4.core.Daemon(host=self.host)
 
@@ -233,7 +233,7 @@ class Worker(object):
             self.busy = True
         if not self.timeout is None and not self.timer is None:
             self.timer.cancel()
-        self.logger.info('WORKER: start processing job %s' % str(config_id))
+        self.logger.debug('WORKER: start processing job %s' % str(config_id))
         self.logger.debug('WORKER: args: %s' % (str(args)))
         self.logger.debug('WORKER: kwargs: %s' % (str(kwargs)))
         try:
@@ -244,7 +244,7 @@ class Worker(object):
             self.logger.error(kwargs)
             if self.debug:
                 self.logger.error("re-raise exception")
-                raise sys.exc_info()[1]
+                raise sys.exc_debug()[1]
             result = {'result': None,
                       'exception': str(e)}
         finally:
@@ -253,7 +253,7 @@ class Worker(object):
                 self.busy = False
                 callback.register_result(config_id, result)
                 self.thread_cond.notify()
-        self.logger.info('WORKER: registered result for job %s with dispatcher' % str(config_id))
+        self.logger.debug('WORKER: registered result for job %s with dispatcher' % str(config_id))
         if not self.timeout is None:
             self.timer = threading.Timer(self.timeout, self.shutdown)
             self.timer.daemon = True

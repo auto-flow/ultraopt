@@ -90,10 +90,10 @@ class Dispatcher(object):
         with self.discover_cond:
             t1 = threading.Thread(target=self.discover_workers, name='discover_workers')
             t1.start()
-            self.logger.info('DISPATCHER: started the \'discover_worker\' thread')
+            self.logger.debug('DISPATCHER: started the \'discover_worker\' thread')
             t2 = threading.Thread(target=self.job_runner, name='job_runner')
             t2.start()
-            self.logger.info('DISPATCHER: started the \'job_runner\' thread')
+            self.logger.debug('DISPATCHER: started the \'job_runner\' thread')
 
             self.pyro_daemon = Pyro4.core.Daemon(host=self.host)
 
@@ -101,13 +101,13 @@ class Dispatcher(object):
                 uri = self.pyro_daemon.register(self, self.pyro_id)
                 ns.register(self.pyro_id, uri)
 
-            self.logger.info("DISPATCHER: Pyro daemon running on %s" % (self.pyro_daemon.locationStr))
+            self.logger.debug("DISPATCHER: Pyro daemon running on %s" % (self.pyro_daemon.locationStr))
 
         self.pyro_daemon.requestLoop()
 
         with self.discover_cond:
             self.shutdown_all_threads = True
-            self.logger.info('DISPATCHER: Dispatcher shutting down')
+            self.logger.debug('DISPATCHER: Dispatcher shutting down')
 
             self.runner_cond.notify_all()
             self.discover_cond.notify_all()
@@ -119,7 +119,7 @@ class Dispatcher(object):
         self.logger.debug('DISPATCHER: \'discover_worker\' thread exited')
         t2.join()
         self.logger.debug('DISPATCHER: \'job_runner\' thread exited')
-        self.logger.info('DISPATCHER: shut down complete')
+        self.logger.debug('DISPATCHER: shut down complete')
 
     def shutdown_all_workers(self, rediscover=False):
         with self.discover_cond:
@@ -140,7 +140,7 @@ class Dispatcher(object):
     @Pyro4.oneway
     def trigger_discover_worker(self):
         # time.sleep(1)
-        self.logger.info("DISPATCHER: A new worker triggered discover_worker")
+        self.logger.debug("DISPATCHER: A new worker triggered discover_worker")
         with self.discover_cond:
             self.discover_cond.notify()
 
@@ -164,7 +164,7 @@ class Dispatcher(object):
                             self.logger.debug('DISPATCHER: skipping dead worker, %s' % wn)
                             continue
                         update = True
-                        self.logger.info('DISPATCHER: discovered new worker, %s' % wn)
+                        self.logger.debug('DISPATCHER: discovered new worker, %s' % wn)
                         self.worker_pool[wn] = w
 
             # check the current list of workers
@@ -174,14 +174,14 @@ class Dispatcher(object):
             for wn in all_workers:
                 # remove dead entries from the nameserver
                 if not self.worker_pool[wn].is_alive():
-                    self.logger.info('DISPATCHER: removing dead worker, %s' % wn)
+                    self.logger.debug('DISPATCHER: removing dead worker, %s' % wn)
                     update = True
                     # todo check if there were jobs running on that that need to be rescheduled
 
                     current_job = self.worker_pool[wn].runs_job
 
                     if not current_job is None:
-                        self.logger.info('Job %s was not completed' % str(current_job))
+                        self.logger.debug('Job %s was not completed' % str(current_job))
                         crashed_jobs.add(current_job)
 
                     del self.worker_pool[wn]

@@ -104,7 +104,7 @@ class SamplingSortOptimizer(BaseOptimizer):
         # 选取获益最大，且没有出现过的一个配置
         for i, config in enumerate(concat_configs_sorted):
             if self.is_config_exist(budget, config):
-                self.logger.info(f"The sample already exists and needs to be resampled. "
+                self.logger.debug(f"The sample already exists and needs to be resampled. "
                                  f"It's the {i}-th time sampling in bayesian sampling. ")
             else:
                 return self.process_config_info_pair(config, info_dict, budget)

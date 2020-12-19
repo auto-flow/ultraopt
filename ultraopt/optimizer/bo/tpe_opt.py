@@ -83,7 +83,7 @@ class TPEOptimizer(BaseOptimizer):
         self.initial_design_ix = 0
         updated_min_points_in_model = len(self.initial_design_configs)
         if updated_min_points_in_model != self.min_points_in_model:
-            self.logger.info(f"Update min_points_in_model from {self.min_points_in_model} "
+            self.logger.debug(f"Update min_points_in_model from {self.min_points_in_model} "
                              f"to {updated_min_points_in_model}")
             self.min_points_in_model = updated_min_points_in_model
 
@@ -98,7 +98,7 @@ class TPEOptimizer(BaseOptimizer):
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
-                    self.logger.info(f"The sample already exists and needs to be resampled. "
+                    self.logger.debug(f"The sample already exists and needs to be resampled. "
                                      f"It's the {i}-th time sampling in thompson sampling. ")
                 else:
                     add_configs_origin(sample, "TPE sampling")

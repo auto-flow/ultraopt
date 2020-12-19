@@ -5,20 +5,21 @@
 # @Contact    : tqichun@gmail.com
 import importlib
 import inspect
+import logging
 from typing import Callable, Union, Optional, List, Type
 from uuid import uuid4
 
 from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
 
-from ultraopt import FMinResult
+from ultraopt.async.master import Master
+from ultraopt.async.nameserver import NameServer
+from ultraopt.async.worker import Worker
+from ultraopt.facade.result import FMinResult
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
 from ultraopt.hdl import HDL2CS
 from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.async.master import Master
-from ultraopt.async.nameserver import NameServer
-from ultraopt.async.worker import Worker
 from ultraopt.utils import progress
 from ultraopt.utils.net import get_a_free_port
 
@@ -34,11 +35,20 @@ def fmin(
         parallel_strategy="AsyncComm",
         auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
-        previous_budget2obvs=None,
+        previous_result: Union[FMinResult, str, None] = None,
+        warm_start_strategy="resume",
+        show_progressbar=True,
+        verbose=0,
         run_id=None,
         ns_host="127.0.0.1",
         ns_port=9090
 ):
+    if verbose == 0:
+        logging.basicConfig(level=logging.WARNING)
+    elif verbose == 1:
+        logging.basicConfig(level=logging.INFO)
+    else:
+        logging.basicConfig(level=logging.DEBUG)
     # 设计目标：单机并行、多保真优化
     # ------------   config_space   ---------------#
     if isinstance(config_space, dict):
@@ -67,10 +77,13 @@ def fmin(
             raise ValueError(f"Invalid optimizer string-indicator: {optimizer}")
     else:
         raise NotImplementedError
-    progress_callback = progress.default_callback
+    if show_progressbar:
+        progress_callback = progress.default_callback
+    else:
+        progress_callback = progress.no_progress_callback
     # 3种运行模式：
     # 1. 串行，方便调试，不支持multi-fidelity
-    # 2. MasterWorkers，RPC，支持multi-fidelity
+    # 2. AsyncComm，RPC，支持multi-fidelity
     # 3. MapReduce，不支持multi-fidelity
     # non-parallelism debug mode
     if auto_identify_serial_strategy and n_jobs == 1 and multi_fidelity_iter_generator is None:
@@ -78,7 +91,7 @@ def fmin(
     if parallel_strategy == "Serial":
         budgets_ = [1]
         opt_.initialize(cs_, budgets_, random_state, initial_points)
-        warm_start_optimizer(opt_, previous_budget2obvs)
+        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
         with progress_callback(
                 initial=0, total=n_iterations
         ) as progress_ctx:
@@ -107,7 +120,7 @@ def fmin(
             worker.run(True, "thread")
         # initialize optimizer
         opt_.initialize(cs_, budgets_, random_state, initial_points)
-        warm_start_optimizer(opt_, previous_budget2obvs)
+        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
         # start master
         master = Master(
             run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress_callback,
@@ -120,7 +133,7 @@ def fmin(
         # todo: 支持multi-fidelity
         budgets_ = [1]
         opt_.initialize(cs_, budgets_, random_state, initial_points)
-        warm_start_optimizer(opt_, previous_budget2obvs)
+        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
         ix = 0
         with progress_callback(
                 initial=0, total=n_iterations

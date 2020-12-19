@@ -34,8 +34,8 @@ def evaluation(config: dict, budget: float = 100):
 
 
 optimizer = "Forest"
-n_iterations = 20
-n_jobs = 3
+n_iterations = 10
+n_jobs = 1
 p_res = fmin(
     evaluation,
     config_space,
@@ -53,7 +53,8 @@ for i in range(3):
         # optimizer=p_res["optimizer"],
         n_jobs=n_jobs,
         n_iterations=n_iterations,
-        previous_budget2obvs=p_res["budget2obvs"],
+        previous_result=p_res,
+        warm_start_strategy="continue",
         multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
     )
     p_res = res

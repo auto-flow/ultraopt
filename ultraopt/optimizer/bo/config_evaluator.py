@@ -138,7 +138,7 @@ class ConfigEvaluator:
         for budget, weight in self.budget2weight.items():
             msg += f"W[{pbudget(budget)}] = {weight:.2f}  "
         # msg += f"ranking loss = {objective(w)}"
-        self.logger.info(msg)
+        self.logger.debug(msg)
         # 不做集成学习的形式
 
     def __call__(self, X, y_opt):
@@ -158,5 +158,5 @@ class ConfigEvaluator:
                 var += var_ * (weight ** 2)
             std = np.sqrt(var)
         cost_time = time() - start_time
-        self.logger.info(f"evaluation cost {cost_time:.3f}s")
+        self.logger.debug(f"evaluation cost {cost_time:.3f}s")
         return self.acq_func(mean, std, X, y_opt)

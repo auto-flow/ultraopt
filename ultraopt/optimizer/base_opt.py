@@ -132,7 +132,7 @@ class BaseOptimizer():
                 self.initial_points_index += 1
                 initial_point.origin = "User Defined"
                 if not self.is_config_exist(budget, initial_point):
-                    self.logger.info(f"Using initial points [{self.initial_points_index - 1}]")
+                    self.logger.debug(f"Using initial points [{self.initial_points_index - 1}]")
                     return self.process_config_info_pair(initial_point, {}, budget)
         return self.get_config_(budget, max_budget)
 
@@ -187,7 +187,7 @@ class BaseOptimizer():
             config = self.config_space.sample_configuration()
             add_configs_origin(config, "Initial Design")
             if self.is_config_exist(budget, config):
-                self.logger.info(f"The sample already exists and needs to be resampled. "
+                self.logger.debug(f"The sample already exists and needs to be resampled. "
                                  f"It's the {i}-th time sampling in random sampling. ")
             else:
                 return self.process_config_info_pair(config, info_dict, budget)

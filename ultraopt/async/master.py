@@ -202,7 +202,7 @@ class Master(object):
             self.time_ref = time.time()
             self.config['time_ref'] = self.time_ref
 
-            self.logger.info('HBMASTER: starting run at %s' % (str(self.time_ref)))
+            self.logger.debug('HBMASTER: starting run at %s' % (str(self.time_ref)))
 
         self.thread_cond.acquire()
         start_time = time.time()
@@ -260,7 +260,7 @@ class Master(object):
             if self.dynamic_queue_size:
                 nw = self.dispatcher.number_of_workers() if number_of_workers is None else number_of_workers
                 self.job_queue_sizes = (self.user_job_queue_sizes[0] + nw, self.user_job_queue_sizes[1] + nw)
-                self.logger.info('HBMASTER: adjusted queue size to %s' % str(self.job_queue_sizes))
+                self.logger.debug('HBMASTER: adjusted queue size to %s' % str(self.job_queue_sizes))
             self.thread_cond.notify_all()
 
     def job_callback(self, job):

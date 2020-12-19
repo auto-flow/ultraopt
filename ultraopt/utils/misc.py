@@ -7,7 +7,7 @@ from fractions import Fraction
 
 from ultraopt.utils.logging_ import get_logger
 
-inc_logger = get_logger("incumbent trajectory")
+inc_logger = get_logger("incumbent_trajectory")
 
 
 def pbudget(budget: float):
