@@ -43,7 +43,8 @@ def fmin(
         ns_host="127.0.0.1",
         ns_port=9090
 ):
-    if verbose == 0:
+    # fixme: 这合理吗
+    if verbose <= 0:
         logging.basicConfig(level=logging.WARNING)
     elif verbose == 1:
         logging.basicConfig(level=logging.INFO)
