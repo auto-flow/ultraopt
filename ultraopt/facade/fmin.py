@@ -9,10 +9,11 @@ from typing import Callable, Union, Optional, List, Type
 from uuid import uuid4
 
 from ConfigSpace import ConfigurationSpace, Configuration
+from joblib import Parallel, delayed
 
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
 from ultraopt.hdl import HDL2CS
-from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
+from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.remote.master import Master
 from ultraopt.remote.nameserver import NameServer
@@ -29,6 +30,7 @@ def fmin(
         random_state=42,
         n_iterations=100,
         n_jobs=1,
+        parallel_strategy="MasterWorkers",
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_budget2obvs=None,
         run_id=None,
@@ -67,7 +69,7 @@ def fmin(
     progress_callback = progress.default_callback
     # 3种运行模式：
     # 1. 串行，方便调试，不支持multi-fidelity
-    # 2. RPC，支持multi-fidelity
+    # 2. MasterWorkers，RPC，支持multi-fidelity
     # 3. MapReduce，不支持multi-fidelity
     # non-parallelism debug mode
     if n_jobs == 1 and multi_fidelity_iter_generator is None:
@@ -83,10 +85,13 @@ def fmin(
                 _, best_loss, _ = get_wanted(opt_)
                 progress_ctx.postfix = f"best loss: {best_loss:.3f}"
                 progress_ctx.update(1)
-    else:
+    elif parallel_strategy == "MasterWorkers":
         # start name-server
         if run_id is None:
             run_id = uuid4().hex
+        if multi_fidelity_iter_generator is None:
+            # todo: warning
+            multi_fidelity_iter_generator = CustomIterGenerator([1], [1])
         NS = NameServer(run_id=run_id, host=ns_host, port=get_a_free_port(ns_port, ns_host))
         NS.start()
         # start n workers
@@ -95,17 +100,40 @@ def fmin(
                    for i in range(n_jobs)]
         for worker in workers:
             worker.initialize(eval_func)
-            worker.run(True, "process")
+            worker.run(True, "thread")
         # initialize optimizer
         opt_.initialize(cs_, budgets_, random_state, initial_points)
         # start master
         master = Master(
-            run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress.default_callback,
+            run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress_callback,
             nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
         result = master.run(n_iterations)
         master.shutdown(True)
         NS.shutdown()
         # todo: 将result添加到返回结果中
+    elif parallel_strategy == "MapReduce":
+        # todo: 支持multi-fidelity
+        budgets_ = [1]
+        opt_.initialize(cs_, budgets_, random_state, initial_points)
+        ix = 0
+        with progress_callback(
+                initial=0, total=n_iterations
+        ) as progress_ctx:
+            while ix < n_iterations:
+                n_parallels = min(n_jobs, n_iterations - ix)
+                config_info_pairs = opt_.ask(n_points=n_jobs)
+                losses = Parallel(n_jobs=n_parallels)(
+                    delayed(eval_func)(config)
+                    for config, _ in config_info_pairs
+                )
+                for j, (loss, (config, _)) in enumerate(zip(losses, config_info_pairs)):
+                    opt_.tell(config, loss, update_model=(j == n_parallels - 1))
+                ix += n_parallels
+                _, best_loss, _ = get_wanted(opt_)
+                progress_ctx.postfix = f"best loss: {best_loss:.3f}"
+                progress_ctx.update(n_parallels)
+    else:
+        raise NotImplementedError
 
     max_budget, best_loss, best_config = get_wanted(opt_)
     return {

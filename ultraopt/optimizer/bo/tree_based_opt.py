@@ -18,8 +18,8 @@ class ForestOptimizer(SamplingSortOptimizer):
             n_estimators=10, max_depth=None, max_features="auto",
             # several hyper-parameters
             use_local_search=False, loss_transformer="log_scaled",
-            min_points_in_model=15, n_samples=5000,
-            acq_func="LogEI", xi=0,
+            min_points_in_model=20, n_samples=5000,
+            acq_func="EI", xi=0,
             # model related (trival)
             min_samples_leaf=1, min_weight_fraction_leaf=0, min_samples_split=2,
             max_leaf_nodes=None, min_impurity_decrease=0, bootstrap=True, oob_score=False,
@@ -72,8 +72,8 @@ class GBRTOptimizer(SamplingSortOptimizer):
             n_jobs=1,
             # several hyper-parameters
             use_local_search=False, loss_transformer="log_scaled",
-            min_points_in_model=15, n_samples=5000,
-            acq_func="LogEI", xi=0
+            min_points_in_model=20, n_samples=5000,
+            acq_func="EI", xi=0
     ):
         super(GBRTOptimizer, self).__init__(
             epm=GradientBoostingQuantileRegressor(

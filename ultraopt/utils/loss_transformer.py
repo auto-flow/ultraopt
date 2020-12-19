@@ -6,13 +6,14 @@
 import numpy as np
 from sklearn.utils import check_array
 
-ERR_LOSS = 65535
+ERR_LOSS = 1 << 31
 
 
 class LossTransformer():
     def fit_transform(self, y, *args):
         y: np.ndarray = check_array(y, ensure_2d=False)
         # cutoff
+        # fixme: all of y < ERR_LOSS
         y[y >= ERR_LOSS] = y[y < ERR_LOSS].max() + 0.1
         self.y_max = y.max()
         self.y_min = y.min()

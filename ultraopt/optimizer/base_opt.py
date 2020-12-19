@@ -3,7 +3,7 @@
 # @Author  : qichun tang
 # @Contact    : tqichun@gmail.com
 from copy import deepcopy
-from typing import Tuple
+from typing import Tuple, Union, List
 
 import numpy as np
 from ConfigSpace import Configuration
@@ -81,9 +81,38 @@ class BaseOptimizer():
     def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
         raise NotImplementedError
 
-    def ask(self, budget=1, n_points=None) -> Tuple[dict, dict]:
-        # todo: 实现 n_points (from skopt)
-        return self.get_config(budget)
+    def ask(self, budget=1, n_points=None, strategy="cl_min") -> Union[List[Tuple[dict, dict]], Tuple[dict, dict]]:
+        if n_points is None:
+            return self.get_config(budget)
+        supported_strategies = ["cl_min", "cl_mean", "cl_max"]
+
+        if not (isinstance(n_points, int) and n_points > 0):
+            raise ValueError(
+                "n_points should be int > 0, got " + str(n_points)
+            )
+
+        if strategy not in supported_strategies:
+            raise ValueError(
+                "Expected parallel_strategy to be one of " +
+                str(supported_strategies) + ", " + "got %s" % strategy
+            )
+
+        opt = deepcopy(self)
+        config_info_pairs = []
+        for i in range(n_points):
+            config, config_info = opt.get_config(budget=budget)
+            config_info_pairs.append((config, config_info))
+            losses = opt.budget2obvs[budget]["losses"]
+            if strategy == "cl_min":
+                y_lie = np.min(losses) if losses else 0.0  # CL-min lie
+            elif strategy == "cl_mean":
+                y_lie = np.mean(losses) if losses else 0.0  # CL-min lie
+            elif strategy == "cl_max":
+                y_lie = np.max(losses) if losses else 0.0  # CL-min lie
+            else:
+                raise NotImplementedError
+            opt.tell(config, y_lie)
+        return config_info_pairs
 
     def get_config(self, budget) -> Tuple[dict, dict]:
         # get max_budget

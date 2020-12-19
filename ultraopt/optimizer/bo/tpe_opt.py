@@ -120,10 +120,13 @@ class TPEOptimizer(BaseOptimizer):
         if epm is None:
             # return self.pick_random_initial_config(budget)
             info_dict = {"model_based_pick": False}
-            config = self.initial_design_configs[self.initial_design_ix]
-            add_configs_origin(config, "Initial Design")
-            self.initial_design_ix += 1
-            return self.process_config_info_pair(config, info_dict, budget)
+            if self.initial_design_ix<len(self.initial_design_configs):
+                config = self.initial_design_configs[self.initial_design_ix]
+                add_configs_origin(config, "Initial Design")
+                self.initial_design_ix += 1
+                return self.process_config_info_pair(config, info_dict, budget)
+            else:
+                return self.pick_random_initial_config(budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
         self._bw_factor *= self.gamma1

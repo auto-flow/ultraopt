@@ -4,13 +4,18 @@
 # @Date    : 2020-12-16
 # @Contact    : tqichun@gmail.com
 from ConfigSpace import ConfigurationSpace, Configuration
-from hpolib.benchmarks.synthetic_functions.rosenbrock import MultiFidelityRosenbrock2D
+from hpolib.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D, MultiFidelityRosenbrock5D, \
+    MultiFidelityRosenbrock10D, MultiFidelityRosenbrock20D
 
 from ultraopt import fmin
+from ultraopt.optimizer import TPEOptimizer, ForestOptimizer
 from ultraopt.multi_fidelity import CustomIterGenerator
 
 synthetic_functions = [
-    MultiFidelityRosenbrock2D
+    # MultiFidelityRosenbrock2D,
+    # MultiFidelityRosenbrock5D,
+    MultiFidelityRosenbrock10D,
+    MultiFidelityRosenbrock20D
 ]
 
 repetitions = 20
@@ -30,7 +35,7 @@ for synthetic_function_cls in synthetic_functions:
 
 
     # 定义目标函数
-    def evaluation(config: dict, budget: float):
+    def evaluation(config: dict, budget: float=100):
         config = Configuration(config_space, values=config)
         return synthetic_function.objective_function(config, budget=budget)["function_value"] - \
                synthetic_function.get_meta_information()["f_opt"]
@@ -39,6 +44,8 @@ for synthetic_function_cls in synthetic_functions:
     res = fmin(
         evaluation,
         config_space,
+        # optimizer=TPEOptimizer(min_points_in_model=40),
+        optimizer=ForestOptimizer(min_points_in_model=40),
         n_jobs=1,
         n_iterations=100,
         multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
