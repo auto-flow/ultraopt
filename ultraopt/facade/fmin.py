@@ -31,6 +31,7 @@ def fmin(
         n_iterations=100,
         n_jobs=1,
         parallel_strategy="MasterWorkers",
+        auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_budget2obvs=None,
         run_id=None,
@@ -65,16 +66,18 @@ def fmin(
             raise ValueError(f"Invalid optimizer string-indicator: {optimizer}")
     else:
         raise NotImplementedError
-    warm_start_optimizer(opt_, previous_budget2obvs)
     progress_callback = progress.default_callback
     # 3种运行模式：
     # 1. 串行，方便调试，不支持multi-fidelity
     # 2. MasterWorkers，RPC，支持multi-fidelity
     # 3. MapReduce，不支持multi-fidelity
     # non-parallelism debug mode
-    if n_jobs == 1 and multi_fidelity_iter_generator is None:
+    if auto_identify_serial_strategy and n_jobs == 1 and multi_fidelity_iter_generator is None:
+        parallel_strategy = "Serial"
+    if parallel_strategy == "Serial":
         budgets_ = [1]
         opt_.initialize(cs_, budgets_, random_state, initial_points)
+        warm_start_optimizer(opt_, previous_budget2obvs)
         with progress_callback(
                 initial=0, total=n_iterations
         ) as progress_ctx:
@@ -103,6 +106,7 @@ def fmin(
             worker.run(True, "thread")
         # initialize optimizer
         opt_.initialize(cs_, budgets_, random_state, initial_points)
+        warm_start_optimizer(opt_, previous_budget2obvs)
         # start master
         master = Master(
             run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress_callback,
@@ -115,6 +119,7 @@ def fmin(
         # todo: 支持multi-fidelity
         budgets_ = [1]
         opt_.initialize(cs_, budgets_, random_state, initial_points)
+        warm_start_optimizer(opt_, previous_budget2obvs)
         ix = 0
         with progress_callback(
                 initial=0, total=n_iterations

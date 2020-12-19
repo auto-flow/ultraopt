@@ -131,6 +131,7 @@ class HDL2CS():
             option_hp = CategoricalHyperparameter('__choice__', choices)
             cs.add_hyperparameter(option_hp)
         #### Travel key,value in hdl items, if value is dict(hdl), do recursion ######
+        # fixme: 'option_hp' maybe reference without define ?
         for hdl_key, hdl_value in hdl.items():
             mat = pattern.match(hdl_key)
             # add_configuration_space (choice)
@@ -177,8 +178,8 @@ class HDL2CS():
             _value = value.get("_value")
             _default = value.get("_default")
             assert _value is not None
-            if _type == "choice":
-                return hp_def.choice(key, _value, _default)
+            if _type in ("choice", "ordinal"):
+                return eval(f"hp_def.{_type}(key, _value, _default)")
             else:
                 return eval(f'''hp_def.{_type}("{key}",*_value,default=_default)''')
         else:

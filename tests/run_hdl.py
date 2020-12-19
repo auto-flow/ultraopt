@@ -11,7 +11,7 @@ cs = HDL2CS()({
         "A1(choice)": {
             "B1": {
                 "B1_h": {
-                    "_type": "choice",
+                    "_type": "ordinal",
                     "_value": ["1", "2", "3"]
                 },
             },

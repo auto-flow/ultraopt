@@ -2,7 +2,7 @@ import copy
 import json
 import os
 
-from .structure import Datum
+from ultraopt.structure import Datum
 
 
 class Run(object):

@@ -2,7 +2,8 @@ import math
 from typing import Any, List
 
 from ConfigSpace import CategoricalHyperparameter, \
-    UniformFloatHyperparameter, UniformIntegerHyperparameter, Constant
+    UniformFloatHyperparameter, UniformIntegerHyperparameter, Constant, \
+    OrdinalHyperparameter
 
 from ultraopt.utils.math_ import float_gcd
 
@@ -37,7 +38,20 @@ def choice(label: str, options: List, default=None):
     kwargs = {}
     if default:
         kwargs.update({'default_value': _encode(default)})
-    hp=CategoricalHyperparameter(label, choices, **kwargs)
+    hp = CategoricalHyperparameter(label, choices, **kwargs)
+    return hp
+
+
+def ordinal(label: str, options: List, default=None):
+    if len(options) == 1:
+        return Constant(label, _encode(options[0]))
+    choices = []
+    for option in options:
+        choices.append(_encode(option))
+    kwargs = {}
+    if default:
+        kwargs.update({'default_value': _encode(default)})
+    hp = OrdinalHyperparameter(label, choices, **kwargs)
     return hp
 
 
