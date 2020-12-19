@@ -76,6 +76,7 @@ def main():
                     gamma2=0.95
                 ),
                 random_state=random_state, n_iterations=max_iter)
+            print(ret)
             losses = ret["budget2obvs"][1]["losses"]
             # print('iter |  loss    | config origin')
             # print('----------------------------')

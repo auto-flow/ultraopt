@@ -11,13 +11,14 @@ from uuid import uuid4
 from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
 
+from ultraopt import FMinResult
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
 from ultraopt.hdl import HDL2CS
 from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.remote.master import Master
-from ultraopt.remote.nameserver import NameServer
-from ultraopt.remote.worker import Worker
+from ultraopt.async.master import Master
+from ultraopt.async.nameserver import NameServer
+from ultraopt.async.worker import Worker
 from ultraopt.utils import progress
 from ultraopt.utils.net import get_a_free_port
 
@@ -30,7 +31,7 @@ def fmin(
         random_state=42,
         n_iterations=100,
         n_jobs=1,
-        parallel_strategy="MasterWorkers",
+        parallel_strategy="AsyncComm",
         auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_budget2obvs=None,
@@ -88,7 +89,7 @@ def fmin(
                 _, best_loss, _ = get_wanted(opt_)
                 progress_ctx.postfix = f"best loss: {best_loss:.3f}"
                 progress_ctx.update(1)
-    elif parallel_strategy == "MasterWorkers":
+    elif parallel_strategy == "AsyncComm":
         # start name-server
         if run_id is None:
             run_id = uuid4().hex
@@ -140,10 +141,5 @@ def fmin(
     else:
         raise NotImplementedError
 
-    max_budget, best_loss, best_config = get_wanted(opt_)
-    return {
-        "best_config": best_config,
-        "best_loss": best_loss,
-        "budget2obvs": opt_.budget2obvs,
-        "optimizer": opt_
-    }
+    # max_budget, best_loss, best_config = get_wanted(opt_)
+    return FMinResult(opt_)

@@ -18,8 +18,12 @@ from ultraopt.utils.logging_ import get_logger
 class BaseOptimizer():
     def __init__(self):
         self.logger = get_logger(self)
+        self.is_init = False
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
+        if self.is_init:
+            return
+        self.is_init = True
         self.initial_points = initial_points
         self.random_state = random_state
         self.config_space = config_space

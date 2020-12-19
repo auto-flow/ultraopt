@@ -47,7 +47,7 @@ class Dispatcher(object):
         Parameters
         ----------
         new_result_callback: function
-            function that will be called with a `Job instance <ambo.remote.dispatcher.Job>`_ as argument.
+            function that will be called with a `Job instance <ambo.async.dispatcher.Job>`_ as argument.
             From the `Job` the result can be read and e.g. logged.
         run_id: str
             unique run_id associated with the HPB run

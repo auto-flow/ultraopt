@@ -10,7 +10,7 @@ from ultraopt.utils.logging_ import get_logger
 inc_logger = get_logger("incumbent trajectory")
 
 
-def pprint_budget(budget: float):
+def pbudget(budget: float):
     if budget - float(int(budget)) == 0:
         return str(int(budget))
     fraction = Fraction.from_float(budget)
@@ -18,7 +18,7 @@ def pprint_budget(budget: float):
 
 def print_incumbent_trajectory(chal_perf: float, inc_perf: float, challenger: dict, incumbent: dict, budget: float):
     inc_logger.info("Challenger (%.4f) is better than incumbent (%.4f) when budget is (%s)."
-                    % (chal_perf, inc_perf, pprint_budget(budget)))
+                    % (chal_perf, inc_perf, pbudget(budget)))
     # Show changes in the configuration
     params = sorted([(param, incumbent.get(param), challenger.get(param))
                      for param in challenger.keys()])

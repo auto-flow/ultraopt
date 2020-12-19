@@ -12,8 +12,8 @@ from ultraopt.optimizer import TPEOptimizer, ForestOptimizer
 from ultraopt.multi_fidelity import CustomIterGenerator
 
 synthetic_functions = [
-    # MultiFidelityRosenbrock2D,
-    # MultiFidelityRosenbrock5D,
+    MultiFidelityRosenbrock2D,
+    MultiFidelityRosenbrock5D,
     MultiFidelityRosenbrock10D,
     MultiFidelityRosenbrock20D
 ]
@@ -44,10 +44,9 @@ for synthetic_function_cls in synthetic_functions:
     res = fmin(
         evaluation,
         config_space,
-        # optimizer=TPEOptimizer(min_points_in_model=40),
-        optimizer=ForestOptimizer(min_points_in_model=40),
+        optimizer=TPEOptimizer(min_points_in_model=20),
+        # optimizer=ForestOptimizer(min_points_in_model=40),
         n_jobs=1,
         n_iterations=100,
         multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
     )
-    # print(res)

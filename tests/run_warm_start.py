@@ -30,8 +30,10 @@ def evaluation(config: dict, budget: float = 100):
     config = Configuration(config_space, values=config)
     return synthetic_function.objective_function(config, budget=budget)["function_value"] - \
            synthetic_function.get_meta_information()["f_opt"]
-optimizer="TPE"
-n_iterations=30
+
+
+optimizer = "TPE"
+n_iterations = 15
 p_res = fmin(
     evaluation,
     config_space,
@@ -44,10 +46,11 @@ for i in range(3):
     res = fmin(
         evaluation,
         config_space,
-        optimizer=optimizer,
+        optimizer=p_res["optimizer"],
+        # optimizer=optimizer,
         n_jobs=1,
         n_iterations=n_iterations,
-        previous_budget2obvs=p_res["budget2obvs"]
+        # previous_budget2obvs=p_res["budget2obvs"]
     )
     p_res = res
     print(len(res["budget2obvs"][1]["losses"]))
@@ -55,7 +58,7 @@ for i in range(3):
 p_res = fmin(
     evaluation,
     config_space,
-    optimizer="TPE",
+    optimizer=optimizer,
     n_jobs=1,
-    n_iterations=n_iterations*4,
+    n_iterations=n_iterations * 4,
 )

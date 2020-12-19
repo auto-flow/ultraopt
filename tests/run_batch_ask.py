@@ -24,6 +24,6 @@ def evaluation(config: dict):
 
 for i in range(20):
     ret = fmin(
-        evaluation, config_space, optimizer="TPE", n_iterations=200, n_jobs=10, parallel_strategy="MasterWorkers",
+        evaluation, config_space, optimizer="TPE", n_iterations=200, n_jobs=10, parallel_strategy="AsyncComm",
         random_state=i
     )

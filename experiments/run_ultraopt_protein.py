@@ -74,6 +74,7 @@ def main():
                 gamma1=0.95
             ),
             random_state=random_state, n_iterations=max_iter)
+        print(ret)
         losses = ret["budget2obvs"][1]["losses"]
         print(ret["best_loss"])
         res[f"trial-{trial}"] = losses

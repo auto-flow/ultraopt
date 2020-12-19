@@ -12,7 +12,7 @@ from scipy.stats import norm
 from sklearn.utils import check_random_state
 
 from ultraopt.utils.logging_ import get_logger
-from ultraopt.utils.misc import pprint_budget
+from ultraopt.utils.misc import pbudget
 
 
 class LogEI():
@@ -136,7 +136,7 @@ class ConfigEvaluator:
         self.budget2weight = budget2weight
         msg = ""
         for budget, weight in self.budget2weight.items():
-            msg += f"W[{pprint_budget(budget)}] = {weight:.2f}  "
+            msg += f"W[{pbudget(budget)}] = {weight:.2f}  "
         # msg += f"ranking loss = {objective(w)}"
         self.logger.info(msg)
         # 不做集成学习的形式

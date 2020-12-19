@@ -210,7 +210,7 @@ class Worker(object):
         dict:
             needs to return a dictionary with two mandatory entries:
                 - 'loss': a numerical value that is MINIMIZED
-                - 'info': This can be pretty much any build in python type, e.g. a dict with lists as value. Due to Pyro4 handling the remote function calls, 3rd party types like numpy arrays are not supported!
+                - 'info': This can be pretty much any build in python type, e.g. a dict with lists as value. Due to Pyro4 handling the async function calls, 3rd party types like numpy arrays are not supported!
         """
         if self.eval_func is None:
             raise NotImplementedError(

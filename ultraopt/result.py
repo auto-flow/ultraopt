@@ -80,7 +80,7 @@ def logged_results_to_HBS_result(directory):
 
     Returns
     -------
-    ambo.remote.result.Result: :object:
+    ambo.async.result.Result: :object:
         TODO
     
     """

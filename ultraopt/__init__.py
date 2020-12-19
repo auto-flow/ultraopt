@@ -4,3 +4,4 @@
 # @Date    : 2020-12-14
 # @Contact    : tqichun@gmail.com
 from ultraopt.facade.fmin import fmin
+from ultraopt.facade.result import FMinResult
