@@ -24,13 +24,24 @@ class FMinResult():
         for budget, obvs in self.budget2obvs.items():
             losses = obvs["losses"]
             configs = obvs["configs"]
-            ix = np.argmin(losses)
-            self.budget2info[budget] = {"loss": losses[ix], "config": configs[ix], "num_configs": len(configs)}
+            if len(losses):
+                ix = np.argmin(losses)
+                loss = losses[ix]
+                config = configs[ix]
+            else:
+                loss = None
+                config = None
+            self.budget2info[budget] = {"loss": loss, "config": config, "num_configs": len(configs)}
         for hyperparameter in self.hyperparameters:
             row = []
             row.append(hyperparameter)
             for budget in self.budget2info:
-                val = self.budget2info[budget]["config"].get(hyperparameter, "-/-")
+                config = self.budget2info[budget]["config"]
+                nil = "-/-"
+                if config is not None:
+                    val = config.get(hyperparameter, nil)
+                else:
+                    val = nil
                 if isinstance(val, float):
                     val = f"{val:.4f}"
                 elif not isinstance(val, str):

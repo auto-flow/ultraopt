@@ -6,7 +6,9 @@ from collections import defaultdict
 from typing import Dict
 
 import numpy as np
+from joblib import dump
 
+from ultraopt.facade.result import FMinResult
 from ultraopt.facade.utils import get_wanted
 from ultraopt.multi_fidelity.iter import WarmStartIteration
 from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
@@ -24,6 +26,8 @@ class Master(object):
                  optimizer: BaseOptimizer,
                  iter_generator: BaseIterGenerator,
                  progress_callback=no_progress_callback,
+                 checkpoint_file=None,
+                 checkpoint_freq=10,
                  working_directory='.',
                  ping_interval=60,
                  time_left_for_this_task=np.inf,
@@ -85,6 +89,8 @@ class Master(object):
         previous_result: ambo.async.result.Result object
             previous run to warmstart the run
         """
+        self.checkpoint_freq = checkpoint_freq
+        self.checkpoint_file = checkpoint_file
         self.progress_callback = progress_callback
         iter_generator.initialize(optimizer.get_config)
         self.iter_generator = iter_generator
@@ -193,7 +199,9 @@ class Master(object):
         min_n_workers: int
             minimum number of workers before starting the run
         """
-        self.progress_bar = self.progress_callback(0, self.iter_generator.num_all_configs * n_iterations)
+        self.all_n_iterations = self.iter_generator.num_all_configs * n_iterations
+        self.progress_bar = self.progress_callback(0, self.all_n_iterations)
+        self.iter_cnt = 0
         self.wait_for_workers(min_n_workers)
 
         iteration_kwargs.update({'result_logger': self.result_logger})
@@ -206,7 +214,7 @@ class Master(object):
 
         self.thread_cond.acquire()
         start_time = time.time()
-        with self.progress_bar as self.context:
+        with self.progress_bar as self.progress_ctx:
             while True:
 
                 self._queue_wait()
@@ -292,9 +300,13 @@ class Master(object):
                 self.result_logger(job)
             self.iterations[job.id[0]].register_result(job)
             self.optimizer.new_result(job)
+            # 更新进度条等操作
             max_budget, best_loss, _ = get_wanted(self.optimizer)
-            self.context.postfix = f"max budget: {max_budget}, best loss: {best_loss:.3f}"
-            self.context.update(1)
+            self.progress_ctx.postfix = f"max budget: {max_budget}, best loss: {best_loss:.3f}"
+            self.progress_ctx.update(1)
+            self.iter_cnt += 1
+            if (self.iter_cnt - 1) % self.checkpoint_freq == 0 or self.iter_cnt == self.all_n_iterations:
+                dump(FMinResult(self.optimizer), self.checkpoint_file)
             if self.num_running_jobs <= self.job_queue_sizes[0]:
                 self.logger.debug("HBMASTER: Trying to run another job!")
                 self.thread_cond.notify()

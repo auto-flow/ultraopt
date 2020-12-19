@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
+from joblib import dump
 
 from ultraopt.async.master import Master
 from ultraopt.async.nameserver import NameServer
@@ -36,8 +37,10 @@ def fmin(
         auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_result: Union[FMinResult, str, None] = None,
-        warm_start_strategy="resume",
+        warm_start_strategy="continue",
         show_progressbar=True,
+        checkpoint_file=None,
+        checkpoint_freq=10,
         verbose=0,
         run_id=None,
         ns_host="127.0.0.1",
@@ -89,20 +92,26 @@ def fmin(
     # non-parallelism debug mode
     if auto_identify_serial_strategy and n_jobs == 1 and multi_fidelity_iter_generator is None:
         parallel_strategy = "Serial"
-    if parallel_strategy == "Serial":
+    if parallel_strategy in ["Serial", "MapReduce"]:
         budgets_ = [1]
-        opt_.initialize(cs_, budgets_, random_state, initial_points)
-        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
+    # initialize optimizer
+    opt_.initialize(cs_, budgets_, random_state, initial_points)
+    opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
+    if parallel_strategy == "Serial":
         with progress_callback(
                 initial=0, total=n_iterations
         ) as progress_ctx:
-            for iter in range(n_iterations):
+            for counts in range(n_iterations):
                 config, _ = opt_.ask()
                 loss = eval_func(config)
                 opt_.tell(config, loss)
                 _, best_loss, _ = get_wanted(opt_)
                 progress_ctx.postfix = f"best loss: {best_loss:.3f}"
                 progress_ctx.update(1)
+                if checkpoint_file is not None:
+                    if (counts % checkpoint_freq == 0 and counts != 0) \
+                            or (counts == n_iterations - 1):
+                        dump(FMinResult(opt_), checkpoint_file)
     elif parallel_strategy == "AsyncComm":
         # start name-server
         if run_id is None:
@@ -119,12 +128,10 @@ def fmin(
         for worker in workers:
             worker.initialize(eval_func)
             worker.run(True, "thread")
-        # initialize optimizer
-        opt_.initialize(cs_, budgets_, random_state, initial_points)
-        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
         # start master
         master = Master(
             run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress_callback,
+            checkpoint_file=checkpoint_file, checkpoint_freq=checkpoint_freq,
             nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
         result = master.run(n_iterations)
         master.shutdown(True)
@@ -132,26 +139,28 @@ def fmin(
         # todo: 将result添加到返回结果中
     elif parallel_strategy == "MapReduce":
         # todo: 支持multi-fidelity
-        budgets_ = [1]
-        opt_.initialize(cs_, budgets_, random_state, initial_points)
-        opt_ = warm_start_optimizer(opt_, previous_result, warm_start_strategy)
-        ix = 0
+        counts = 0
         with progress_callback(
                 initial=0, total=n_iterations
         ) as progress_ctx:
-            while ix < n_iterations:
-                n_parallels = min(n_jobs, n_iterations - ix)
-                config_info_pairs = opt_.ask(n_points=n_jobs)
+            while counts < n_iterations:
+                n_parallels = min(n_jobs, n_iterations - counts)
+                config_info_pairs = opt_.ask(n_points=n_parallels)
                 losses = Parallel(n_jobs=n_parallels)(
                     delayed(eval_func)(config)
                     for config, _ in config_info_pairs
                 )
                 for j, (loss, (config, _)) in enumerate(zip(losses, config_info_pairs)):
                     opt_.tell(config, loss, update_model=(j == n_parallels - 1))
-                ix += n_parallels
+                counts += n_parallels
                 _, best_loss, _ = get_wanted(opt_)
                 progress_ctx.postfix = f"best loss: {best_loss:.3f}"
                 progress_ctx.update(n_parallels)
+                iteration = counts // n_jobs
+                if checkpoint_file is not None:
+                    if ((iteration - 1) % checkpoint_freq == 0) \
+                            or (counts == n_iterations):
+                        dump(FMinResult(opt_), checkpoint_file)
     else:
         raise NotImplementedError
 
