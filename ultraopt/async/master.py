@@ -199,7 +199,7 @@ class Master(object):
         min_n_workers: int
             minimum number of workers before starting the run
         """
-        self.all_n_iterations = self.iter_generator.num_all_configs * n_iterations
+        self.all_n_iterations = self.iter_generator.num_all_configs(n_iterations)
         self.progress_bar = self.progress_callback(0, self.all_n_iterations)
         self.iter_cnt = 0
         self.wait_for_workers(min_n_workers)
@@ -305,8 +305,9 @@ class Master(object):
             self.progress_ctx.postfix = f"max budget: {max_budget}, best loss: {best_loss:.3f}"
             self.progress_ctx.update(1)
             self.iter_cnt += 1
-            if (self.iter_cnt - 1) % self.checkpoint_freq == 0 or self.iter_cnt == self.all_n_iterations:
-                dump(FMinResult(self.optimizer), self.checkpoint_file)
+            if self.checkpoint_file is not None:
+                if (self.iter_cnt - 1) % self.checkpoint_freq == 0 or self.iter_cnt == self.all_n_iterations:
+                    dump(FMinResult(self.optimizer), self.checkpoint_file)
             if self.num_running_jobs <= self.job_queue_sizes[0]:
                 self.logger.debug("HBMASTER: Trying to run another job!")
                 self.thread_cond.notify()

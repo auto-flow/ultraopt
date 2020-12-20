@@ -28,6 +28,6 @@ class BaseIterGenerator():
     def get_budgets(self):
         raise NotImplementedError
 
-    @property
-    def num_all_configs(self)->int:
+
+    def num_all_configs(self, n_iterations)->int:
         raise NotImplementedError

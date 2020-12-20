@@ -33,6 +33,5 @@ class CustomIterGenerator(BaseIterGenerator):
     def get_budgets(self):
         return self.budgets
 
-    @property
-    def num_all_configs(self) -> int:
-        return sum(self.num_configs)
+    def num_all_configs(self, n_iterations) -> int:
+        return sum(self.num_configs)*n_iterations
