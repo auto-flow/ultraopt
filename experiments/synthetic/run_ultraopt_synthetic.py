@@ -12,7 +12,7 @@ from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
 from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
 
 from ultraopt import fmin
-from ultraopt.optimizer import TPEOptimizer
+from ultraopt.optimizer import ETPEOptimizer
 
 synthetic_functions = [
     Bohachevsky,
@@ -72,7 +72,7 @@ def main():
             random_state = base_random_state + trial * 10
             # 设置超参空间的随机种子（会影响后面的采样）
             ret = fmin(
-                evaluation, config_space, optimizer=TPEOptimizer(
+                evaluation, config_space, optimizer=ETPEOptimizer(
                     gamma2=0.95
                 ),
                 random_state=random_state, n_iterations=max_iter)

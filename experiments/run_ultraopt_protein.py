@@ -9,7 +9,7 @@ import pandas as pd
 from ConfigSpace import Configuration
 
 from ultraopt import fmin
-from ultraopt.optimizer import TPEOptimizer
+from ultraopt.optimizer import ETPEOptimizer
 from ultraopt.hdl import HDL2CS
 from ultraopt.structure import Job
 
@@ -70,7 +70,7 @@ def main():
         # print('iter |  loss    | config origin')
         # print('----------------------------')
         ret = fmin(
-            evaluation, config_space, optimizer=TPEOptimizer(
+            evaluation, config_space, optimizer=ETPEOptimizer(
                 gamma1=0.95
             ),
             random_state=random_state, n_iterations=max_iter)

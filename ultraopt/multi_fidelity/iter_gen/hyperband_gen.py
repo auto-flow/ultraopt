@@ -29,15 +29,18 @@ class HyperBandIterGenerator(BaseIterGenerator):
         if self.SH_only:
             s = self.max_SH_iter - 1
             # todo 收纳代码
-            n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)
-            ns = [max(int(n0 * (self.eta ** (-i))), 1) for i in range(s + 1)]
+            ns = self.get_ns(s)
             self.configs_loop = [ns]
         else:
             self.configs_loop = []
             for s in reversed(range(self.max_SH_iter)):
-                n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)
-                ns = [max(int(n0 * (self.eta ** (-i))), 1) for i in range(s + 1)]
+                ns = self.get_ns(s)
                 self.configs_loop.append(ns)
+
+    def get_ns(self, s):
+        n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)
+        ns = [max(int(n0 * (self.eta ** (-i))), 1) for i in range(s + 1)]
+        return ns
 
     def get_next_iteration(self, iteration, **kwargs):
         if self.SH_only:
@@ -45,8 +48,7 @@ class HyperBandIterGenerator(BaseIterGenerator):
         else:
             s = self.max_SH_iter - 1 - (iteration % self.max_SH_iter)
         # number of configurations in that bracket
-        n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)
-        ns = [max(int(n0 * (self.eta ** (-i))), 1) for i in range(s + 1)]
+        ns = self.get_ns(s)
         return RankReductionIteration(
             HPB_iter=iteration,
             num_configs=ns,
@@ -69,3 +71,14 @@ class HyperBandIterGenerator(BaseIterGenerator):
         res += N * get_sum(self.configs_loop)
         res += get_sum(self.configs_loop[:M])
         return res
+
+
+class SuccessiveHalvingIterGenerator(HyperBandIterGenerator):
+    def __init__(
+            self,
+            min_budget,
+            max_budget,
+            eta,
+            iter_klass=None
+    ):
+        super(SuccessiveHalvingIterGenerator, self).__init__(min_budget, max_budget, eta, True, iter_klass)

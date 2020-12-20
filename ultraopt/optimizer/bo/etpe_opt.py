@@ -15,7 +15,7 @@ from ultraopt.utils.config_space import add_configs_origin, initial_design_2
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
-class TPEOptimizer(BaseOptimizer):
+class ETPEOptimizer(BaseOptimizer):
     def __init__(
             self,
             # model related
@@ -28,7 +28,7 @@ class TPEOptimizer(BaseOptimizer):
             # Embedding Encoder
             embedding_encoder="default"
     ):
-        super(TPEOptimizer, self).__init__()
+        super(ETPEOptimizer, self).__init__()
         self.min_bw_factor = min_bw_factor
         self.max_bw_factor = max_bw_factor
         self.embedding_encoder = embedding_encoder
@@ -50,7 +50,7 @@ class TPEOptimizer(BaseOptimizer):
         )
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
-        super(TPEOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+        super(ETPEOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
         if not self.embedding_encoder:
             # do not use embedding_encoder, use One Hot Encoder
             encoder = EquidistanceEncoder()
@@ -101,7 +101,7 @@ class TPEOptimizer(BaseOptimizer):
                     self.logger.debug(f"The sample already exists and needs to be resampled. "
                                      f"It's the {i}-th time sampling in thompson sampling. ")
                 else:
-                    add_configs_origin(sample, "TPE sampling")
+                    add_configs_origin(sample, "ETPE sampling")
                     return sample, info_dict
             old_db = self._bw_factor
             self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.gamma2 - self.min_bw_factor

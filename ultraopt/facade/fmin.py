@@ -28,7 +28,7 @@ from ultraopt.utils.net import get_a_free_port
 def fmin(
         eval_func: Callable,
         config_space: Union[ConfigurationSpace, dict],
-        optimizer: Union[BaseOptimizer, str, Type] = "TPE",
+        optimizer: Union[BaseOptimizer, str, Type] = "ETPE",
         initial_points: Union[None, List[Configuration], List[dict]] = None,
         random_state=42,
         n_iterations=100,

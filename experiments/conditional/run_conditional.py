@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration
 
-from ultraopt.optimizer import TPEOptimizer
+from ultraopt.optimizer import ETPEOptimizer
 from ultraopt.hdl import HDL2CS, config2dict
 from ultraopt.structure import Job
 
@@ -68,7 +68,7 @@ def main():
         print("==========================")
         # print('iter |  loss    | config origin')
         # print('----------------------------')
-        ambo = TPEOptimizer(
+        ambo = ETPEOptimizer(
             config_space, [1], random_state=random_state, min_points_in_model=20,
             # initial_points=config_space.sample_configuration(40)
         )

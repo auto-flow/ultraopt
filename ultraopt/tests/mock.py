@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
-# @Date    : 2020-12-19
+# @Date    : 2020-12-20
 # @Contact    : tqichun@gmail.com
 from ConfigSpace import ConfigurationSpace, Configuration
-from hpolib.benchmarks.synthetic_functions import Bohachevsky
+from hpolib.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D
 
-from ultraopt import fmin
+__all__ = ["config_space", "evaluation"]
 
-synthetic_function_cls = Bohachevsky
+synthetic_function_cls = MultiFidelityRosenbrock2D
 
 config_space = ConfigurationSpace()
 config_space.generate_all_continuous_from_bounds(synthetic_function_cls.get_meta_information()['bounds'])
@@ -16,14 +16,7 @@ synthetic_function = synthetic_function_cls()
 
 
 # 定义目标函数
-def evaluation(config: dict):
+def evaluation(config: dict, budget=100):
     config = Configuration(config_space, values=config)
-    return synthetic_function.objective_function(config)["function_value"] - \
+    return synthetic_function.objective_function(config, budget=budget)["function_value"] - \
            synthetic_function.get_meta_information()["f_opt"]
-
-
-for i in range(20):
-    ret = fmin(
-        evaluation, config_space, optimizer="TPE", n_iterations=200, n_jobs=10, parallel_strategy="AsyncComm",
-        random_state=i
-    )

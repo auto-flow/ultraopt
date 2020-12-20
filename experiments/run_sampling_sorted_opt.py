@@ -93,7 +93,7 @@ def main():
         s = res.std(1)
         name = synthetic_function.get_meta_information()["name"]
         final_result[name] = {"mean": m.tolist(), "std": s.tolist()}
-    Path("ETPE.json").write_text(json.dumps(final_result))
+    Path("EETPE.json").write_text(json.dumps(final_result))
 
 
 if __name__ == '__main__':

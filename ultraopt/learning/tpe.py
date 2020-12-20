@@ -22,6 +22,7 @@ from ultraopt.utils.logging_ import get_logger
 
 
 def estimate_bw(data, bw_method="scott", cv_times=100):
+    # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.estimate_bandwidth.html
     ndata = data.shape[0]
     if bw_method == 'scott':
         bandwidth = ndata ** (-1 / 5) * np.std(data, ddof=1)
@@ -126,8 +127,8 @@ class TreeStructuredParzenEstimator(BaseEstimator):
                     raise ValueError(f"Invalid kde_sample_weight_scaler '{self.kde_sample_weight_scaler}'")
             bw_good = estimate_bw(X_good, self.bw_method, self.cv_times)
             bw_bad = estimate_bw(X_bad, self.bw_method, self.cv_times)
-            good_kdes[group] = KernelDensity(bw_good).fit(X_good, sample_weight=sample_weight)
-            bad_kdes[group] = KernelDensity(bw_bad).fit(X_bad)
+            good_kdes[group] = KernelDensity(bandwidth=bw_good).fit(X_good, sample_weight=sample_weight)
+            bad_kdes[group] = KernelDensity(bandwidth=bw_bad).fit(X_bad)
         self.good_kdes = good_kdes
         self.bad_kdes = bad_kdes
         return self
@@ -148,7 +149,7 @@ class TreeStructuredParzenEstimator(BaseEstimator):
             if N == 0:
                 continue
             if np.any(pd.isna(active_X)):
-                self.logger.warning("TPE contains nan, mean impute.")
+                self.logger.warning("ETPE contains nan, mean impute.")
                 active_X = SimpleImputer(strategy="mean").fit_transform(active_X)
             good_log_pdf[~inactive_mask, group] = self.good_kdes[group].score_samples(active_X)
             bad_log_pdf[~inactive_mask, group] = self.bad_kdes[group].score_samples(active_X)
@@ -166,6 +167,7 @@ class TreeStructuredParzenEstimator(BaseEstimator):
         return result
 
     def sample(self, n_candidates=20, sort_by_EI=False, random_state=None, bandwidth_factor=3) -> List[Configuration]:
+        # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity
         groups = np.array(self.groups)
         rng = check_random_state(random_state)
         if self.good_kdes is None:
@@ -179,16 +181,16 @@ class TreeStructuredParzenEstimator(BaseEstimator):
                 bw = good_kde.bandwidth
                 prev_bw = bw
                 bw *= bandwidth_factor
-                good_kde.bandwidth = bw
+                good_kde.set_params(bandwidth=bw)
                 result = good_kde.sample(n_candidates, random_state=random_state)
-                good_kde.bandwidth = prev_bw
+                good_kde.set_params(bandwidth=prev_bw)
             else:
                 # 随机采样(0-1)
                 result = rng.rand(n_candidates, group_mask.sum())
             sampled_matrix[:, group_mask] = result
         candidates = self.config_transformer.inverse_transform(sampled_matrix)
         n_fails = len(candidates) - n_candidates
-        add_configs_origin(candidates, "TPE sampling")
+        add_configs_origin(candidates, "ETPE sampling")
         if n_fails:
             random_candidates = self.config_transformer.config_space.sample_configuration(n_fails)
             add_configs_origin(random_candidates, "Random Search")
