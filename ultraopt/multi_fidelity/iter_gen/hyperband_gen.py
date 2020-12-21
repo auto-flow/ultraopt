@@ -5,7 +5,6 @@
 # @Contact    : tqichun@gmail.com
 import numpy as np
 
-from ultraopt.multi_fidelity.iter import RankReductionIteration
 from ultraopt.utils.misc import get_max_SH_iter
 from .base_gen import BaseIterGenerator
 
@@ -25,52 +24,27 @@ class HyperBandIterGenerator(BaseIterGenerator):
         self.max_budget = max_budget
         self.min_budget = min_budget
         self.max_SH_iter = get_max_SH_iter(self.min_budget, self.max_budget, self.eta)
-        self.budgets = max_budget * np.power(eta, -np.linspace(self.max_SH_iter - 1, 0, self.max_SH_iter))
+        budgets = max_budget * np.power(eta, -np.linspace(self.max_SH_iter - 1, 0, self.max_SH_iter))
+        self.budgets = budgets.tolist()
         if self.SH_only:
             s = self.max_SH_iter - 1
-            # todo 收纳代码
+            self._iter_cycle = 1
             ns = self.get_ns(s)
-            self.configs_loop = [ns]
+            self._num_configs_list = [ns]
+            self._budgets_list = [self.budgets]
         else:
-            self.configs_loop = []
+            self._iter_cycle = self.max_SH_iter
+            self._num_configs_list = []
+            self._budgets_list = []
             for s in reversed(range(self.max_SH_iter)):
                 ns = self.get_ns(s)
-                self.configs_loop.append(ns)
+                self._num_configs_list.append(ns)
+                self._budgets_list.append(self.budgets[(-s - 1):])
 
     def get_ns(self, s):
         n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)
         ns = [max(int(n0 * (self.eta ** (-i))), 1) for i in range(s + 1)]
         return ns
-
-    def get_next_iteration(self, iteration, **kwargs):
-        if self.SH_only:
-            s = self.max_SH_iter - 1
-        else:
-            s = self.max_SH_iter - 1 - (iteration % self.max_SH_iter)
-        # number of configurations in that bracket
-        ns = self.get_ns(s)
-        return RankReductionIteration(
-            HPB_iter=iteration,
-            num_configs=ns,
-            budgets=self.budgets[(-s - 1):],
-            config_sampler=self.config_sampler,
-            **kwargs
-        )
-
-    def get_budgets(self):
-        return self.budgets
-
-    def num_all_configs(self, n_iterations) -> int:
-        def get_sum(configs_loop):
-            return sum([sum(num_configs) for num_configs in configs_loop])
-
-        L = len(self.configs_loop)
-        N = n_iterations // L
-        M = n_iterations % L
-        res = 0
-        res += N * get_sum(self.configs_loop)
-        res += get_sum(self.configs_loop[:M])
-        return res
 
 
 class SuccessiveHalvingIterGenerator(HyperBandIterGenerator):

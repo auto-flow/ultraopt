@@ -3,7 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-18
 # @Contact    : tqichun@gmail.com
-from typing import List
+from typing import List, Union
 
 from .base_gen import BaseIterGenerator
 
@@ -11,27 +11,21 @@ from .base_gen import BaseIterGenerator
 class CustomIterGenerator(BaseIterGenerator):
     def __init__(
             self,
-            num_configs: List[int],
-            budgets: List[float],
+            num_configs_list: Union[List[int], List[List[int]]],
+            budgets_list: Union[List[float], List[List[float]]],
             iter_klass: type = None,
     ):
         super(CustomIterGenerator, self).__init__(iter_klass)
-        self.budgets = budgets
-        self.num_configs = num_configs
-        assert len(self.budgets) == len(self.num_configs), ValueError(
-            "length of budgets and state configs should be equal.")
+        if isinstance(num_configs_list[0], (list, tuple)):
+            self._budgets_list = budgets_list
+            self._num_configs_list = num_configs_list
+            self._iter_cycle = len(budgets_list)
+            assert len(budgets_list) == len(num_configs_list), ValueError
+            for budgets, num_configs in zip(budgets_list, num_configs_list):
+                assert len(budgets) == len(num_configs), ValueError(
+                    "length of budgets and state configs should be equal.")
 
-    def get_next_iteration(self, iteration, **kwargs):
-        return self.iter_klass(
-            HPB_iter=iteration,
-            num_configs=self.num_configs,
-            budgets=self.budgets,
-            config_sampler=self.config_sampler,
-            **kwargs
-        )
-
-    def get_budgets(self):
-        return self.budgets
-
-    def num_all_configs(self, n_iterations) -> int:
-        return sum(self.num_configs)*n_iterations
+        else:
+            self._budgets_list = [budgets_list]
+            self._num_configs_list = [num_configs_list]
+            self._iter_cycle = 1

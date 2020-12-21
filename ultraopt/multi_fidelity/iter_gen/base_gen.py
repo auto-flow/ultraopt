@@ -5,7 +5,10 @@
 # @Contact    : tqichun@gmail.com
 from typing import Type
 
+import pandas as pd
+
 from ultraopt.multi_fidelity.iter import BaseIteration, RankReductionIteration
+from ultraopt.utils.misc import pbudget
 
 
 class BaseIterGenerator():
@@ -22,12 +25,58 @@ class BaseIterGenerator():
     def initialize(self, config_sampler):
         self.config_sampler = config_sampler
 
-    def get_next_iteration(self, iteration, **kwargs):
-        raise NotImplementedError
+    @property
+    def num_configs_list(self):
+        return self._num_configs_list
+
+    @property
+    def budgets_list(self):
+        return self._budgets_list
+
+    @property
+    def iter_cycle(self):
+        return self._iter_cycle
 
     def get_budgets(self):
-        raise NotImplementedError
+        return self.budgets_list[0]
 
+    def num_all_configs(self, n_iterations) -> int:
+        def get_sum(num_configs_list):
+            return sum([sum(num_configs) for num_configs in num_configs_list])
 
-    def num_all_configs(self, n_iterations)->int:
-        raise NotImplementedError
+        L = self.iter_cycle
+        N = n_iterations // L
+        M = n_iterations % L
+        res = 0
+        res += N * get_sum(self.num_configs_list)
+        res += get_sum(self.num_configs_list[:M])
+        return res
+
+    def get_next_iteration(self, iteration, **kwargs):
+        iter_ix = iteration % self.iter_cycle
+        return self.iter_klass(
+            HPB_iter=iteration,
+            num_configs=self.num_configs_list[iter_ix],
+            budgets=self.budgets_list[iter_ix],
+            config_sampler=self.config_sampler,
+            **kwargs
+        )
+
+    def get_table(self, init_iter=0):
+        column_index_list = []
+        data = [[], []]
+        row_index = ["num_config", "budget"]
+        for iter, (num_configs, budgets) in enumerate(zip(
+                self.num_configs_list, self.budgets_list)):
+            for stage, (num_config, budget) in enumerate(zip(
+                    num_configs, budgets)):
+                data[0].append(str(num_config))
+                data[1].append(pbudget(budget))
+                column_index_list.append([f"iter {iter + init_iter}", f"stage {stage}"])
+        df = pd.DataFrame(data, columns=pd.MultiIndex.from_tuples(column_index_list), index=row_index)
+        return df
+
+    def __str__(self):
+        return self.__class__.__name__ + " :\n" + str(self.get_table())
+
+    __repr__ = __str__
