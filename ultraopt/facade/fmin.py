@@ -18,7 +18,7 @@ from ultraopt.async.nameserver import NameServer
 from ultraopt.async.worker import Worker
 from ultraopt.facade.result import FMinResult
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
-from ultraopt.hdl import HDL2CS
+from ultraopt.hdl import hdl2cs
 from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils import progress
@@ -56,7 +56,7 @@ def fmin(
     # 设计目标：单机并行、多保真优化
     # ------------   config_space   ---------------#
     if isinstance(config_space, dict):
-        cs_ = HDL2CS()(config_space)
+        cs_ = hdl2cs(config_space)
     elif isinstance(config_space, ConfigurationSpace):
         cs_ = config_space
     else:

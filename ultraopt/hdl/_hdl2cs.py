@@ -184,3 +184,7 @@ class HDL2CS():
                 return eval(f'''hp_def.{_type}("{key}",*_value,default=_default)''')
         else:
             return Constant(key, hp_def._encode(value))
+
+
+def hdl2cs(hdl: dict) -> ConfigurationSpace:
+    return HDL2CS()(hdl)

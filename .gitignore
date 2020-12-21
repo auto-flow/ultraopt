@@ -8,3 +8,6 @@ venv
 *.png
 *.pkl
 .pytest_cache
+*.log
+.virtual_documents
+.ipynb_checkpoints
