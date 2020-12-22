@@ -13,9 +13,9 @@ from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
 from joblib import dump
 
-from ultraopt.async.master import Master
-from ultraopt.async.nameserver import NameServer
-from ultraopt.async.worker import Worker
+from ultraopt.async_comm.master import Master
+from ultraopt.async_comm.nameserver import NameServer
+from ultraopt.async_comm.worker import Worker
 from ultraopt.facade.result import FMinResult
 from ultraopt.facade.utils import warm_start_optimizer, get_wanted
 from ultraopt.hdl import hdl2cs
@@ -33,7 +33,7 @@ def fmin(
         random_state=42,
         n_iterations=100,
         n_jobs=1,
-        parallel_strategy="AsyncComm",
+        parallel_strategy="async_commComm",
         auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
         previous_result: Union[FMinResult, str, None] = None,
@@ -87,7 +87,7 @@ def fmin(
         progress_callback = progress.no_progress_callback
     # 3种运行模式：
     # 1. 串行，方便调试，不支持multi-fidelity
-    # 2. AsyncComm，RPC，支持multi-fidelity
+    # 2. async_commComm，RPC，支持multi-fidelity
     # 3. MapReduce，不支持multi-fidelity
     # non-parallelism debug mode
     if auto_identify_serial_strategy and n_jobs == 1 and multi_fidelity_iter_generator is None:
@@ -112,7 +112,7 @@ def fmin(
                     if (counts % checkpoint_freq == 0 and counts != 0) \
                             or (counts == n_iterations - 1):
                         dump(FMinResult(opt_), checkpoint_file)
-    elif parallel_strategy == "AsyncComm":
+    elif parallel_strategy == "async_commComm":
         # start name-server
         if run_id is None:
             run_id = uuid4().hex

@@ -86,7 +86,7 @@ class Master(object):
             the logger to output some (more or less meaningful) information
         result_logger: ambo.api.results.util.JsonResultLogger object
             a result logger that writes live results to disk
-        previous_result: ambo.async.result.Result object
+        previous_result: ambo.async_comm.result.Result object
             previous run to warmstart the run
         """
         self.checkpoint_freq = checkpoint_freq
