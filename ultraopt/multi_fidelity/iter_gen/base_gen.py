@@ -27,15 +27,15 @@ class BaseIterGenerator():
 
     @property
     def num_configs_list(self):
-        return self._num_configs_list
+        return self.num_configs_list_
 
     @property
     def budgets_list(self):
-        return self._budgets_list
+        return self.budgets_list_
 
     @property
     def iter_cycle(self):
-        return self._iter_cycle
+        return self.iter_cycle_
 
     def get_budgets(self):
         return self.budgets_list[0]

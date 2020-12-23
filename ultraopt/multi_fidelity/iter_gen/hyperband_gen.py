@@ -28,18 +28,18 @@ class HyperBandIterGenerator(BaseIterGenerator):
         self.budgets = budgets.tolist()
         if self.SH_only:
             s = self.max_SH_iter - 1
-            self._iter_cycle = 1
+            self.iter_cycle_ = 1
             ns = self.get_ns(s)
-            self._num_configs_list = [ns]
-            self._budgets_list = [self.budgets]
+            self.num_configs_list_ = [ns]
+            self.budgets_list_ = [self.budgets]
         else:
-            self._iter_cycle = self.max_SH_iter
-            self._num_configs_list = []
-            self._budgets_list = []
+            self.iter_cycle_ = self.max_SH_iter
+            self.num_configs_list_ = []
+            self.budgets_list_ = []
             for s in reversed(range(self.max_SH_iter)):
                 ns = self.get_ns(s)
-                self._num_configs_list.append(ns)
-                self._budgets_list.append(self.budgets[(-s - 1):])
+                self.num_configs_list_.append(ns)
+                self.budgets_list_.append(self.budgets[(-s - 1):])
 
     def get_ns(self, s):
         n0 = int(np.floor((self.max_SH_iter) / (s + 1)) * self.eta ** s)

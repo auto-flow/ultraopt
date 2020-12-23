@@ -10,7 +10,7 @@ import pandas as pd
 from ConfigSpace import Configuration
 
 from ultraopt.optimizer import ETPEOptimizer
-from ultraopt.hdl import HDL2CS, config2dict
+from ultraopt.hdl import HDL2CS, layering_config
 from ultraopt.structure import Job
 from functools import partial
 from hyperopt import hp, tpe, fmin, Trials

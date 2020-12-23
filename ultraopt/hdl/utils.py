@@ -16,7 +16,7 @@ def is_hdl_bottom(key, value):
     return False
 
 
-def config2dict(c: Union[Configuration, Dict[str, Any]]):
+def layering_config(c: Union[Configuration, Dict[str, Any]]):
     if isinstance(c, Configuration):
         dict_ = c.get_dictionary()
     elif isinstance(c, dict):

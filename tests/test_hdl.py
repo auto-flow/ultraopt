@@ -4,7 +4,7 @@
 # @Date    : 2020-12-20
 # @Contact    : tqichun@gmail.com
 import unittest
-from ultraopt.hdl import HDL2CS, config2dict
+from ultraopt.hdl import HDL2CS, layering_config
 
 # 测试嵌套依赖
 class TestHDL(unittest.TestCase):
@@ -92,6 +92,6 @@ class TestHDL(unittest.TestCase):
         })
         print(cs)
         configs=cs.sample_configuration(200)
-        res=[config2dict(config) for config in configs]
+        res=[layering_config(config) for config in configs]
         print(len(res))
         print("OK")

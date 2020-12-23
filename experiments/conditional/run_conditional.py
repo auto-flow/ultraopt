@@ -10,7 +10,7 @@ import pandas as pd
 from ConfigSpace import Configuration
 
 from ultraopt.optimizer import ETPEOptimizer
-from ultraopt.hdl import HDL2CS, config2dict
+from ultraopt.hdl import HDL2CS, layering_config
 from ultraopt.structure import Job
 
 experiment = "GB1"
@@ -46,7 +46,7 @@ choice2coef = {
 
 
 def evaluation(config: Configuration):
-    dict_ = config2dict(config)
+    dict_ = layering_config(config)
     choice, sub_config = dict_['parent'].popitem()
     coef = choice2coef[int(choice[-1])]
     # print(choice)

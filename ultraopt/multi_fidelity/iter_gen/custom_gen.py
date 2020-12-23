@@ -17,15 +17,15 @@ class CustomIterGenerator(BaseIterGenerator):
     ):
         super(CustomIterGenerator, self).__init__(iter_klass)
         if isinstance(num_configs_list[0], (list, tuple)):
-            self._budgets_list = budgets_list
-            self._num_configs_list = num_configs_list
-            self._iter_cycle = len(budgets_list)
+            self.budgets_list_ = budgets_list
+            self.num_configs_list_ = num_configs_list
+            self.iter_cycle_ = len(budgets_list)
             assert len(budgets_list) == len(num_configs_list), ValueError
             for budgets, num_configs in zip(budgets_list, num_configs_list):
                 assert len(budgets) == len(num_configs), ValueError(
                     "length of budgets and state configs should be equal.")
 
         else:
-            self._budgets_list = [budgets_list]
-            self._num_configs_list = [num_configs_list]
-            self._iter_cycle = 1
+            self.budgets_list_ = [budgets_list]
+            self.num_configs_list_ = [num_configs_list]
+            self.iter_cycle_ = 1
