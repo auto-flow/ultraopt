@@ -47,7 +47,7 @@ class ConfigTransformer():
                 if isinstance(hp, CategoricalHyperparameter):
                     n_choices = len(hp.choices)
                     n_choices_list.append(n_choices)
-                    n_variables_embedded += get_embed_dims(n_choices)
+                    n_variables_embedded += int(get_embed_dims(n_choices)) # avoid bug
                 else:
                     n_choices_list.append(0)
                     n_variables_embedded += 1

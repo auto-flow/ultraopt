@@ -158,5 +158,5 @@ class ConfigEvaluator:
                 var += var_ * (weight ** 2)
             std = np.sqrt(var)
         cost_time = time() - start_time
-        self.logger.debug(f"evaluation cost {cost_time:.3f}s")
+        self.logger.debug(f"evaluate cost {cost_time:.3f}s")
         return self.acq_func(mean, std, X, y_opt)

@@ -9,8 +9,8 @@ import numpy as np
 from tabular_nn import EmbeddingEncoder
 from tabular_nn import EquidistanceEncoder
 
-from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.learning.tpe import TreeStructuredParzenEstimator
+from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2
 from ultraopt.utils.config_transformer import ConfigTransformer
 
@@ -22,7 +22,7 @@ class ETPEOptimizer(BaseOptimizer):
             top_n_percent=15, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            gamma1=0.96, gamma2=3, max_bw_factor=4,min_bw_factor=1, max_try=3,
+            gamma1=0.96, gamma2=3, max_bw_factor=4, min_bw_factor=1, max_try=3,
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=4, sort_by_EI=True,
             # Embedding Encoder
@@ -84,7 +84,7 @@ class ETPEOptimizer(BaseOptimizer):
         updated_min_points_in_model = len(self.initial_design_configs)
         if updated_min_points_in_model != self.min_points_in_model:
             self.logger.debug(f"Update min_points_in_model from {self.min_points_in_model} "
-                             f"to {updated_min_points_in_model}")
+                              f"to {updated_min_points_in_model}")
             self.min_points_in_model = updated_min_points_in_model
 
     def tpe_sampling(self, epm, budget):
@@ -99,7 +99,7 @@ class ETPEOptimizer(BaseOptimizer):
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
                     self.logger.debug(f"The sample already exists and needs to be resampled. "
-                                     f"It's the {i}-th time sampling in thompson sampling. ")
+                                      f"It's the {i}-th time sampling in thompson sampling. ")
                 else:
                     add_configs_origin(sample, "ETPE sampling")
                     return sample, info_dict
@@ -120,7 +120,7 @@ class ETPEOptimizer(BaseOptimizer):
         if epm is None:
             # return self.pick_random_initial_config(budget)
             info_dict = {"model_based_pick": False}
-            if self.initial_design_ix<len(self.initial_design_configs):
+            if self.initial_design_ix < len(self.initial_design_configs):
                 config = self.initial_design_configs[self.initial_design_ix]
                 add_configs_origin(config, "Initial Design")
                 self.initial_design_ix += 1

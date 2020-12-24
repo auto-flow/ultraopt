@@ -179,7 +179,7 @@ class Result(object):
                 If set to true all runs (even those not with the largest budget) can be the incumbent.
                 Otherwise, only full budget runs are considered
             bigger_is_better:bool
-                flag whether an evaluation on a larger budget is always considered better.
+                flag whether an evaluate on a larger budget is always considered better.
                 If True, the incumbent might increase for the first evaluations on a bigger budget
             non_decreasing_budget: bool
                 flag whether the budget of a new incumbent should be at least as big as the one for

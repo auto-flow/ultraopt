@@ -6,6 +6,7 @@
 import unittest
 from ultraopt.hdl import HDL2CS, layering_config
 
+
 # 测试嵌套依赖
 class TestHDL(unittest.TestCase):
     def test_multi_choice(self):
@@ -95,3 +96,4 @@ class TestHDL(unittest.TestCase):
         res=[layering_config(config) for config in configs]
         print(len(res))
         print("OK")
+

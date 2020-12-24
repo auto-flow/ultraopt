@@ -8,7 +8,7 @@ import unittest
 from ultraopt import fmin
 from ultraopt.constants import valid_optimizers, valid_parallel_strategies
 from ultraopt.multi_fidelity import HyperBandIterGenerator, SuccessiveHalvingIterGenerator
-from ultraopt.tests.mock import evaluation, config_space
+from ultraopt.tests.mock import evaluate, config_space
 
 class TestAllMethod(unittest.TestCase):
     def test_all_methods(self):
@@ -23,7 +23,7 @@ class TestAllMethod(unittest.TestCase):
                 for multi_fidelity_iter_generator in multi_fidelity_iter_generators:
                     print(optimizer, parallel_strategie, multi_fidelity_iter_generator)
                     ret = fmin(
-                        evaluation, config_space, optimizer=optimizer, n_iterations=10, n_jobs=3,
+                        evaluate, config_space, optimizer=optimizer, n_iterations=10, n_jobs=3,
                         parallel_strategy=parallel_strategie, multi_fidelity_iter_generator=multi_fidelity_iter_generator
                     )
                     print(ret)

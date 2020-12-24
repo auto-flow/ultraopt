@@ -10,7 +10,7 @@ from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
 
 from ultraopt.structure import Job
-from ultraopt.utils.config_space import add_configs_origin
+from ultraopt.utils.config_space import add_configs_origin, get_dict_from_config
 from ultraopt.utils.hash import get_hash_of_config
 from ultraopt.utils.logging_ import get_logger
 
@@ -40,7 +40,8 @@ class BaseOptimizer():
     def get_initial_budget2obvs(cls, budgets):
         return {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
 
-    def tell(self, config: dict, loss: float, budget: float = 1, update_model=True):
+    def tell(self, config: Union[dict, Configuration], loss: float, budget: float = 1, update_model=True):
+        config = get_dict_from_config(config)
         job = Job(get_hash_of_config(config))
         job.kwargs = {
             "budget": budget,
@@ -188,7 +189,7 @@ class BaseOptimizer():
             add_configs_origin(config, origin)
             if self.is_config_exist(budget, config):
                 self.logger.debug(f"The sample already exists and needs to be resampled. "
-                                 f"It's the {i}-th time sampling in random sampling. ")
+                                  f"It's the {i}-th time sampling in random sampling. ")
             else:
                 return self.process_config_info_pair(config, info_dict, budget)
         return self.process_all_configs_exist(info_dict, budget)

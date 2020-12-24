@@ -202,7 +202,7 @@ class Worker(object):
         config: dict
             the actual configuration to be evaluated.
         budget: float
-            the budget for the evaluation
+            the budget for the evaluate
         working_directory: str
             a name of a directory that is unique to this configuration. Use this to store intermediate results on lower budgets that can be reused later for a larger budget (for iterative algorithms, for example).
         Returns

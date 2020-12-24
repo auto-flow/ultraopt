@@ -10,7 +10,7 @@ from joblib import load
 from ultraopt import fmin
 from ultraopt.constants import valid_parallel_strategies
 from ultraopt.multi_fidelity import CustomIterGenerator
-from ultraopt.tests.mock import evaluation, config_space
+from ultraopt.tests.mock import evaluate, config_space
 
 
 class TestCheckpoint(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestCheckpoint(unittest.TestCase):
             n_iterations = 11
             n_jobs = 4
             p_res = fmin(
-                evaluation,
+                evaluate,
                 config_space,
                 optimizer=optimizer,
                 n_jobs=n_jobs,

@@ -8,7 +8,7 @@ import unittest
 from ultraopt import fmin
 from ultraopt.constants import valid_warm_start_strategies
 from ultraopt.multi_fidelity import HyperBandIterGenerator
-from ultraopt.tests.mock import evaluation, config_space
+from ultraopt.tests.mock import evaluate, config_space
 
 
 class TestWarmStart(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestWarmStart(unittest.TestCase):
         n_iterations = 15
         for warm_start_strategy in valid_warm_start_strategies:
             p_res = fmin(
-                evaluation,
+                evaluate,
                 config_space,
                 optimizer=optimizer,
                 n_jobs=1,
@@ -25,7 +25,7 @@ class TestWarmStart(unittest.TestCase):
             )
             for i in range(3):
                 res = fmin(
-                    evaluation,
+                    evaluate,
                     config_space,
                     warm_start_strategy=warm_start_strategy,
                     n_jobs=1,
@@ -42,7 +42,7 @@ class TestWarmStart(unittest.TestCase):
         parallel_strategy = "MapReduce"
         for warm_start_strategy in valid_warm_start_strategies:
             p_res = fmin(
-                evaluation,
+                evaluate,
                 config_space,
                 optimizer=optimizer,
                 n_jobs=n_jobs,
@@ -51,7 +51,7 @@ class TestWarmStart(unittest.TestCase):
             )
             for i in range(3):
                 res = fmin(
-                    evaluation,
+                    evaluate,
                     config_space,
                     warm_start_strategy=warm_start_strategy,
                     n_jobs=n_jobs,
@@ -70,7 +70,7 @@ class TestWarmStart(unittest.TestCase):
         multi_fidelity_iter_generator = HyperBandIterGenerator(25, 100, 2)
         for warm_start_strategy in valid_warm_start_strategies:
             p_res = fmin(
-                evaluation,
+                evaluate,
                 config_space,
                 optimizer=optimizer,
                 n_jobs=n_jobs,
@@ -81,7 +81,7 @@ class TestWarmStart(unittest.TestCase):
             print(p_res)
             for i in range(3):
                 res = fmin(
-                    evaluation,
+                    evaluate,
                     config_space,
                     warm_start_strategy=warm_start_strategy,
                     n_jobs=n_jobs,

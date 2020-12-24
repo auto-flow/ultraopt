@@ -6,7 +6,7 @@
 from ConfigSpace import ConfigurationSpace, Configuration
 from hpolib.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D
 
-__all__ = ["config_space", "evaluation"]
+__all__ = ["config_space", "evaluate"]
 
 synthetic_function_cls = MultiFidelityRosenbrock2D
 
@@ -16,7 +16,7 @@ synthetic_function = synthetic_function_cls()
 
 
 # 定义目标函数
-def evaluation(config: dict, budget=100):
+def evaluate(config: dict, budget=100):
     config = Configuration(config_space, values=config)
     return synthetic_function.objective_function(config, budget=budget)["function_value"] - \
            synthetic_function.get_meta_information()["f_opt"]

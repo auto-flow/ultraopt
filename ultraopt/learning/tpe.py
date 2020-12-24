@@ -189,7 +189,7 @@ class TreeStructuredParzenEstimator(BaseEstimator):
                 result = rng.rand(n_candidates, group_mask.sum())
             sampled_matrix[:, group_mask] = result
         candidates = self.config_transformer.inverse_transform(sampled_matrix)
-        n_fails = len(candidates) - n_candidates
+        n_fails = n_candidates - len(candidates)
         add_configs_origin(candidates, "ETPE sampling")
         if n_fails:
             random_candidates = self.config_transformer.config_space.sample_configuration(n_fails)
