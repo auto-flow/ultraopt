@@ -96,7 +96,7 @@ setup(
     long_description_content_type='text/x-rst',
     license='BSD',
     url='https://github.com/auto-flow/ultraopt',
-    packages=find_packages("./", include=all_pkgs),
+    packages=find_packages(".", include=all_pkgs),
     package_dir=build_package_dir(all_pkgs),
     package_data=build_package_data(all_pkgs),
     python_requires='>=3.6.*',

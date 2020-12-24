@@ -1,4 +1,4 @@
-tabular_nn>=0.1.0
+tabular_nn>=0.1.1
 ConfigSpace==0.4.16
 category_encoders>=2.0.0
 scikit_learn>=0.22.2
