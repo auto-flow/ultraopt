@@ -11,3 +11,6 @@ venv
 *.log
 .virtual_documents
 .ipynb_checkpoints
+build
+dist
+*.egg-info
