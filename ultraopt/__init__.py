@@ -2,6 +2,6 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-14
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from ultraopt.facade.fmin import fmin
 from ultraopt.facade.result import FMinResult

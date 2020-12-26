@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-19
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from functools import lru_cache
 
 import numpy as np
@@ -37,10 +37,12 @@ class FMinResult():
             row.append(hyperparameter)
             for budget in self.budget2info:
                 config = self.budget2info[budget]["config"]
-                nil = "-/-"
+                nil = "-"
                 if config is not None:
-                    val = config.get(hyperparameter, nil)
+                    val = config.get(hyperparameter, None)
                 else:
+                    val = config = nil
+                if val is None:
                     val = nil
                 if isinstance(val, float):
                     val = f"{val:.4f}"

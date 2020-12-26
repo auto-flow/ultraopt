@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-20
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from ConfigSpace import ConfigurationSpace, Configuration
 from hpolib.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D
 

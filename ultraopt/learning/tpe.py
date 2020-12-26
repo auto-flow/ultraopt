@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from copy import deepcopy
 from typing import List, Optional
 
@@ -15,7 +15,7 @@ from sklearn.model_selection import KFold
 from sklearn.neighbors import KernelDensity
 from sklearn.utils import check_random_state
 
-from ultraopt.utils.config_space import add_configs_origin
+from ultraopt.utils.config_space import add_configs_origin, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.hash import get_hash_of_array
 from ultraopt.utils.logging_ import get_logger
@@ -172,7 +172,7 @@ class TreeStructuredParzenEstimator(BaseEstimator):
         rng = check_random_state(random_state)
         if self.good_kdes is None:
             self.logger.warning("good_kdes is None, random sampling.")
-            return self.config_transformer.config_space.sample_configuration(n_candidates)
+            return sample_configurations(self.config_transformer.config_space, n_candidates)
         sampled_matrix = np.zeros([n_candidates, len(self.groups)])
         for group, good_kde in enumerate(self.good_kdes):
             group_mask = groups == group
@@ -192,7 +192,7 @@ class TreeStructuredParzenEstimator(BaseEstimator):
         n_fails = n_candidates - len(candidates)
         add_configs_origin(candidates, "ETPE sampling")
         if n_fails:
-            random_candidates = self.config_transformer.config_space.sample_configuration(n_fails)
+            random_candidates = sample_configurations(self.config_transformer.config_space, n_fails)
             add_configs_origin(random_candidates, "Random Search")
             candidates.extend(random_candidates)
         if sort_by_EI:

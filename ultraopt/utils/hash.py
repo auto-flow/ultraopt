@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-15
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 import hashlib
 from copy import deepcopy
 from typing import Union, Dict, Any

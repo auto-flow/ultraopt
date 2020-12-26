@@ -91,7 +91,7 @@ setup(
     version=version,
     author='Qichun Tang',
     author_email='qichun.tang@bupt.edu.cn',
-    description='Tabular NN: Neural Network for Tabular Data implement by PyTorch',
+    description='Distributed Asynchronous Hyperparameter Optimization Better than HyperOpt',
     long_description=long_description,
     long_description_content_type='text/x-rst',
     license='BSD',

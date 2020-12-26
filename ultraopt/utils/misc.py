@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-14
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from fractions import Fraction
 
 import numpy as np

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-14
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from collections import Counter
 from copy import deepcopy
 from typing import List, Union
@@ -57,8 +57,7 @@ def initial_design(cs, n_configs):
             n_choices_list.append(0)
     n_choices_vec = np.array(n_choices_list)
     high_r_ix = np.arange(len(n_choices_list))[n_choices_vec >= 3]
-    samples: list = cs.sample_configuration(n_configs)
-    samples = [samples] if not isinstance(samples, list) else samples
+    samples: list = sample_configurations(cs, n_configs)
     # rng = check_random_state(rng)
     while True:
         vectors = np.array([sample.get_array() for sample in samples])
@@ -85,7 +84,7 @@ def initial_design(cs, n_configs):
 
 
 def sample_vectors(cs, n_samples):
-    return np.array([sample.get_array() for sample in cs.sample_configuration(n_samples)])
+    return np.array([sample.get_array() for sample in sample_configurations(cs, n_samples)])
 
 
 def sample_configuration_except_default(cs: ConfigurationSpace, idx2val: dict, is_child_list=None,
@@ -115,13 +114,24 @@ def sample_configuration_except_default(cs: ConfigurationSpace, idx2val: dict, i
     return Configuration(cs, vector=vector), sampled_vectors
 
 
+def sample_configurations(config_space, n_configs=1):
+    if n_configs == 1:
+        return [config_space.sample_configuration(1)]
+    elif n_configs > 1:
+        return config_space.sample_configuration(n_configs)
+    else:
+        raise ValueError(f"n_configs should >=1")
+
+
 def get_array_from_configs(configs: List[Configuration]):
     return np.array([config.get_array() for config in configs])
 
-def get_dict_from_config(config:Union[dict, Configuration]):
+
+def get_dict_from_config(config: Union[dict, Configuration]):
     if isinstance(config, dict):
         return config
     return config.get_dictionary()
+
 
 def initial_design_2(cs, n_configs, rng):
     cs = deepcopy(cs)
@@ -168,7 +178,7 @@ def initial_design_cat(cs, n_configs):
             n_choices_list.append(len(hp.choices))
         else:
             n_choices_list.append(0)
-    samples = cs.sample_configuration(n_configs)
+    samples = sample_configurations(cs, n_configs)
     # rng = check_random_state(rng)
     vectors = np.array([sample.get_array() for sample in samples])
     for i, n_choices in enumerate(n_choices_list):

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-18
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from ultraopt.multi_fidelity.iter.base_iter import BaseIteration
 from ultraopt.structure import Job
 

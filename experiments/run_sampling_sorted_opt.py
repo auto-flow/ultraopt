@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from hpolib.benchmarks.synthetic_functions import Forrester, Bohachevsky, Camelback
 
 from ultraopt.optimizer.bo.sampling_sort_opt import SamplingSortOptimizer

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from hpolib.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
 from hpolib.benchmarks.synthetic_functions.camelback import Camelback
 from hpolib.benchmarks.synthetic_functions.forrester import Forrester

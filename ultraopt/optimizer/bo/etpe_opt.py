@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Date    : 2020-12-15
-# @Contact    : tqichun@gmail.com
+# @Contact    : qichun.tang@bupt.edu.cn
 from copy import deepcopy
 
 import numpy as np
@@ -11,7 +11,7 @@ from tabular_nn import EquidistanceEncoder
 
 from ultraopt.learning.tpe import TreeStructuredParzenEstimator
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.utils.config_space import add_configs_origin, initial_design_2
+from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
 
 
@@ -69,7 +69,7 @@ class ETPEOptimizer(BaseOptimizer):
         if len(self.config_transformer.high_r_cols) == 0:
             self.config_transformer.encoder = None
         if self.embedding_encoder is None:
-            vectors = np.array([config.get_array() for config in self.config_space.sample_configuration(5000)])
+            vectors = np.array([config.get_array() for config in sample_configurations(self.config_space, 5000)])
             self.config_transformer.fit_encoder(vectors)
         self.budget2epm = {budget: None for budget in budgets}
         if self.n_candidates is None:

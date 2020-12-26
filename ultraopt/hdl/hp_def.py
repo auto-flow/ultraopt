@@ -104,17 +104,17 @@ def loguniform(label: str, low: float, high: float, default=None):
     return UniformFloatHyperparameter(label, low, high, **kwargs)
 
 
-# def int_qloguniform(label: str, low: int, high: int, q: int = None, default=None):
-#     if not q:
-#         q = min(low, 1)
-#     kwargs = {'log': True}
-#     if default:
-#         kwargs.update({'default_value': default})
-#     return UniformIntegerHyperparameter(label, low, high, q=q, **kwargs)
-#
-#
-# def int_loguniform(label: str, low: int, high: int, default=None):
-#     kwargs = {'log': True}
-#     if default:
-#         kwargs.update({'default_value': default})
-#     return UniformIntegerHyperparameter(label, low, high, **kwargs)
+def int_qloguniform(label: str, low: int, high: int, q: int = None, default=None):
+    if not q:
+        q = min(low, 1)
+    kwargs = {'log': True}
+    if default:
+        kwargs.update({'default_value': default})
+    return UniformIntegerHyperparameter(label, low, high, q=q, **kwargs)
+
+
+def int_loguniform(label: str, low: int, high: int, default=None):
+    kwargs = {'log': True}
+    if default:
+        kwargs.update({'default_value': default})
+    return UniformIntegerHyperparameter(label, low, high, **kwargs)
