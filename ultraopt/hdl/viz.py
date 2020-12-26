@@ -4,6 +4,7 @@
 # @Date    : 2020-12-23
 # @Contact    : qichun.tang@bupt.edu.cn
 from ultraopt.hdl.utils import is_hdl_bottom
+from ultraopt.utils.misc import get_import_error
 
 SUFFIX = "(choice)"
 
@@ -30,7 +31,7 @@ def plot_hdl(hdl: dict, title="Config Space"):
     try:
         from graphviz import Digraph
     except Exception as e:
-        raise ImportError("Cannot import graphviz! Execute 'pip install graphviz' in shell.")
+        raise get_import_error("graphviz")
     g = Digraph(title)
     plot_hdl_recurse(hdl, g)
     return g
@@ -48,7 +49,7 @@ def plot_layered_dict(layered_dict: dict, title="Layered Dict"):
     try:
         from graphviz import Digraph
     except Exception as e:
-        raise ImportError("Cannot import graphviz! Execute 'pip install graphviz' in shell.")
+        raise get_import_error("graphviz")
     g = Digraph(title)
     plot_hdl_recurse(layered_dict, g)
     return g

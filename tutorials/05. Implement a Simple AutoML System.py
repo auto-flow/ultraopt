@@ -70,7 +70,7 @@ class Evaluator():
         AS_HP = layered_dict['classifier'].copy()
         AS, HP = AS_HP.popitem()
         ML_model = eval(AS)(**HP)
-        scores = cross_val_score(ML_model, self.X, y, cv=self.cv, scoring=self.metric)
+        scores = cross_val_score(ML_model, self.X, self.y, cv=self.cv, scoring=self.metric)
         score = scores.mean()
         return 1 - score
 

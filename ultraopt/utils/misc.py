@@ -36,3 +36,7 @@ def print_incumbent_trajectory(chal_perf: float, inc_perf: float, challenger: di
 
 def get_max_SH_iter(min_budget, max_budget, eta):
     return -int(np.log(min_budget / max_budget) / np.log(eta)) + 1
+
+
+def get_import_error(pkg_name):
+    raise ImportError(f"Cannot import {pkg_name}! Execute 'pip install {pkg_name}' in shell.")

@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-19
 # @Contact    : qichun.tang@bupt.edu.cn
+from copy import deepcopy
 from functools import lru_cache
 
 import numpy as np
@@ -10,7 +11,7 @@ from terminaltables import AsciiTable
 
 from ultraopt.facade.utils import get_wanted
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.utils.misc import pbudget
+from ultraopt.utils.misc import pbudget, get_import_error
 
 
 class FMinResult():
@@ -94,3 +95,23 @@ class FMinResult():
 
     def __getitem__(self, item):
         return self.__getattribute__(item)
+
+    def plot_hi(self, budget=None, target_name="loss", loss2target_func=None, return_data_only=False):
+        if budget is None:
+            budget = self.max_budget
+        losses = deepcopy(self.budget2obvs[budget]["losses"])
+        data = deepcopy([config.get_dictionary() for config in self.budget2obvs[budget]["configs"]])
+        if loss2target_func is not None:
+            targets = [loss2target_func(loss) for loss in losses]
+        else:
+            targets =losses
+        for config, target in zip(data, targets):
+            config[target_name]=target
+        if return_data_only:
+            return data
+        try:
+            import hiplot as hip
+        except Exception:
+            raise get_import_error("hiplot")
+        return hip.Experiment.from_iterable(data).display()
+
