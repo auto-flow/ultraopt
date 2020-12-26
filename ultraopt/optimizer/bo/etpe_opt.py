@@ -113,7 +113,7 @@ class ETPEOptimizer(BaseOptimizer):
         info_dict = {"model_based_pick": False}
         return sample, info_dict
 
-    def get_config_(self, budget, max_budget):
+    def _get_config(self, budget, max_budget):
         # choose model from max-budget
         epm = self.budget2epm[max_budget]
         # random sampling
@@ -148,7 +148,7 @@ class ETPEOptimizer(BaseOptimizer):
             return budget
         return None
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
+    def _new_result(self, budget, vectors: np.ndarray, losses: np.ndarray):
         if len(losses) < self.min_points_in_model:
             return
         vectors = self.budget2obvs[budget]["vectors"]

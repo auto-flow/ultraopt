@@ -6,6 +6,7 @@
 from copy import deepcopy
 from functools import lru_cache
 
+import matplotlib.pyplot as plt
 import numpy as np
 from terminaltables import AsciiTable
 
@@ -104,9 +105,9 @@ class FMinResult():
         if loss2target_func is not None:
             targets = [loss2target_func(loss) for loss in losses]
         else:
-            targets =losses
+            targets = losses
         for config, target in zip(data, targets):
-            config[target_name]=target
+            config[target_name] = target
         if return_data_only:
             return data
         try:
@@ -114,4 +115,68 @@ class FMinResult():
         except Exception:
             raise get_import_error("hiplot")
         return hip.Experiment.from_iterable(data).display()
+
+    def plot_convergence(self, budget=None, name=None, alpha=0.2, yscale=None,
+                         color=None, true_minimum=None, ax=None,
+                         **kwargs):
+        """Plot one or several convergence traces.
+
+        Parameters
+        ----------
+        args[i] :  `OptimizeResult`, list of `OptimizeResult`, or tuple
+            The result(s) for which to plot the convergence trace.
+
+            - if `OptimizeResult`, then draw the corresponding single trace;
+            - if list of `OptimizeResult`, then draw the corresponding convergence
+              traces in transparency, along with the average convergence trace;
+            - if tuple, then `args[i][0]` should be a string label and `args[i][1]`
+              an `OptimizeResult` or a list of `OptimizeResult`.
+
+        ax : `Axes`, optional
+            The matplotlib axes on which to draw the plot, or `None` to create
+            a new one.
+
+        true_minimum : float, optional
+            The true minimum value of the function, if known.
+
+        yscale : None or string, optional
+            The scale for the y-axis.
+
+        Returns
+        -------
+        ax : `Axes`
+            The matplotlib axes.
+        """
+        if budget is None:
+            budget = self.max_budget
+        losses = deepcopy(self.budget2obvs[budget]["losses"])
+        if ax is None:
+            ax = plt.gca()
+
+        ax.set_title("Convergence plot")
+        ax.set_xlabel("Number of iterations $n$")
+        ax.set_ylabel(r"$\min f(x)$ after $n$ iterations")
+        ax.grid()
+
+        if yscale is not None:
+            ax.set_yscale(yscale)
+
+        n_calls = len(losses)
+        iterations = range(1, n_calls + 1)
+        mins = [np.min(losses[:i]) for i in iterations]
+        max_mins = max(mins)
+        cliped_losses = np.clip(losses, None, max_mins)
+        ax.plot(iterations, mins, c=color, label=name, **kwargs)
+        ax.scatter(iterations, cliped_losses, c=color, alpha=alpha)
+
+        if true_minimum:
+            ax.axhline(true_minimum, linestyle="--",
+                       color="r", lw=1,
+                       label="True minimum")
+
+        if true_minimum or name:
+            ax.legend(loc="best")
+        return ax
+
+
 

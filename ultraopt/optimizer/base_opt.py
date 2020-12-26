@@ -81,9 +81,9 @@ class BaseOptimizer():
         ###################################################################
         if not update_model:
             return
-        self.new_result_(budget, vectors, losses)
+        self._new_result(budget, vectors, losses)
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
+    def _new_result(self, budget, vectors: np.ndarray, losses: np.ndarray):
         raise NotImplementedError
 
     def ask(self, budget=1, n_points=None, strategy="cl_min") -> Union[List[Tuple[dict, dict]], Tuple[dict, dict]]:
@@ -135,9 +135,9 @@ class BaseOptimizer():
                 if not self.is_config_exist(budget, initial_point):
                     self.logger.debug(f"Using initial points [{self.initial_points_index - 1}]")
                     return self.process_config_info_pair(initial_point, {}, budget)
-        return self.get_config_(budget, max_budget)
+        return self._get_config(budget, max_budget)
 
-    def get_config_(self, budget, max_budget):
+    def _get_config(self, budget, max_budget):
         raise NotImplementedError
 
     def is_config_exist(self, budget, config: Configuration):

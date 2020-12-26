@@ -10,10 +10,10 @@ from ultraopt.optimizer.base_opt import BaseOptimizer
 
 class RandomOptimizer(BaseOptimizer):
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
+    def _new_result(self, budget, vectors: np.ndarray, losses: np.ndarray):
         pass
 
-    def get_config_(self, budget, max_budget):
+    def _get_config(self, budget, max_budget):
         return self.pick_random_initial_config(budget, origin="Random Search")
 
     def get_available_max_budget(self):

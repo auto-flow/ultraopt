@@ -14,3 +14,4 @@ venv
 build
 dist
 *.egg-info
+toy.ipynb

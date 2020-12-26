@@ -65,7 +65,7 @@ class SamplingSortOptimizer(BaseOptimizer):
             self.budget2confevt[budget] = config_evaluator
         self.update_weight_cnt = 0
 
-    def new_result_(self, budget, vectors: np.ndarray, losses: np.ndarray):
+    def _new_result(self, budget, vectors: np.ndarray, losses: np.ndarray):
         if len(losses) < self.min_points_in_model:
             return
         X_obvs = self.config_transformer.transform(vectors)
@@ -76,7 +76,7 @@ class SamplingSortOptimizer(BaseOptimizer):
             epm = self.budget2epm[budget]
         self.budget2epm[budget] = epm.fit(X_obvs, y_obvs)
 
-    def get_config_(self, budget, max_budget):
+    def _get_config(self, budget, max_budget):
         # choose model from max-budget
         epm = self.budget2epm[max_budget]
         # random sampling
