@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-19
 # @Contact    : qichun.tang@bupt.edu.cn
+from collections import defaultdict
 from copy import deepcopy
 from functools import lru_cache
 
@@ -13,6 +14,7 @@ from terminaltables import AsciiTable
 from ultraopt.facade.utils import get_wanted
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.misc import pbudget, get_import_error
+from ultraopt.viz import plot_convergence
 
 
 class FMinResult():
@@ -23,6 +25,11 @@ class FMinResult():
         self.is_multi_fidelity = len(optimizer.budgets) > 1
         self.budget2obvs = optimizer.budget2obvs
         self.budget2info = {}
+        self.optimizer.reset_time()
+        self.runId2info = self.optimizer.runId2info
+        self.budgets = sorted(list(self.budget2obvs.keys()))
+
+
         for budget, obvs in self.budget2obvs.items():
             losses = obvs["losses"]
             configs = obvs["configs"]
@@ -116,9 +123,14 @@ class FMinResult():
             raise get_import_error("hiplot")
         return hip.Experiment.from_iterable(data).display()
 
-    def plot_convergence(self, budget=None, name=None, alpha=0.2, yscale=None,
-                         color=None, true_minimum=None, ax=None,
-                         **kwargs):
+    def plot_convergence(
+            self,
+            budget=None,
+            xlabel="Number of iterations $n$",
+            ylabel=r"$\min f(x)$ after $n$ iterations",
+            ax=None, name=None, alpha=0.2, yscale=None,
+            color=None, true_minimum=None,
+            **kwargs):
         """Plot one or several convergence traces.
 
         Parameters
@@ -150,33 +162,159 @@ class FMinResult():
         if budget is None:
             budget = self.max_budget
         losses = deepcopy(self.budget2obvs[budget]["losses"])
-        if ax is None:
-            ax = plt.gca()
-
-        ax.set_title("Convergence plot")
-        ax.set_xlabel("Number of iterations $n$")
-        ax.set_ylabel(r"$\min f(x)$ after $n$ iterations")
-        ax.grid()
-
-        if yscale is not None:
-            ax.set_yscale(yscale)
 
         n_calls = len(losses)
         iterations = range(1, n_calls + 1)
         mins = [np.min(losses[:i]) for i in iterations]
         max_mins = max(mins)
         cliped_losses = np.clip(losses, None, max_mins)
-        ax.plot(iterations, mins, c=color, label=name, **kwargs)
-        ax.scatter(iterations, cliped_losses, c=color, alpha=alpha)
+        return plot_convergence(iterations, mins, cliped_losses, xlabel, ylabel, ax, name, alpha, yscale, color,
+                                true_minimum, **kwargs)
 
-        if true_minimum:
-            ax.axhline(true_minimum, linestyle="--",
-                       color="r", lw=1,
-                       label="True minimum")
+    plot_convergence_over_iter = plot_convergence
 
-        if true_minimum or name:
-            ax.legend(loc="best")
+    def plot_convergence_over_time(
+            self,
+            xlabel="time (s)",
+            ylabel=r"$\min f(x)$ over time",
+            ax=None, names=None, alpha=0.2, yscale=None,
+            colors=None, true_minimum=None,
+            **kwargs):
+        budget2TimesLosses = defaultdict(lambda: {"times": [], "losses": []})
+        for (configId, budget), info in self.runId2info.items():
+            end_time = info["end_time"]
+            loss = info["loss"]
+            budget2TimesLosses[budget]["times"].append(end_time)
+            budget2TimesLosses[budget]["losses"].append(loss)
+        budgets = self.budgets
+        max_mins = -float("inf")
+
+        budget2data = {}
+
+        for i, (budget) in enumerate(budgets):
+            TimesLosses = budget2TimesLosses[budget]
+            times = TimesLosses["times"]
+            idx = np.argsort(times)
+            times = np.array(TimesLosses["times"])[idx]
+            losses = np.array(TimesLosses["losses"])[idx]
+            mins = [np.min(losses[:i]) for i in range(1, len(losses) + 1)]
+            max_mins = max(max(mins), max_mins)
+            budget2data[budget] = {
+                "x": times,
+                "y1": mins,
+                "y2": losses,
+            }
+        for i, (budget) in enumerate(budgets):
+            y2 = np.clip(budget2data[budget]["y2"], None, max_mins)
+            color = None
+            if colors:
+                color = colors[i]
+            name = f"budget={pbudget(budget)}"
+            if names:
+                name = names[i]
+            ax = plot_convergence(budget2data[budget]["x"], budget2data[budget]["y1"], y2, xlabel, ylabel, ax, name,
+                                  alpha, yscale, color,
+                                  true_minimum, **kwargs)
         return ax
 
+    def plot_concurrent_over_time(self, ax=None, num_points=512, alpha=0.5):
+        data = []
+        for info in self.runId2info.values():
+            end_time = info["end_time"]
+            start_time = info["start_time"]
+            data.append([start_time, end_time])
+        data = np.array(data)
+        ts = np.linspace(data.min(), data.max(), num_points)
+        n_workers = np.array([((data[:, 0] <= t) * (data[:, 1] > t)).sum() for t in ts])
+        if ax is None:
+            ax = plt.gca()
+        ax.plot(ts, n_workers)
+        ax.set_xlabel('time [s]')
+        ax.set_ylabel('number of concurrent runs')
+        ax.grid(alpha=alpha)
+        return ax
 
+    def plot_finished_over_time(self, alpha=0.5):
+        budgets = self.budgets
+
+        times = {}
+        for b in budgets:
+            times[b] = [0]
+
+        for (_, budget), info in self.runId2info.items():
+            times[budget].append(info["end_time"])
+
+        for b in budgets:
+            times[b].sort()
+
+        fig, ax = plt.subplots()
+
+        for b in budgets:
+            ax.plot(times[b], np.arange(len(times[b])), label='b = %f' % b)
+
+        ax.set_xlabel('time [s]')
+        ax.set_ylabel('number of finished runs')
+        ax.legend()
+        ax.grid(alpha=alpha)
+
+        return ax
+
+    def correlation_across_budgets(self, show=False):
+
+
+        budgets = list(set([r.budget for r in self.budgets]))
+        budgets.sort()
+
+        import itertools
+
+        loss_pairs = {}
+        for b in budgets[:-1]:
+            loss_pairs[b] = {}
+
+        for b1, b2 in itertools.combinations(budgets, 2):
+            loss_pairs[b1][b2] = []
+
+        for cid in id2conf.keys():
+            runs = results_object.get_runs_by_id(cid)
+            if len(runs) < 2: continue
+
+            for r1, r2 in itertools.combinations(runs, 2):
+                if r1.loss is None or r2.loss is None: continue
+                if not np.isfinite(r1.loss) or not np.isfinite(r2.loss): continue
+                loss_pairs[float(r1.budget)][float(r2.budget)].append((r1.loss, r2.loss))
+
+        rhos = np.eye(len(budgets) - 1)
+        rhos.fill(np.nan)
+
+        ps = np.eye(len(budgets) - 1)
+        ps.fill(np.nan)
+
+        for i in range(len(budgets) - 1):
+            for j in range(i + 1, len(budgets)):
+                spr = sps.spearmanr(loss_pairs[budgets[i]][budgets[j]])
+                rhos[i][j - 1] = spr.correlation
+                ps[i][j - 1] = spr.pvalue
+
+        fig, ax = plt.subplots()
+
+        cax = ax.matshow(rhos, vmin=-1, vmax=1)
+        fig.colorbar(cax)
+
+        ax.set_yticks(range(len(budgets) - 1))
+        ax.set_yticklabels(budgets[:-1], )
+
+        ax.set_xticks(range(len(budgets) - 1))
+        ax.set_xticklabels(budgets[1:], )
+
+        ax.set_title('Rank correlation of the loss across the budgets')
+
+        for i in range(len(budgets) - 1):
+            for j in range(i + 1, len(budgets)):
+                plt.text(j - 1, i, r'$\rho_{spearman}= %f$' % rhos[i][j - 1] + '\n' + r'$p = %f$' % ps[i][
+                    j - 1] + '\n' + r'$n = %i$' % len(loss_pairs[budgets[i]][budgets[j]]),
+                         horizontalalignment='center', verticalalignment='center')
+
+        if show:
+            plt.show()
+        return (fig, ax)
 

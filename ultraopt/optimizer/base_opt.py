@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
+from collections import defaultdict
 from copy import deepcopy
-from typing import Tuple, Union, List
+from time import time
+from typing import Tuple, Union, List, Dict
 
 import numpy as np
 from ConfigSpace import Configuration
@@ -32,6 +34,9 @@ class BaseOptimizer():
         if budget2obvs is None:
             budget2obvs = self.get_initial_budget2obvs(self.budgets)
         self.budget2obvs = budget2obvs
+        self.configId2config: Dict[str, dict] = {}
+        self.runId2info: Dict[Tuple[str, float], dict] = \
+            defaultdict(lambda: {"start_time": time(), "end_time": -1})
         # other variable
         self.rng = check_random_state(self.random_state)
         self.initial_points_index = 0
@@ -54,6 +59,7 @@ class BaseOptimizer():
         self.new_result(job, update_model=update_model)
 
     def new_result(self, job: Job, update_model=True):
+
         ##############################
         ### 1. update observations ###
         ##############################
@@ -67,6 +73,13 @@ class BaseOptimizer():
             loss = job.result["loss"] if np.isfinite(job.result["loss"]) else np.inf
         budget = job.kwargs["budget"]
         config_dict = job.kwargs["config"]
+        configId = get_hash_of_config(config_dict)
+        runId = (configId, budget)
+        if runId in self.runId2info:
+            self.runId2info[runId]["end_time"] = time()
+            self.runId2info[runId]["loss"] = loss
+        else:
+            self.logger.error(f"runId {runId} not in runId2info, it's impossible!!!")
         # config_info = job.kwargs["config_info"]
         config = Configuration(self.config_space, config_dict)
         # add lock (It may be added twice, but it does not affect)
@@ -111,9 +124,9 @@ class BaseOptimizer():
             if strategy == "cl_min":
                 y_lie = np.min(losses) if losses else 0.0  # CL-min lie
             elif strategy == "cl_mean":
-                y_lie = np.mean(losses) if losses else 0.0  # CL-min lie
+                y_lie = np.mean(losses) if losses else 0.0  # CL-mean lie
             elif strategy == "cl_max":
-                y_lie = np.max(losses) if losses else 0.0  # CL-min lie
+                y_lie = np.max(losses) if losses else 0.0  # CL-max lie
             else:
                 raise NotImplementedError
             opt.tell(config, y_lie)
@@ -122,6 +135,7 @@ class BaseOptimizer():
     def get_config(self, budget) -> Tuple[dict, dict]:
         # get max_budget
         # calc by budget2epm
+        start_time = time()
         max_budget = self.get_available_max_budget()
         # initial points
         if self.initial_points is not None and self.initial_points_index < len(self.initial_points):
@@ -135,7 +149,19 @@ class BaseOptimizer():
                 if not self.is_config_exist(budget, initial_point):
                     self.logger.debug(f"Using initial points [{self.initial_points_index - 1}]")
                     return self.process_config_info_pair(initial_point, {}, budget)
-        return self._get_config(budget, max_budget)
+        config, config_info = self._get_config(budget, max_budget)
+        self.register_config(config, budget, start_time)
+        return config, config_info
+
+    def register_config(self, config, budget, start_time=None):
+        configId = get_hash_of_config(config)
+        runId = (configId, budget)
+        if runId in self.runId2info:  # don't set second time
+            return
+        self.configId2config[configId] = config
+        info = self.runId2info[runId]  # auto set start_time
+        if start_time:
+            info["start_time"] = start_time
 
     def _get_config(self, budget, max_budget):
         raise NotImplementedError
@@ -193,3 +219,11 @@ class BaseOptimizer():
             else:
                 return self.process_config_info_pair(config, info_dict, budget)
         return self.process_all_configs_exist(info_dict, budget)
+
+    def reset_time(self):
+        min_time = float("inf")
+        for info in self.runId2info.values():
+            min_time = min(info["start_time"], min_time)
+        for info in self.runId2info.values():
+            info["start_time"] -= min_time
+            info["end_time"] -= min_time

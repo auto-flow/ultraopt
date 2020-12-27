@@ -20,10 +20,10 @@ class BaseIterGenerator():
             iter_klass = RankReductionIteration
         assert issubclass(iter_klass, BaseIteration)
         self.iter_klass: Type[BaseIteration] = iter_klass
-        self.config_sampler = None
+        self.optimizer = None
 
-    def initialize(self, config_sampler):
-        self.config_sampler = config_sampler
+    def initialize(self, optimizer):
+        self.optimizer = optimizer
 
     @property
     def num_configs_list(self):
@@ -58,7 +58,7 @@ class BaseIterGenerator():
             HPB_iter=iteration,
             num_configs=self.num_configs_list[iter_ix],
             budgets=self.budgets_list[iter_ix],
-            config_sampler=self.config_sampler,
+            optimizer=self.optimizer,
             **kwargs
         )
 

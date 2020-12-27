@@ -2,6 +2,7 @@ import logging
 
 import numpy as np
 
+from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.structure import Datum
 
 
@@ -12,7 +13,7 @@ class BaseIteration(object):
     implementations) determine the further development.
     """
 
-    def __init__(self, HPB_iter, num_configs, budgets, config_sampler, logger=None, result_logger=None):
+    def __init__(self, HPB_iter, num_configs, budgets, optimizer, logger=None, result_logger=None):
         """
         Parameters
         ----------
@@ -41,7 +42,7 @@ class BaseIteration(object):
         self.budgets = budgets
         self.num_configs = num_configs
         self.actual_num_configs = [0] * len(num_configs)
-        self.config_sampler = config_sampler
+        self.optimizer: BaseOptimizer = optimizer
         self.num_running = 0
         self.logger = logger if not logger is None else logging.getLogger('ambo')
         self.result_logger = result_logger
@@ -61,13 +62,13 @@ class BaseIteration(object):
         ----------
 
         config : valid configuration
-            The configuration to add. If None, a configuration is sampled from the config_sampler
+            The configuration to add. If None, a configuration is sampled from the optimizer
         config_info: dict
             Some information about the configuration that will be stored in the results
         """
 
         if config is None:
-            config, config_info = self.config_sampler(self.budgets[self.stage])
+            config, config_info = self.optimizer.get_config(self.budgets[self.stage])
 
         if self.is_finished:
             raise RuntimeError("This HPBandSter iteration is finished, you can't add more configurations!")
@@ -146,6 +147,7 @@ class BaseIteration(object):
                 assert v.budget == self.budgets[self.stage], 'Configuration budget does not align with current stage!'
                 v.status = 'RUNNING'
                 self.num_running += 1
+                self.optimizer.register_config(v.config, v.budget)
                 return (k, v.config, v.config_info, v.budget)
 
         # check if there are still slots to fill in the current stage and return that
@@ -233,5 +235,3 @@ class BaseIteration(object):
         for k, v in self.data.items():
             assert v.status in ['TERMINATED', 'REVIEW', 'CRASHED'], 'Configuration has not finshed yet!'
             v.status = 'COMPLETED'
-
-

@@ -6,8 +6,9 @@
 import hashlib
 from copy import deepcopy
 from typing import Union, Dict, Any
-from ConfigSpace import Configuration
+
 import numpy as np
+from ConfigSpace import Configuration
 from scipy.sparse import issparse
 
 
@@ -32,6 +33,7 @@ def get_hash_of_array(X, m=None):
     hash = m.hexdigest()
     return hash
 
+
 def sort_dict(obj):
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -44,6 +46,7 @@ def sort_dict(obj):
     else:
         return obj
 
+
 def get_hash_of_dict(dict_, m=None):
     if m is None:
         m = hashlib.md5()
@@ -53,14 +56,11 @@ def get_hash_of_dict(dict_, m=None):
     m.update(str(sorted_dict).encode("utf-8"))
     return m.hexdigest()
 
+
 def get_hash_of_config(config: Union[Configuration, Dict[str, Any]], m=None):
     if m is None:
         m = hashlib.md5()
+    assert isinstance(config, (dict, Configuration))
     if isinstance(config, Configuration):
-        X: np.ndarray = config.get_array()
-        return get_hash_of_array(X, m)
-    elif isinstance(config, dict):
-        return get_hash_of_dict(config, m)
-    else:
-        raise NotImplementedError
-
+        config = config.get_dictionary()
+    return get_hash_of_dict(config, m)

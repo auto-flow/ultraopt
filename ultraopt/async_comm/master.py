@@ -92,7 +92,7 @@ class Master(object):
         self.checkpoint_freq = checkpoint_freq
         self.checkpoint_file = checkpoint_file
         self.progress_callback = progress_callback
-        iter_generator.initialize(optimizer.get_config)
+        iter_generator.initialize(optimizer)
         self.iter_generator = iter_generator
         self.time_left_for_this_task = time_left_for_this_task
         self.working_directory = working_directory
