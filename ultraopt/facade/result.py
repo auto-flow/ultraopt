@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-19
 # @Contact    : qichun.tang@bupt.edu.cn
+import itertools
 from collections import defaultdict
 from copy import deepcopy
 from functools import lru_cache
@@ -28,7 +29,6 @@ class FMinResult():
         self.optimizer.reset_time()
         self.runId2info = self.optimizer.runId2info
         self.budgets = sorted(list(self.budget2obvs.keys()))
-
 
         for budget, obvs in self.budget2obvs.items():
             losses = obvs["losses"]
@@ -259,13 +259,13 @@ class FMinResult():
 
         return ax
 
-    def correlation_across_budgets(self, show=False):
-
-
-        budgets = list(set([r.budget for r in self.budgets]))
-        budgets.sort()
-
-        import itertools
+    def plot_correlation_across_budgets(self, ax=None):
+        if ax is None:
+            ax = plt.gca()
+        configId2budgets = defaultdict(list)
+        for (configId, budget) in self.runId2info.keys():
+            configId2budgets[configId].append(budget)
+        budgets = self.budgets
 
         loss_pairs = {}
         for b in budgets[:-1]:
@@ -274,14 +274,13 @@ class FMinResult():
         for b1, b2 in itertools.combinations(budgets, 2):
             loss_pairs[b1][b2] = []
 
-        for cid in id2conf.keys():
-            runs = results_object.get_runs_by_id(cid)
-            if len(runs) < 2: continue
-
-            for r1, r2 in itertools.combinations(runs, 2):
-                if r1.loss is None or r2.loss is None: continue
-                if not np.isfinite(r1.loss) or not np.isfinite(r2.loss): continue
-                loss_pairs[float(r1.budget)][float(r2.budget)].append((r1.loss, r2.loss))
+        for configId, budgets in configId2budgets.items():
+            if len(budgets) < 2: continue
+            for b1, b2 in itertools.combinations(budgets, 2):
+                loss_pairs[float(b1)][float(b2)].append((
+                    self.runId2info[(configId, b1)],
+                    self.runId2info[(configId, b2)],
+                ))
 
         rhos = np.eye(len(budgets) - 1)
         rhos.fill(np.nan)
@@ -314,7 +313,4 @@ class FMinResult():
                     j - 1] + '\n' + r'$n = %i$' % len(loss_pairs[budgets[i]][budgets[j]]),
                          horizontalalignment='center', verticalalignment='center')
 
-        if show:
-            plt.show()
-        return (fig, ax)
-
+        return ax
