@@ -7,16 +7,19 @@ from fractions import Fraction
 
 import numpy as np
 
+from ultraopt.constants import Configs
 from ultraopt.utils.logging_ import get_logger
 
 inc_logger = get_logger("incumbent_trajectory")
 
 
 def pbudget(budget: float):
-    if budget - float(int(budget)) == 0:
-        return str(int(budget))
-    fraction = Fraction.from_float(budget)
-    return f"{fraction.numerator}/{fraction.denominator}"
+    if Configs.FractionalBudget:
+        if budget - float(int(budget)) == 0:
+            return str(int(budget))
+        fraction = Fraction.from_float(budget)
+        return f"{fraction.numerator}/{fraction.denominator}"
+    return f"{budget:.4f}"
 
 
 def print_incumbent_trajectory(chal_perf: float, inc_perf: float, challenger: dict, incumbent: dict, budget: float):

@@ -10,6 +10,7 @@ from functools import lru_cache
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.stats as sps
 from terminaltables import AsciiTable
 
 from ultraopt.facade.utils import get_wanted
@@ -231,29 +232,31 @@ class FMinResult():
         ax.plot(ts, n_workers)
         ax.set_xlabel('time [s]')
         ax.set_ylabel('number of concurrent runs')
+        ax.set_title('Number of Concurrent Runs over Time')
         ax.grid(alpha=alpha)
         return ax
 
-    def plot_finished_over_time(self, alpha=0.5):
+    def plot_finished_over_time(self, ax=None, alpha=0.5):
         budgets = self.budgets
 
+        if ax is None:
+            ax = plt.gca()
         times = {}
-        for b in budgets:
-            times[b] = [0]
+        for budget in budgets:
+            times[budget] = [0]
 
         for (_, budget), info in self.runId2info.items():
             times[budget].append(info["end_time"])
 
-        for b in budgets:
-            times[b].sort()
+        for budget in budgets:
+            times[budget].sort()
 
-        fig, ax = plt.subplots()
-
-        for b in budgets:
-            ax.plot(times[b], np.arange(len(times[b])), label='b = %f' % b)
+        for budget in budgets:
+            ax.plot(times[budget], np.arange(len(times[budget])), label=f'budget = {budget}')
 
         ax.set_xlabel('time [s]')
         ax.set_ylabel('number of finished runs')
+        ax.set_title('Number of Finished Runs over Time')
         ax.legend()
         ax.grid(alpha=alpha)
 
@@ -274,12 +277,13 @@ class FMinResult():
         for b1, b2 in itertools.combinations(budgets, 2):
             loss_pairs[b1][b2] = []
 
-        for configId, budgets in configId2budgets.items():
-            if len(budgets) < 2: continue
-            for b1, b2 in itertools.combinations(budgets, 2):
+        for configId, bs in configId2budgets.items():
+            bs.sort()
+            if len(bs) < 2: continue
+            for b1, b2 in itertools.combinations(bs, 2):
                 loss_pairs[float(b1)][float(b2)].append((
-                    self.runId2info[(configId, b1)],
-                    self.runId2info[(configId, b2)],
+                    self.runId2info[(configId, b1)]["loss"],
+                    self.runId2info[(configId, b2)]["loss"],
                 ))
 
         rhos = np.eye(len(budgets) - 1)
@@ -290,27 +294,24 @@ class FMinResult():
 
         for i in range(len(budgets) - 1):
             for j in range(i + 1, len(budgets)):
-                spr = sps.spearmanr(loss_pairs[budgets[i]][budgets[j]])
-                rhos[i][j - 1] = spr.correlation
-                ps[i][j - 1] = spr.pvalue
-
-        fig, ax = plt.subplots()
+                correlation, pvalue = sps.spearmanr(loss_pairs[budgets[i]][budgets[j]])
+                rhos[i][j - 1] = correlation
+                ps[i][j - 1] = pvalue
 
         cax = ax.matshow(rhos, vmin=-1, vmax=1)
-        fig.colorbar(cax)
+        plt.colorbar(cax)
 
         ax.set_yticks(range(len(budgets) - 1))
-        ax.set_yticklabels(budgets[:-1], )
+        ax.set_yticklabels([pbudget(b) for b in budgets[:-1]])
 
         ax.set_xticks(range(len(budgets) - 1))
-        ax.set_xticklabels(budgets[1:], )
+        ax.set_xticklabels([pbudget(b) for b in budgets[1:]])
 
         ax.set_title('Rank correlation of the loss across the budgets')
 
         for i in range(len(budgets) - 1):
             for j in range(i + 1, len(budgets)):
-                plt.text(j - 1, i, r'$\rho_{spearman}= %f$' % rhos[i][j - 1] + '\n' + r'$p = %f$' % ps[i][
-                    j - 1] + '\n' + r'$n = %i$' % len(loss_pairs[budgets[i]][budgets[j]]),
+                plt.text(j - 1, i, r'$\rho_{spearman} = %f$' + f"{rhos[i][j - 1]:.4f}\n"
+                         + f'$p = {ps[i][j - 1]:.4f}$\n$n = {len(loss_pairs[budgets[i]][budgets[j]])}$',
                          horizontalalignment='center', verticalalignment='center')
-
         return ax

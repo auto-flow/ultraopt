@@ -6,3 +6,5 @@
 valid_optimizers = ["ETPE", "Forest", "GBRT", "Random"]
 valid_parallel_strategies = ["Serial", "MapReduce", "AsyncComm"]
 valid_warm_start_strategies = ["continue", "resume"]
+class Configs:
+    FractionalBudget = True
