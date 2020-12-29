@@ -11,7 +11,6 @@ from uuid import uuid4
 
 from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
-from joblib import dump
 
 from ultraopt.async_comm.master import Master
 from ultraopt.async_comm.nameserver import NameServer
@@ -22,6 +21,7 @@ from ultraopt.hdl import hdl2cs
 from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils import progress
+from ultraopt.utils.misc import dump_checkpoint
 from ultraopt.utils.net import get_a_free_port
 
 
@@ -36,7 +36,7 @@ def fmin(
         parallel_strategy="AsyncComm",
         auto_identify_serial_strategy=True,
         multi_fidelity_iter_generator: Optional[BaseIterGenerator] = None,
-        previous_result: Union[FMinResult, str, None] = None,
+        previous_result: Union[FMinResult, BaseOptimizer, str, None] = None,
         warm_start_strategy="continue",
         show_progressbar=True,
         checkpoint_file=None,
@@ -111,7 +111,7 @@ def fmin(
                 if checkpoint_file is not None:
                     if (counts % checkpoint_freq == 0 and counts != 0) \
                             or (counts == n_iterations - 1):
-                        dump(FMinResult(opt_), checkpoint_file)
+                        dump_checkpoint(opt_, checkpoint_file)
     elif parallel_strategy == "AsyncComm":
         # start name-server
         if run_id is None:
@@ -160,7 +160,7 @@ def fmin(
                 if checkpoint_file is not None:
                     if ((iteration - 1) % checkpoint_freq == 0) \
                             or (counts == n_iterations):
-                        dump(FMinResult(opt_), checkpoint_file)
+                        dump_checkpoint(opt_, checkpoint_file)
     else:
         raise NotImplementedError
 

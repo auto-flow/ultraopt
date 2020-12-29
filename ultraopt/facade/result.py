@@ -21,7 +21,7 @@ from ultraopt.viz import plot_convergence
 
 class FMinResult():
     def __init__(self, optimizer: BaseOptimizer):
-        self.optimizer = optimizer
+        self.optimizer = deepcopy(optimizer)
         self.configs_table = []
         self.hyperparameters = [hp.name for hp in optimizer.config_space.get_hyperparameters()]
         self.is_multi_fidelity = len(optimizer.budgets) > 1

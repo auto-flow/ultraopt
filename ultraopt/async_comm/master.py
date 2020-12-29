@@ -6,9 +6,7 @@ from collections import defaultdict
 from typing import Dict
 
 import numpy as np
-from joblib import dump
 
-from ultraopt.facade.result import FMinResult
 from ultraopt.facade.utils import get_wanted
 from ultraopt.multi_fidelity.iter import WarmStartIteration
 from ultraopt.multi_fidelity.iter_gen.base_gen import BaseIterGenerator
@@ -17,7 +15,7 @@ from ultraopt.utils.logging_ import get_logger
 from ultraopt.utils.progress import no_progress_callback
 from .dispatcher import Dispatcher
 from ..result import Result
-from ..utils.misc import print_incumbent_trajectory
+from ..utils.misc import print_incumbent_trajectory, dump_checkpoint
 
 
 class Master(object):
@@ -307,7 +305,7 @@ class Master(object):
             self.iter_cnt += 1
             if self.checkpoint_file is not None:
                 if (self.iter_cnt - 1) % self.checkpoint_freq == 0 or self.iter_cnt == self.all_n_iterations:
-                    dump(FMinResult(self.optimizer), self.checkpoint_file)
+                    dump_checkpoint(self.optimizer, self.checkpoint_file)
             if self.num_running_jobs <= self.job_queue_sizes[0]:
                 self.logger.debug("HBMASTER: Trying to run another job!")
                 self.thread_cond.notify()

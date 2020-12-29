@@ -3,9 +3,12 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-14
 # @Contact    : qichun.tang@bupt.edu.cn
+import os
+import shutil
 from fractions import Fraction
 
 import numpy as np
+from joblib import dump
 
 from ultraopt.constants import Configs
 from ultraopt.utils.logging_ import get_logger
@@ -43,3 +46,13 @@ def get_max_SH_iter(min_budget, max_budget, eta):
 
 def get_import_error(pkg_name):
     raise ImportError(f"Cannot import {pkg_name}! Execute 'pip install {pkg_name}' in shell.")
+
+
+def dump_checkpoint(optimizer, checkpoint_file):
+    # todo: using thread
+    checkpoint_file_bak = checkpoint_file + ".bak"
+    if os.path.exists(checkpoint_file_bak):
+        os.remove(checkpoint_file_bak)
+    if os.path.exists(checkpoint_file):
+        shutil.move(checkpoint_file, checkpoint_file_bak)
+    dump(optimizer, checkpoint_file)

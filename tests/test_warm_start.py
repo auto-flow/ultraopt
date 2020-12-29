@@ -12,10 +12,12 @@ from ultraopt.tests.mock import evaluate, config_space
 
 
 class TestWarmStart(unittest.TestCase):
-    def test_serial_warm_start_serial(self):
+    def test_warm_start_serial(self):
+        # fixme: resume strategy occur `runId not in runId2info`
         optimizer = "ETPE"
         n_iterations = 15
         for warm_start_strategy in valid_warm_start_strategies:
+            print(warm_start_strategy)
             p_res = fmin(
                 evaluate,
                 config_space,
@@ -35,12 +37,14 @@ class TestWarmStart(unittest.TestCase):
                 p_res = res
                 assert len(res["budget2obvs"][1]["losses"]) == n_iterations * (i + 2)
 
-    def test_serial_warm_start_mapreduce(self):
+    def test_warm_start_mapreduce(self):
+        # fixme: resume strategy occur `runId not in runId2info`
         optimizer = "ETPE"
         n_iterations = 15
         n_jobs = 3
         parallel_strategy = "MapReduce"
         for warm_start_strategy in valid_warm_start_strategies:
+            print(warm_start_strategy)
             p_res = fmin(
                 evaluate,
                 config_space,
@@ -62,7 +66,7 @@ class TestWarmStart(unittest.TestCase):
                 p_res = res
                 assert len(res["budget2obvs"][1]["losses"]) == n_iterations * (i + 2)
 
-    def test_serial_warm_start_multi_fidelity(self):
+    def test_warm_start_multi_fidelity(self):
         optimizer = "ETPE"
         n_iterations = 15
         n_jobs = 3

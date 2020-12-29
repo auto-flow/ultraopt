@@ -4,6 +4,7 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 from collections import defaultdict
 from copy import deepcopy
+from math import inf
 from time import time
 from typing import Tuple, Union, List, Dict
 
@@ -17,10 +18,16 @@ from ultraopt.utils.hash import get_hash_of_config
 from ultraopt.utils.logging_ import get_logger
 
 
+def runId_info():
+    return {"start_time": time(), "end_time": -1}
+
+
 class BaseOptimizer():
     def __init__(self):
         self.logger = get_logger(self)
         self.is_init = False
+        self.configId2config: Dict[str, dict] = {}
+        self.runId2info: Dict[Tuple[str, float], dict] = defaultdict(runId_info)
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
         if self.is_init:
@@ -34,9 +41,6 @@ class BaseOptimizer():
         if budget2obvs is None:
             budget2obvs = self.get_initial_budget2obvs(self.budgets)
         self.budget2obvs = budget2obvs
-        self.configId2config: Dict[str, dict] = {}
-        self.runId2info: Dict[Tuple[str, float], dict] = \
-            defaultdict(lambda: {"start_time": time(), "end_time": -1})
         # other variable
         self.rng = check_random_state(self.random_state)
         self.initial_points_index = 0
@@ -118,6 +122,7 @@ class BaseOptimizer():
         opt = deepcopy(self)
         config_info_pairs = []
         for i in range(n_points):
+            start_time = time()
             config, config_info = opt.get_config(budget=budget)
             config_info_pairs.append((config, config_info))
             losses = opt.budget2obvs[budget]["losses"]
@@ -130,6 +135,7 @@ class BaseOptimizer():
             else:
                 raise NotImplementedError
             opt.tell(config, y_lie)
+            self.register_config(config, budget, start_time=start_time)
         return config_info_pairs
 
     def get_config(self, budget) -> Tuple[dict, dict]:
@@ -221,9 +227,18 @@ class BaseOptimizer():
         return self.process_all_configs_exist(info_dict, budget)
 
     def reset_time(self):
-        min_time = float("inf")
+        min_time = inf
         for info in self.runId2info.values():
             min_time = min(info["start_time"], min_time)
         for info in self.runId2info.values():
             info["start_time"] -= min_time
             info["end_time"] -= min_time
+
+    def resume_time(self):
+        max_time = -inf
+        for info in self.runId2info.values():
+            max_time = max(info["end_time"], max_time)
+        delta_time = time() - max_time
+        for info in self.runId2info.values():
+            info["start_time"] += delta_time
+            info["end_time"] += delta_time

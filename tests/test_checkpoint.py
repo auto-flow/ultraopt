@@ -7,7 +7,7 @@ import unittest
 
 from joblib import load
 
-from ultraopt import fmin
+from ultraopt import fmin, FMinResult
 from ultraopt.constants import valid_parallel_strategies
 from ultraopt.multi_fidelity import CustomIterGenerator
 from ultraopt.tests.mock import evaluate, config_space
@@ -31,6 +31,6 @@ class TestCheckpoint(unittest.TestCase):
                 checkpoint_freq=9,
                 multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
             )
-            res = load("checkpoint.pkl")
+            res = FMinResult(load("checkpoint.pkl"))
             assert p_res.budget2info == res.budget2info
             print(res)
