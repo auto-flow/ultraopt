@@ -4,9 +4,10 @@
 # @Date    : 2020-12-20
 # @Contact    : qichun.tang@bupt.edu.cn
 from ConfigSpace import ConfigurationSpace, Configuration
-from hpolib.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D
 
 __all__ = ["config_space", "evaluate"]
+
+from ultraopt.benchmarks.synthetic_functions import MultiFidelityRosenbrock2D
 
 synthetic_function_cls = MultiFidelityRosenbrock2D
 
