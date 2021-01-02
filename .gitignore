@@ -16,3 +16,6 @@ dist
 *.egg-info
 toy.ipynb
 *.bak
+dask-worker-space
+*.lock
+*.dirlock
