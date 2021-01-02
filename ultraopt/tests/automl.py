@@ -66,7 +66,7 @@ class Evaluator():
         self.metric = metric
         self.cv = cv
 
-    def __call__(self, config: dict, budget: float) -> float:
+    def __call__(self, config: dict, budget: float = 1) -> float:
         layered_dict = layering_config(config)
         AS_HP = layered_dict['classifier'].copy()
         AS, HP = AS_HP.popitem()
