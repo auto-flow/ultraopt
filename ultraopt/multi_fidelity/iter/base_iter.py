@@ -31,7 +31,7 @@ class BaseIteration(object):
             that perform best after this particular budget is exhausted
             to build a better autoML system.
         logger: a logger
-        result_logger: ambo.api.results.util.JsonResultLogger object
+        result_logger:
             a result logger that writes live results to disk
         """
 
@@ -44,7 +44,7 @@ class BaseIteration(object):
         self.actual_num_configs = [0] * len(num_configs)
         self.optimizer: BaseOptimizer = optimizer
         self.num_running = 0
-        self.logger = logger if not logger is None else logging.getLogger('ambo')
+        self.logger = logger if not logger is None else logging.getLogger('ultraopt.iter')
         self.result_logger = result_logger
 
     def __str__(self):

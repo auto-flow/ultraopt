@@ -49,7 +49,7 @@ class Master(object):
         run_id : string
             A unique identifier of that Hyperband run. Use, for example, the cluster's JobID when running multiple
             concurrent runs to separate them
-        optimizer: ambo.optimizer object
+        optimizer: ultraopt.optimizer.base_opt.BaseOptimizer object
             An object that can generate new configurations and registers results of executed runs
         working_directory: string
             The top level working directory accessible to all compute nodes(shared filesystem).
@@ -82,9 +82,9 @@ class Master(object):
             If true (default), the job_queue_sizes are relative to the current number of workers.
         logger: logging.logger like object
             the logger to output some (more or less meaningful) information
-        result_logger: ambo.api.results.util.JsonResultLogger object
+        result_logger:
             a result logger that writes live results to disk
-        previous_result: ambo.async_comm.result.Result object
+        previous_result:
             previous run to warmstart the run
         """
         self.checkpoint_freq = checkpoint_freq
@@ -142,7 +142,7 @@ class Master(object):
         self.dispatcher_thread.start()
 
     def shutdown(self, shutdown_workers=False):
-        self.logger.debug('HBMASTER: shutdown initiated, shutdown_workers = %s' % (str(shutdown_workers)))
+        self.logger.info('HBMASTER: shutdown initiated, shutdown_workers = %s' % (str(shutdown_workers)))
         self.dispatcher.shutdown(shutdown_workers)
         self.dispatcher_thread.join()
 

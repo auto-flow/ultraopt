@@ -62,7 +62,7 @@ class Worker(object):
         self.host = host
         self.nameserver = nameserver
         self.nameserver_port = nameserver_port
-        self.worker_id = "ambo.run_%s.worker.%s.%i" % (self.run_id, socket.gethostname(), os.getpid())
+        self.worker_id = "ultraopt.run_%s.worker.%s.%i" % (self.run_id, socket.gethostname(), os.getpid())
         self.manifest_id = uuid4().hex[-8:]
         self.timeout = timeout
         self.timer = None
@@ -111,7 +111,7 @@ class Worker(object):
                 raise
         raise RuntimeError("Could not find the nameserver information, aborting!")
 
-    def run(self, background=False, concurrent_type="process"):
+    def run(self, background=False, concurrent_type="thread"):
         """
         Method to start the worker.
 
@@ -147,7 +147,7 @@ class Worker(object):
         try:
             with Pyro4.locateNS(host=self.nameserver, port=self.nameserver_port) as ns:
                 self.logger.debug('WORKER: Connected to nameserver %s' % (str(ns)))
-                dispatchers = ns.list(prefix="ambo.run_%s.dispatcher" % self.run_id)
+                dispatchers = ns.list(prefix="ultraopt.run_%s.dispatcher" % self.run_id)
         except Pyro4.errors.NamingError:
             if self.thread is None:
                 raise RuntimeError(
@@ -175,7 +175,7 @@ class Worker(object):
         if len(dispatchers) == 0:
             self.logger.debug('WORKER: No dispatcher found. Waiting for one to initiate contact.')
 
-        self.logger.debug(f"WORKER(worker_id='{self.worker_id}'): start listening for jobs")
+        self.logger.info(f"WORKER(worker_id='{self.worker_id}'): start listening for jobs")
 
         self.pyro_daemon = Pyro4.core.Daemon(host=self.host)
 
@@ -214,7 +214,7 @@ class Worker(object):
         """
         if self.eval_func is None:
             raise NotImplementedError(
-                "Subclass ambo.distributed.worker and overwrite the compute method in your worker script")
+                "Subclass ultraopt.distributed.worker and overwrite the compute method in your worker script")
         if self.support_budget:
             loss = self.eval_func(config, budget=budget)
         else:

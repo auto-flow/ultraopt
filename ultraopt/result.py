@@ -80,7 +80,7 @@ def logged_results_to_HBS_result(directory):
 
     Returns
     -------
-    ambo.async_comm.result.Result: :object:
+    ultraopt.async_comm.result.Result: :object:
         TODO
     
     """
