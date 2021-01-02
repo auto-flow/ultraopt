@@ -176,7 +176,7 @@ class FMinResult():
 
     def plot_convergence_over_time(
             self,
-            xlabel="time (s)",
+            xlabel="time [s]",
             ylabel=r"$\min f(x)$ over time",
             ax=None, names=None, alpha=0.2, yscale=None,
             colors=None, true_minimum=None,
