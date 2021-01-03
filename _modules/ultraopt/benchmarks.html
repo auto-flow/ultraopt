@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.benchmarks &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.benchmarks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.benchmarks 源代码</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Author  : qichun tang</span>
+<span class="c1"># @Contact    : tqichun@gmail.com</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="kn">import</span> <span class="nn">ConfigSpace</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="create_rng"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.create_rng">[文档]</a><span class="k">def</span> <span class="nf">create_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; helper to create rng from RandomState or int</span>
+<span class="sd">    :param rng: int or RandomState</span>
+<span class="sd">    :return: RandomState</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rng</span>
+    <span class="k">elif</span> <span class="nb">int</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="o">==</span> <span class="n">rng</span><span class="p">:</span>
+        <span class="c1"># As seed is sometimes -1 (e.g. if SMAC optimizes a</span>
+        <span class="c1"># deterministic function</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> is neither a number nor a RandomState. &quot;</span>
+                         <span class="s2">&quot;Initializing RandomState failed&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_rng"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.get_rng">[文档]</a><span class="k">def</span> <span class="nf">get_rng</span><span class="p">(</span><span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">self_rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; helper function to obtain RandomState.</span>
+<span class="sd">    returns RandomState created from rng</span>
+<span class="sd">    if rng then return RandomState created from rng</span>
+<span class="sd">    if rng is None returns self_rng</span>
+<span class="sd">    if self_rng and rng is None return random RandomState</span>
+
+<span class="sd">    :param rng: int or RandomState</span>
+<span class="sd">    :param self_rng: RandomState</span>
+<span class="sd">    :return: RandomState</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">self_rng</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">self_rng</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AbstractBenchmark"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark">[文档]</a><span class="k">class</span> <span class="nc">AbstractBenchmark</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Interface for benchmarks.</span>
+<span class="sd">        A benchmark contains of two building blocks, the target function and</span>
+<span class="sd">        the configuration space. Furthermore it can contain additional</span>
+<span class="sd">        benchmark-specific information such as the location and the function</span>
+<span class="sd">        value of the global optima. New benchmarks should be derived from</span>
+<span class="sd">        this base class or one of its child classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">create_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configuration_space</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_configuration_space</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AbstractBenchmark.objective_function"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark.objective_function">[文档]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">objective_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Objective function.</span>
+<span class="sd">        Override this function to provide your benchmark function. This</span>
+<span class="sd">        function will be called by one of the evaluate functions. For</span>
+<span class="sd">        flexibility you have to return a dictionary with the only mandatory</span>
+<span class="sd">        key being `function_value`, the objective function value for the</span>
+<span class="sd">        configuration which was passed. By convention, all benchmarks are</span>
+<span class="sd">        minimization problems.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        configuration : dict-like</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Must contain at least the key `function_value`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AbstractBenchmark.objective_function_test"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark.objective_function_test">[文档]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">objective_function_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If there is a different objective function for offline testing, e.g</span>
+<span class="sd">        testing a machine learning on a hold extra test set instead</span>
+<span class="sd">        on a validation set override this function here.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        configuration : dict-like</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Must contain at least the key `function_value`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_configuration</span><span class="p">(</span><span class="n">foo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decorator to enable checking the input configuration</span>
+<span class="sd">            Uses the check_configuration of the ConfigSpace class to ensure</span>
+<span class="sd">            that all specified values are valid, and no conditionals are violated</span>
+<span class="sd">            Can be combined with the _configuration_as_array decorator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">ConfigSpace</span><span class="o">.</span><span class="n">Configuration</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">squirtle</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">configuration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration_space</span><span class="p">)}</span>
+                    <span class="n">wartortle</span> <span class="o">=</span> <span class="n">ConfigSpace</span><span class="o">.</span><span class="n">Configuration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">configuration_space</span><span class="p">,</span> <span class="n">squirtle</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Error during the conversion of the provided &#39;</span>
+                                    <span class="s1">&#39;into a ConfigSpace.Configuration object&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">wartortle</span> <span class="o">=</span> <span class="n">configuration</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configuration_space</span><span class="o">.</span><span class="n">check_configuration</span><span class="p">(</span><span class="n">wartortle</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_configuration_as_array</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decorator to allow the first input argument to &#39;objective_function&#39; to be an array.</span>
+<span class="sd">            For all continuous benchmarks it is often required that the input to the benchmark</span>
+<span class="sd">            can be a (NumPy) array. By adding this to the objective function, both inputs types,</span>
+<span class="sd">            ConfigSpace.Configuration and array, are possible.</span>
+<span class="sd">            Can be combined with the _check_configuration decorator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">ConfigSpace</span><span class="o">.</span><span class="n">Configuration</span><span class="p">):</span>
+                <span class="n">blastoise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">configuration</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">configuration</span><span class="p">],</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">data_type</span>
+                <span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">blastoise</span> <span class="o">=</span> <span class="n">configuration</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blastoise</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">wrapper</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Provides interface to use, e.g., SciPy optimizers &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="s1">&#39;function_value&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="AbstractBenchmark.test"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark.test">[文档]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_runs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Draws some random configuration and call objective_fucntion(_test).</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_runs : int</span>
+<span class="sd">            number of random configurations to draw and evaluate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">train_rvals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">test_rvals</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_runs</span><span class="p">):</span>
+            <span class="n">configuration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration_space</span><span class="o">.</span><span class="n">sample_configuration</span><span class="p">()</span>
+            <span class="n">train_rvals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">(</span>
+                <span class="n">configuration</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+            <span class="n">test_rvals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function_test</span><span class="p">(</span>
+                <span class="n">configuration</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">train_rvals</span><span class="p">,</span> <span class="n">test_rvals</span></div>
+
+<div class="viewcode-block" id="AbstractBenchmark.get_configuration_space"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark.get_configuration_space">[文档]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_configuration_space</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Defines the configuration space for each benchmark.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ConfigSpace.ConfigurationSpace</span>
+<span class="sd">            A valid configuration space for the benchmark&#39;s parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AbstractBenchmark.get_meta_information"><a class="viewcode-back" href="../../_module/ultraopt.benchmarks.html#ultraopt.benchmarks.synthetic_functions.AbstractBenchmark.get_meta_information">[文档]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_meta_information</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot; Provides some meta information about the benchmark.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            some human-readable information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

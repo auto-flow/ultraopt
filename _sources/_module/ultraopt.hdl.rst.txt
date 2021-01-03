@@ -1,0 +1,38 @@
+ultraopt.hdl package
+====================
+
+Submodules
+----------
+
+ultraopt.hdl.hp\_def module
+---------------------------
+
+.. automodule:: ultraopt.hdl.hp_def
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.hdl.utils module
+-------------------------
+
+.. automodule:: ultraopt.hdl.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.hdl.viz module
+-----------------------
+
+.. automodule:: ultraopt.hdl.viz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.hdl
+   :members:
+   :undoc-members:
+   :show-inheritance:

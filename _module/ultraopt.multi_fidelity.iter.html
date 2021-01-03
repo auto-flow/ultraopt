@@ -1,0 +1,389 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.multi_fidelity.iter package &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ultraopt.multi_fidelity.iter package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_module/ultraopt.multi_fidelity.iter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultraopt-multi-fidelity-iter-package">
+<h1>ultraopt.multi_fidelity.iter package<a class="headerlink" href="#ultraopt-multi-fidelity-iter-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-ultraopt.multi_fidelity.iter.base_iter">
+<span id="ultraopt-multi-fidelity-iter-base-iter-module"></span><h2>ultraopt.multi_fidelity.iter.base_iter module<a class="headerlink" href="#module-ultraopt.multi_fidelity.iter.base_iter" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.multi_fidelity.iter.base_iter.</code><code class="sig-name descname">BaseIteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">HPB_iter</span></em>, <em class="sig-param"><span class="n">num_configs</span></em>, <em class="sig-param"><span class="n">budgets</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">result_logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for various iteration possibilities. This decides what configuration should be run on what budget
+next. Typical choices are e.g. successive halving. Results from runs are processed and (depending on the
+implementations) determine the further development.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>HPB_iter</strong> (<em>int</em>) – The current HPBandSter iteration index.</p></li>
+<li><p><strong>num_configs</strong> (<em>list of ints</em>) – the number of configurations in each stage of SH</p></li>
+<li><p><strong>budgets</strong> (<em>list of floats</em>) – the budget associated with each stage</p></li>
+<li><p><strong>config_sample</strong> (<em>callable</em>) – a function that returns a valid configuration. Its only
+argument should be the budget that this config is first
+scheduled for. This might be used to pick configurations
+that perform best after this particular budget is exhausted
+to build a better autoML system.</p></li>
+<li><p><strong>logger</strong> (<em>a logger</em>) – </p></li>
+<li><p><strong>result_logger</strong> – a result logger that writes live results to disk</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration.add_configuration">
+<code class="sig-name descname">add_configuration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">config_info</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration.add_configuration"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration.add_configuration" title="永久链接至目标">¶</a></dt>
+<dd><p>function to add a new configuration to the current iteration</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<em>valid configuration</em>) – The configuration to add. If None, a configuration is sampled from the optimizer</p></li>
+<li><p><strong>config_info</strong> (<em>dict</em>) – Some information about the configuration that will be stored in the results</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration.finish_up">
+<code class="sig-name descname">finish_up</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration.finish_up"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration.finish_up" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration.get_next_run">
+<code class="sig-name descname">get_next_run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration.get_next_run"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration.get_next_run" title="永久链接至目标">¶</a></dt>
+<dd><p>function to return the next configuration and budget to run.</p>
+<p>This function is called from HB_master, don’t call this from
+your script.</p>
+<p>It returns None if this run of SH is finished or there are
+pending jobs that need to finish to progress to the next stage.</p>
+<p>If there are empty slots to be filled in the current SH stage
+(which never happens in the original SH version), a new
+configuration will be sampled and scheduled to run next.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration.process_results">
+<code class="sig-name descname">process_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration.process_results"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration.process_results" title="永久链接至目标">¶</a></dt>
+<dd><p>function that is called when a stage is completed and
+needs to be analyzed befor further computations.</p>
+<p>The code here implements the original SH algorithms by
+advancing the k-best (lowest loss) configurations at the current
+budget. k is defined by the num_configs list (see __init__)
+and the current stage value.</p>
+<p>For more advanced methods like resampling after each stage,
+overload this function only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.base_iter.BaseIteration.register_result">
+<code class="sig-name descname">register_result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job</span></em>, <em class="sig-param"><span class="n">skip_sanity_checks</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/base_iter.html#BaseIteration.register_result"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration.register_result" title="永久链接至目标">¶</a></dt>
+<dd><p>function to register the result of a job</p>
+<p>This function is called from HB_master, don’t call this from
+your script.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.multi_fidelity.iter.rank_iter">
+<span id="ultraopt-multi-fidelity-iter-rank-iter-module"></span><h2>ultraopt.multi_fidelity.iter.rank_iter module<a class="headerlink" href="#module-ultraopt.multi_fidelity.iter.rank_iter" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.multi_fidelity.iter.rank_iter.RankReductionIteration">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.multi_fidelity.iter.rank_iter.</code><code class="sig-name descname">RankReductionIteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">HPB_iter</span></em>, <em class="sig-param"><span class="n">num_configs</span></em>, <em class="sig-param"><span class="n">budgets</span></em>, <em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">logger</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">result_logger</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/rank_iter.html#RankReductionIteration"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.rank_iter.RankReductionIteration" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration" title="ultraopt.multi_fidelity.iter.base_iter.BaseIteration"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.multi_fidelity.iter.base_iter.BaseIteration</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>HPB_iter</strong> (<em>int</em>) – The current HPBandSter iteration index.</p></li>
+<li><p><strong>num_configs</strong> (<em>list of ints</em>) – the number of configurations in each stage of SH</p></li>
+<li><p><strong>budgets</strong> (<em>list of floats</em>) – the budget associated with each stage</p></li>
+<li><p><strong>config_sample</strong> (<em>callable</em>) – a function that returns a valid configuration. Its only
+argument should be the budget that this config is first
+scheduled for. This might be used to pick configurations
+that perform best after this particular budget is exhausted
+to build a better autoML system.</p></li>
+<li><p><strong>logger</strong> (<em>a logger</em>) – </p></li>
+<li><p><strong>result_logger</strong> – a result logger that writes live results to disk</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.multi_fidelity.iter.ws_iter">
+<span id="ultraopt-multi-fidelity-iter-ws-iter-module"></span><h2>ultraopt.multi_fidelity.iter.ws_iter module<a class="headerlink" href="#module-ultraopt.multi_fidelity.iter.ws_iter" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.multi_fidelity.iter.ws_iter.WarmStartIteration">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.multi_fidelity.iter.ws_iter.</code><code class="sig-name descname">WarmStartIteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">result</span></em>, <em class="sig-param"><span class="n">optimizer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/ws_iter.html#WarmStartIteration"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.ws_iter.WarmStartIteration" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.multi_fidelity.iter.base_iter.BaseIteration" title="ultraopt.multi_fidelity.iter.base_iter.BaseIteration"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.multi_fidelity.iter.base_iter.BaseIteration</span></code></a></p>
+<p>iteration that imports a privious Result for warm starting</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>HPB_iter</strong> (<em>int</em>) – The current HPBandSter iteration index.</p></li>
+<li><p><strong>num_configs</strong> (<em>list of ints</em>) – the number of configurations in each stage of SH</p></li>
+<li><p><strong>budgets</strong> (<em>list of floats</em>) – the budget associated with each stage</p></li>
+<li><p><strong>config_sample</strong> (<em>callable</em>) – a function that returns a valid configuration. Its only
+argument should be the budget that this config is first
+scheduled for. This might be used to pick configurations
+that perform best after this particular budget is exhausted
+to build a better autoML system.</p></li>
+<li><p><strong>logger</strong> (<em>a logger</em>) – </p></li>
+<li><p><strong>result_logger</strong> – a result logger that writes live results to disk</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.multi_fidelity.iter.ws_iter.WarmStartIteration.fix_timestamps">
+<code class="sig-name descname">fix_timestamps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_ref</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/multi_fidelity/iter/ws_iter.html#WarmStartIteration.fix_timestamps"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.multi_fidelity.iter.ws_iter.WarmStartIteration.fix_timestamps" title="永久链接至目标">¶</a></dt>
+<dd><p>manipulates internal time stamps such that the last run ends at time 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.multi_fidelity.iter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultraopt.multi_fidelity.iter" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+ultraopt.multi\_fidelity.iter package
+=====================================
+
+Submodules
+----------
+
+ultraopt.multi\_fidelity.iter.base\_iter module
+-----------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter.base_iter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.multi\_fidelity.iter.rank\_iter module
+-----------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter.rank_iter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.multi\_fidelity.iter.ws\_iter module
+---------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter.ws_iter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.multi_fidelity.iter
+   :members:
+   :undoc-members:
+   :show-inheritance:

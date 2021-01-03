@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.facade.result &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.facade.result</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.facade.result 源代码</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Author  : qichun tang</span>
+<span class="c1"># @Date    : 2020-12-19</span>
+<span class="c1"># @Contact    : qichun.tang@bupt.edu.cn</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">sps</span>
+<span class="kn">from</span> <span class="nn">terminaltables</span> <span class="kn">import</span> <span class="n">AsciiTable</span>
+
+<span class="kn">from</span> <span class="nn">ultraopt.facade.utils</span> <span class="kn">import</span> <span class="n">get_wanted</span>
+<span class="kn">from</span> <span class="nn">ultraopt.optimizer.base_opt</span> <span class="kn">import</span> <span class="n">BaseOptimizer</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.misc</span> <span class="kn">import</span> <span class="n">pbudget</span><span class="p">,</span> <span class="n">get_import_error</span>
+<span class="kn">from</span> <span class="nn">ultraopt.viz</span> <span class="kn">import</span> <span class="n">plot_convergence</span>
+
+
+<div class="viewcode-block" id="FMinResult"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult">[文档]</a><span class="k">class</span> <span class="nc">FMinResult</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">:</span> <span class="n">BaseOptimizer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs_table</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyperparameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">hp</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">hp</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">config_space</span><span class="o">.</span><span class="n">get_hyperparameters</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_multi_fidelity</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">optimizer</span><span class="o">.</span><span class="n">budgets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">budget2obvs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">reset_time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">runId2info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budgets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="k">for</span> <span class="n">budget</span><span class="p">,</span> <span class="n">obvs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="n">obvs</span><span class="p">[</span><span class="s2">&quot;losses&quot;</span><span class="p">]</span>
+            <span class="n">configs</span> <span class="o">=</span> <span class="n">obvs</span><span class="p">[</span><span class="s2">&quot;configs&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">):</span>
+                <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">losses</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">config</span><span class="p">,</span> <span class="s2">&quot;num_configs&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">configs</span><span class="p">)}</span>
+        <span class="k">for</span> <span class="n">hyperparameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperparameters</span><span class="p">:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hyperparameter</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;config&quot;</span><span class="p">]</span>
+                <span class="n">nil</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
+                <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">hyperparameter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">config</span> <span class="o">=</span> <span class="n">nil</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">nil</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">configs_table</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">configs_title</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;HyperParameters&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="k">else</span> <span class="s2">&quot;Optimal Value&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span>
+                                                    <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_budget</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_config</span> <span class="o">=</span> <span class="n">get_wanted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FMinResult.get_str"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.get_str">[文档]</a>    <span class="nd">@lru_cache</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># todo: 更好看的打印</span>
+        <span class="n">table_data</span> <span class="o">=</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">configs_title</span><span class="p">]</span> <span class="o">+</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">configs_table</span> <span class="o">+</span>
+                      <span class="p">[[</span><span class="s2">&quot;Optimal Loss&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">]]</span> <span class="o">+</span>
+                      <span class="p">[[</span><span class="s2">&quot;Num Configs&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;num_configs&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_multi_fidelity</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="mi">3</span>
+            <span class="n">table_data</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Budgets&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pbudget</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span><span class="si">}</span><span class="s2"> (max)&quot;</span> <span class="k">if</span> <span class="n">budget</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_budget</span> <span class="k">else</span> <span class="n">pbudget</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2info</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="n">raw_table</span> <span class="o">=</span> <span class="n">AsciiTable</span><span class="p">(</span>
+            <span class="n">table_data</span>
+            <span class="c1"># title=&quot;Result of UltraOpt&#39;s fmin&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">table</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">raw_table</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="n">title_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">title_line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="s2">&quot;Optimal Value&quot;</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">title_line</span><span class="p">)</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;+&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">L</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;+&quot;</span>
+        <span class="n">new_title_line</span> <span class="o">=</span> <span class="n">title_line</span><span class="p">[:</span><span class="n">st</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">col</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">L</span> <span class="o">-</span> <span class="n">st</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">)))</span> <span class="o">+</span> <span class="s2">&quot;|&quot;</span>
+        <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_title_line</span>
+        <span class="n">bar</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">finals</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="n">M</span><span class="p">:]</span>
+        <span class="n">prevs</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[:</span><span class="o">-</span><span class="n">M</span><span class="p">]</span>
+        <span class="n">render_table</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prevs</span><span class="p">)</span> <span class="o">+</span> <span class="n">bar</span> <span class="o">+</span> <span class="n">bar</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">finals</span><span class="p">)</span> <span class="o">+</span> <span class="n">bar</span>
+        <span class="k">return</span> <span class="n">render_table</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_str</span><span class="p">()</span>
+
+    <span class="fm">__repr__</span> <span class="o">=</span> <span class="fm">__str__</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FMinResult.plot_hi"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_hi">[文档]</a>    <span class="k">def</span> <span class="nf">plot_hi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_name</span><span class="o">=</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="n">loss2target_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_data_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">budget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">budget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_budget</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">([</span><span class="n">config</span><span class="o">.</span><span class="n">get_dictionary</span><span class="p">()</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;configs&quot;</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="n">loss2target_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">loss2target_func</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="k">for</span> <span class="n">loss</span> <span class="ow">in</span> <span class="n">losses</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">losses</span>
+        <span class="k">for</span> <span class="n">config</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="k">if</span> <span class="n">return_data_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">hiplot</span> <span class="k">as</span> <span class="nn">hip</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">get_import_error</span><span class="p">(</span><span class="s2">&quot;hiplot&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hip</span><span class="o">.</span><span class="n">Experiment</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">display</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FMinResult.plot_convergence"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_convergence">[文档]</a>    <span class="k">def</span> <span class="nf">plot_convergence</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">budget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Number of iterations $n$&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\min f(x)$ after $n$ iterations&quot;</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">true_minimum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plot one or several convergence traces.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args[i] :  `OptimizeResult`, list of `OptimizeResult`, or tuple</span>
+<span class="sd">            The result(s) for which to plot the convergence trace.</span>
+
+<span class="sd">            - if `OptimizeResult`, then draw the corresponding single trace;</span>
+<span class="sd">            - if list of `OptimizeResult`, then draw the corresponding convergence</span>
+<span class="sd">              traces in transparency, along with the average convergence trace;</span>
+<span class="sd">            - if tuple, then `args[i][0]` should be a string label and `args[i][1]`</span>
+<span class="sd">              an `OptimizeResult` or a list of `OptimizeResult`.</span>
+
+<span class="sd">        ax : `Axes`, optional</span>
+<span class="sd">            The matplotlib axes on which to draw the plot, or `None` to create</span>
+<span class="sd">            a new one.</span>
+
+<span class="sd">        true_minimum : float, optional</span>
+<span class="sd">            The true minimum value of the function, if known.</span>
+
+<span class="sd">        yscale : None or string, optional</span>
+<span class="sd">            The scale for the y-axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ax : `Axes`</span>
+<span class="sd">            The matplotlib axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">budget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">budget</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_budget</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">])</span>
+
+        <span class="n">n_calls</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+        <span class="n">iterations</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_calls</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">losses</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterations</span><span class="p">]</span>
+        <span class="n">max_mins</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mins</span><span class="p">)</span>
+        <span class="n">cliped_losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_mins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plot_convergence</span><span class="p">(</span><span class="n">iterations</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">cliped_losses</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">yscale</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span>
+                                <span class="n">true_minimum</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="n">plot_convergence_over_iter</span> <span class="o">=</span> <span class="n">plot_convergence</span>
+
+<div class="viewcode-block" id="FMinResult.plot_convergence_over_time"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_convergence_over_time">[文档]</a>    <span class="k">def</span> <span class="nf">plot_convergence_over_time</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;time [s]&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\min f(x)$ over time&quot;</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">true_minimum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">budget2TimesLosses</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;losses&quot;</span><span class="p">:</span> <span class="p">[]})</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">configId</span><span class="p">,</span> <span class="n">budget</span><span class="p">),</span> <span class="n">info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">]</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+            <span class="n">budget2TimesLosses</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;times&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+            <span class="n">budget2TimesLosses</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+        <span class="n">budgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets</span>
+        <span class="n">max_mins</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+        <span class="n">budget2data</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">budget</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">budgets</span><span class="p">):</span>
+            <span class="n">TimesLosses</span> <span class="o">=</span> <span class="n">budget2TimesLosses</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">TimesLosses</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">TimesLosses</span><span class="p">[</span><span class="s2">&quot;times&quot;</span><span class="p">])[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">TimesLosses</span><span class="p">[</span><span class="s2">&quot;losses&quot;</span><span class="p">])[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">mins</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">losses</span><span class="p">[:</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">max_mins</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">mins</span><span class="p">),</span> <span class="n">max_mins</span><span class="p">)</span>
+            <span class="n">budget2data</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">times</span><span class="p">,</span>
+                <span class="s2">&quot;y1&quot;</span><span class="p">:</span> <span class="n">mins</span><span class="p">,</span>
+                <span class="s2">&quot;y2&quot;</span><span class="p">:</span> <span class="n">losses</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">budget</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">budgets</span><span class="p">):</span>
+            <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">budget2data</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;y2&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_mins</span><span class="p">)</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">colors</span><span class="p">:</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;budget=</span><span class="si">{</span><span class="n">pbudget</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">names</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_convergence</span><span class="p">(</span><span class="n">budget2data</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">budget2data</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;y1&quot;</span><span class="p">],</span> <span class="n">y2</span><span class="p">,</span> <span class="n">xlabel</span><span class="p">,</span> <span class="n">ylabel</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
+                                  <span class="n">alpha</span><span class="p">,</span> <span class="n">yscale</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span>
+                                  <span class="n">true_minimum</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="FMinResult.plot_concurrent_over_time"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_concurrent_over_time">[文档]</a>    <span class="k">def</span> <span class="nf">plot_concurrent_over_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_points</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">]</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">]</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">])</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">num_points</span><span class="p">)</span>
+        <span class="n">n_workers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([((</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">t</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time [s]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;number of concurrent runs&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Number of Concurrent Runs over Time&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="FMinResult.plot_finished_over_time"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_finished_over_time">[文档]</a>    <span class="k">def</span> <span class="nf">plot_finished_over_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="n">budgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets</span>
+
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">:</span>
+            <span class="n">times</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">budget</span><span class="p">),</span> <span class="n">info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">times</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">:</span>
+            <span class="n">times</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">budget</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="n">budget</span><span class="p">])),</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;budget = </span><span class="si">{</span><span class="n">budget</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;time [s]&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;number of finished runs&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Number of Finished Runs over Time&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+<div class="viewcode-block" id="FMinResult.plot_correlation_across_budgets"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.result.FMinResult.plot_correlation_across_budgets">[文档]</a>    <span class="k">def</span> <span class="nf">plot_correlation_across_budgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">configId2budgets</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">configId</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">configId2budgets</span><span class="p">[</span><span class="n">configId</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+        <span class="n">budgets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets</span>
+
+        <span class="n">loss_pairs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">loss_pairs</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">budgets</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="n">loss_pairs</span><span class="p">[</span><span class="n">b1</span><span class="p">][</span><span class="n">b2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">configId</span><span class="p">,</span> <span class="n">bs</span> <span class="ow">in</span> <span class="n">configId2budgets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">bs</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span> <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">loss_pairs</span><span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">b1</span><span class="p">)][</span><span class="nb">float</span><span class="p">(</span><span class="n">b2</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="p">[(</span><span class="n">configId</span><span class="p">,</span> <span class="n">b1</span><span class="p">)][</span><span class="s2">&quot;loss&quot;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runId2info</span><span class="p">[(</span><span class="n">configId</span><span class="p">,</span> <span class="n">b2</span><span class="p">)][</span><span class="s2">&quot;loss&quot;</span><span class="p">],</span>
+                <span class="p">))</span>
+
+        <span class="n">rhos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rhos</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="n">ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ps</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)):</span>
+                <span class="n">correlation</span><span class="p">,</span> <span class="n">pvalue</span> <span class="o">=</span> <span class="n">sps</span><span class="o">.</span><span class="n">spearmanr</span><span class="p">(</span><span class="n">loss_pairs</span><span class="p">[</span><span class="n">budgets</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">budgets</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
+                <span class="n">rhos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">correlation</span>
+                <span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">pvalue</span>
+
+        <span class="n">cax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">rhos</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="n">pbudget</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="n">pbudget</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Rank correlation of the loss across the budgets&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">budgets</span><span class="p">)):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\rho_</span><span class="si">{spearman}</span><span class="s1"> = </span><span class="si">%f</span><span class="s1">$&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rhos</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                         <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;$p = </span><span class="si">{</span><span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">$</span><span class="se">\n</span><span class="s1">$n = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loss_pairs</span><span class="p">[</span><span class="n">budgets</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">budgets</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span><span class="si">}</span><span class="s1">$&#39;</span><span class="p">,</span>
+                         <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

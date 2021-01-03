@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>03. 条件变量 &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="04. 详解优化器" href="04._Explain_the_Otimizer_in_Detail.html" />
+    <link rel="prev" title="02. 多元变量" href="02._Multiple_Parameters.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">03. 条件变量</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#层次变量">层次变量</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#配置层次化">配置层次化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#高级条件语句">高级条件语句</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#activate-语句">activate 语句</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#condition-语句">condition 语句</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forbidden-语句">forbidden 语句</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>03. 条件变量</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_tutorials/03._Conditional_Parameter.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="03.-条件变量">
+<h1>03. 条件变量<a class="headerlink" href="#03.-条件变量" title="永久链接至标题">¶</a></h1>
+<p>通过上两个教程，您学习到了如何定义多参数的配置空间。但在一些特殊的场景，如AutoML场景下，您需要定义一个有条件依赖的空间。这个教程将分为两个部分讲解，1 为分层参数， 2 为条件与禁止语句。</p>
+<div class="section" id="层次变量">
+<h2>层次变量<a class="headerlink" href="#层次变量" title="永久链接至标题">¶</a></h2>
+<p>试想，如果我们定义一个AutoML问题的配置空间，我们不仅要从学习器候选列表中对学习器进行选择，也就是<strong>算法选择</strong>(Algorithm Selection，AS)，还要在选择学习器后对其超参数进行优化，也就是<strong>超参优化</strong>(HyperParameters Optimization, HPO)。</p>
+<p>综上，AutoML问题可以定义为算法选择与超参优化问题(Combinaiton of AS and HPO, CASH) <a class="reference external" href="#refer-anchor-1">[1]</a>。</p>
+<img alt="CASH" src="https://img-blog.csdnimg.cn/20201223130020129.png" />
+<p>举个例子，如上图所示<a class="reference external" href="#refer-anchor-2">[2]</a>，分类器我们可以从SVM、LDA、RandomForest等中选择（<strong>算法选择</strong>），如果我们选择了SVM分类器，我们还要对C、Gamma等参数进行优化（<strong>超参优化</strong>），如果Kernel选择了rbf，coeff<span class="math notranslate nohighlight">\(_0\)</span>参数会被激活<span class="math notranslate nohighlight">\(\cdots\)</span></p>
+<p>因此，我们需要定义一个分层配置空间。这个分层配置空间可以看成一个有向无环图（DAG），在实际操作中当做树来处理也可以。</p>
+<p>我们先按照上图的描述，用HDL定义一个极简的分层配置空间</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">ultraopt.hdl</span> <span class="kn">import</span> <span class="n">hdl2cs</span><span class="p">,</span> <span class="n">layering_config</span><span class="p">,</span> <span class="n">plot_layered_dict</span><span class="p">,</span> <span class="n">plot_hdl</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">HDL</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Classifier(choice)&quot;</span><span class="p">:{</span>
+        <span class="s2">&quot;SVM&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;C&quot;</span><span class="p">:</span>  <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;LDA&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;n_components&quot;</span><span class="p">:</span>  <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>从上述的HDL定义可以看到，<strong>算法选择变量</strong>需用使用<code class="docutils literal notranslate"><span class="pre">(choice)</span></code>后缀，其值为一个字典，每个键表示候选算法名。</p>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">ultraopt.hdl.plot_hdl</span></code>可以对超参可视化：</p>
+<ul class="simple">
+<li><p><strong>六边形</strong>结点 : 算法选择变量，即后缀为 <code class="docutils literal notranslate"><span class="pre">(choice)</span></code>的变量</p></li>
+<li><p><strong>矩形</strong>结点 : 超参空间，不具备取值范围等实际意义，只起到<strong>容纳超参变量</strong>和<strong>指示算法选择结果</strong>的作用</p></li>
+<li><p><strong>椭圆形</strong>结点 : 超参变量</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">HDL</span><span class="p">)</span>
+<span class="n">plot_hdl</span><span class="p">(</span><span class="n">HDL</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/_tutorials_03._Conditional_Parameter_11_0.svg" src="../_images/_tutorials_03._Conditional_Parameter_11_0.svg" /></div>
+</div>
+<p>在 <code class="docutils literal notranslate"><span class="pre">SVM</span></code> 这个超参空间内部，还可以继续定义算法选择配置空间。我们用HDL定义更复杂的分层配置空间：</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">HDL</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Classifier(choice)&quot;</span><span class="p">:{</span>
+        <span class="s2">&quot;SVM&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;C&quot;</span><span class="p">:</span>  <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+            <span class="s2">&quot;kernel(choice)&quot;</span><span class="p">:</span>  <span class="p">{</span>
+                <span class="s2">&quot;poly&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}},</span>
+                <span class="s2">&quot;rbf&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;quniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+                <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;quniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}},</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;LDA&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;n_components&quot;</span><span class="p">:</span>  <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+            <span class="s2">&quot;solver(choice)&quot;</span><span class="p">:</span>  <span class="p">{</span>
+                <span class="s2">&quot;lsgr&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;shrinkage&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]}},</span>
+                <span class="s2">&quot;eigen&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;shrinkage&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]}},</span>
+                <span class="s2">&quot;svd&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>可视化这个HDL</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">HDL</span><span class="p">)</span>
+<span class="n">plot_hdl</span><span class="p">(</span><span class="n">HDL</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/_tutorials_03._Conditional_Parameter_15_0.svg" src="../_images/_tutorials_03._Conditional_Parameter_15_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="配置层次化">
+<h2>配置层次化<a class="headerlink" href="#配置层次化" title="永久链接至标题">¶</a></h2>
+<p>我们知道，UltraOpt优化的空间是配置空间(ConfigSpace对象)，用超参描述语言(HDL, dict对象)描述。从这个空间中采样可以得到配置(config, Configuration或dict对象)</p>
+<p>现在我们尝试对上文得到的配置空间进行采样：</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span> <span class="o">=</span> <span class="n">CS</span><span class="o">.</span><span class="n">get_default_configuration</span><span class="p">()</span><span class="o">.</span><span class="n">get_dictionary</span><span class="p">()</span> <span class="c1"># 获取配置空间的默认配置</span>
+<span class="n">config</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;Classifier:__choice__&#39;: &#39;SVM&#39;,
+ &#39;Classifier:SVM:C&#39;: 1.0,
+ &#39;Classifier:SVM:kernel:__choice__&#39;: &#39;poly&#39;,
+ &#39;Classifier:SVM:kernel:poly:degree&#39;: 3}
+</pre></div></div>
+</div>
+<p>可以看到，这个dict对象的配置是单层的，key的层次用<code class="docutils literal notranslate"><span class="pre">:</span></code>分割。</p>
+<p>我们可以用<code class="docutils literal notranslate"><span class="pre">ultraopt.hdl.layering_config</span></code>函数对这个dict对象的<code class="docutils literal notranslate"><span class="pre">config</span></code>进行分层，得到<code class="docutils literal notranslate"><span class="pre">layered_config</span></code></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">layered_dict</span> <span class="o">=</span> <span class="n">layering_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>我们可以用<code class="docutils literal notranslate"><span class="pre">ultraopt.hdl.plot_layered_dict</span></code>函数对<code class="docutils literal notranslate"><span class="pre">layered_config</span></code>进行可视化</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_layered_dict</span><span class="p">(</span><span class="n">layered_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/_tutorials_03._Conditional_Parameter_22_0.svg" src="../_images/_tutorials_03._Conditional_Parameter_22_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="高级条件语句">
+<h2>高级条件语句<a class="headerlink" href="#高级条件语句" title="永久链接至标题">¶</a></h2>
+<div class="section" id="activate-语句">
+<h3>activate 语句<a class="headerlink" href="#activate-语句" title="永久链接至标题">¶</a></h3>
+<p>我们希望能更灵活地定义条件超参，比如说我们需要将两个条件超参定义在同一层级中。</p>
+<p>以上文的<code class="docutils literal notranslate"><span class="pre">SVM</span></code>为例，我们希望超参<code class="docutils literal notranslate"><span class="pre">degree</span></code>和<code class="docutils literal notranslate"><span class="pre">coef0</span></code>能够与<code class="docutils literal notranslate"><span class="pre">kernel</span></code>同级，但又能保证原有的依赖条件。如图所示：</p>
+<img alt="sample-layer" src="https://img-blog.csdnimg.cn/20210103112834860.png" />
+<p>我们来梳理一下<code class="docutils literal notranslate"><span class="pre">SVM</span></code>中<code class="docutils literal notranslate"><span class="pre">kernel</span></code>与其他变量的的依赖条件是怎样的：</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 35%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code> 类型</p></th>
+<th class="head"><p>需要使用的参数</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code>公式</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rbf</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(K\left(\mathbf{x}, \
+mathbf{x}^{\prime}\right)=\exp \left(-\frac{\left\|\mathbf{x}-\mathbf{x}^{\prime}\right\|^{2}}{2 \sigma^{2}}\right), \gamma=\frac{1}{2 \sigma^{2}}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sigmoid</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">coef0</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(K\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=sigmoid(\gamma \cdot \mathbf{x}^T \mathbf{x} + coef_0)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">poly</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">gamma</span></code>, <code class="docutils literal notranslate"><span class="pre">coef0</span></code>, <code class="docutils literal notranslate"><span class="pre">degree</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(K\left(\mathbf{x}, \mathbf{x}^{\prime}\right)=(\gamma \cdot \mathbf{x}^T \mathbf{x} + coef_0)^{d}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>通过这个表格，我们不妨将依赖关系想象为激活关系：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code>=<code class="docutils literal notranslate"><span class="pre">rbf</span></code> <span class="math notranslate nohighlight">\(\rightarrow\)</span> 激活 <code class="docutils literal notranslate"><span class="pre">[&quot;gamma&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code>=<code class="docutils literal notranslate"><span class="pre">sigmoid</span></code> <span class="math notranslate nohighlight">\(\rightarrow\)</span> 激活 <code class="docutils literal notranslate"><span class="pre">[&quot;gamma&quot;,</span> <span class="pre">&quot;coef0&quot;]</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kernel</span></code>=<code class="docutils literal notranslate"><span class="pre">poly</span></code> <span class="math notranslate nohighlight">\(\rightarrow\)</span> 激活 <code class="docutils literal notranslate"><span class="pre">[&quot;degree&quot;,</span> <span class="pre">&quot;gamma&quot;,</span> <span class="pre">&quot;coef0&quot;]</span></code></p></li>
+</ul>
+<p>于是我们根据这一逻辑，为HDL超参描述语言增加了<code class="docutils literal notranslate"><span class="pre">activate</span></code>激活语句， 编写方法如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;__activate&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="c1"># 两个下划线开头的都是特殊语句，而不是超参或超参空间的定义</span>
+    <span class="s2">&quot;激活变量&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;激活变量的取值1&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="c1"># 激活变量 = 激活变量的取值1 时， 被激活的变量</span>
+            <span class="s2">&quot;被激活的变量1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;被激活的变量2&quot;</span><span class="p">,</span>
+            <span class="o">...</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;激活变量的取值2&quot;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+        <span class="o">...</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>为了让您更好地理解，我们用<code class="docutils literal notranslate"><span class="pre">activate语句</span></code>定义SVM变量间的依赖关系：</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">HDL_activate</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;rbf&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+    <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-05</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;quniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="s2">&quot;__activate&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;rbf&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;coef0&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;poly&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;degree&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="s2">&quot;coef0&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_activate</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">HDL_activate</span><span class="p">)</span>
+<span class="n">CS_activate</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuration space object:
+  Hyperparameters:
+    coef0, Type: UniformFloat, Range: [-1.0, 1.0], Default: 0.0, Q: 1.0
+    degree, Type: UniformInteger, Range: [2, 5], Default: 3
+    gamma, Type: UniformFloat, Range: [1e-05, 8.0], Default: 0.1, on log-scale
+    kernel, Type: Categorical, Choices: {rbf, poly, sigmoid}, Default: rbf
+  Conditions:
+    coef0 | kernel in {&#39;poly&#39;, &#39;sigmoid&#39;}
+    degree | kernel == &#39;poly&#39;
+</pre></div></div>
+</div>
+<p>我们看看采样得到的样本是否满足<code class="docutils literal notranslate"><span class="pre">activate语句</span></code>：</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_activate</span><span class="o">.</span><span class="n">get_default_configuration</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuration:
+  gamma, Value: 0.1
+  kernel, Value: &#39;rbf&#39;
+</pre></div></div>
+</div>
+<p>可以看到<code class="docutils literal notranslate"><span class="pre">kernel</span> <span class="pre">=</span> <span class="pre">rbf</span></code>，只能激活<code class="docutils literal notranslate"><span class="pre">gamma</span></code>参数。满足<code class="docutils literal notranslate"><span class="pre">activate语句</span></code>。</p>
+<p>同时这个配置空间的所有变量都处在同一层，满足我们的需求：</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_hdl</span><span class="p">(</span><span class="n">HDL_activate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/_tutorials_03._Conditional_Parameter_36_0.svg" src="../_images/_tutorials_03._Conditional_Parameter_36_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="condition-语句">
+<h3>condition 语句<a class="headerlink" href="#condition-语句" title="永久链接至标题">¶</a></h3>
+<p>我们继续讨论<code class="docutils literal notranslate"><span class="pre">SVM</span></code>这个例子。上文我们从<strong>激活</strong>这个角度思考变量间的关系，但我们能否从<strong>依赖</strong>这个角度来呢？</p>
+<p>我们看到：</p>
+<ul class="simple">
+<li><p>所有的<code class="docutils literal notranslate"><span class="pre">kernel</span></code>取值都会激活<code class="docutils literal notranslate"><span class="pre">gamma</span></code>，所以<code class="docutils literal notranslate"><span class="pre">gamma</span></code>会一直存在。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coef0</span></code>会在<code class="docutils literal notranslate"><span class="pre">kernel</span></code>取值为<code class="docutils literal notranslate"><span class="pre">'poly',</span> <span class="pre">'sigmoid'</span></code>时被激活。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">degree</span></code>会在<code class="docutils literal notranslate"><span class="pre">kernel</span></code>取值为<code class="docutils literal notranslate"><span class="pre">poly'</span></code>时被激活。</p></li>
+</ul>
+<p>综上，我们为HDL超参描述语言增加了<code class="docutils literal notranslate"><span class="pre">condition</span></code>条件语句， 编写方法如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;__condition&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="c1"># 键为&quot;__condition&quot;, 值为一个列表，</span>
+    <span class="c1"># 每个列表项是一个字典，</span>
+    <span class="p">{</span>
+        <span class="c1"># 字典有 _child, _parent, _values 3个键</span>
+        <span class="s2">&quot;_child&quot;</span><span class="p">:</span> <span class="s2">&quot;coef0&quot;</span><span class="p">,</span>     <span class="c1"># 依赖变量</span>
+        <span class="s2">&quot;_parent&quot;</span><span class="p">:</span> <span class="s2">&quot;kernel&quot;</span><span class="p">,</span>   <span class="c1"># 被依赖变量</span>
+        <span class="s2">&quot;_values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span>  <span class="c1"># 被依赖变量激活依赖变量时的取值</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>为了让您更好地理解，我们用<code class="docutils literal notranslate"><span class="pre">conditional语句</span></code>定义SVM变量间的依赖关系：</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">HDL_condition</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;rbf&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;degree&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+    <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-05</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="s2">&quot;coef0&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;quniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+    <span class="s2">&quot;__condition&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;_child&quot;</span><span class="p">:</span> <span class="s2">&quot;coef0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_parent&quot;</span><span class="p">:</span> <span class="s2">&quot;kernel&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;poly&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;_child&quot;</span><span class="p">:</span> <span class="s2">&quot;degree&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_parent&quot;</span><span class="p">:</span> <span class="s2">&quot;kernel&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;_values&quot;</span><span class="p">:</span> <span class="s2">&quot;poly&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_conditon</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">HDL_condition</span><span class="p">)</span>
+<span class="n">CS_conditon</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuration space object:
+  Hyperparameters:
+    coef0, Type: UniformFloat, Range: [-1.0, 1.0], Default: 0.0, Q: 1.0
+    degree, Type: UniformInteger, Range: [2, 5], Default: 3
+    gamma, Type: UniformFloat, Range: [1e-05, 8.0], Default: 0.1, on log-scale
+    kernel, Type: Categorical, Choices: {rbf, poly, sigmoid}, Default: rbf
+  Conditions:
+    coef0 | kernel in {&#39;poly&#39;, &#39;sigmoid&#39;}
+    degree | kernel == &#39;poly&#39;
+</pre></div></div>
+</div>
+<p>两种方法得到的配置空间以一样的：</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_conditon</span> <span class="o">==</span> <span class="n">CS_activate</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="forbidden-语句">
+<h3>forbidden 语句<a class="headerlink" href="#forbidden-语句" title="永久链接至标题">¶</a></h3>
+<p>如果变量间的取值存在冲突，如在<code class="docutils literal notranslate"><span class="pre">LinearSVC</span></code>中，<code class="docutils literal notranslate"><span class="pre">penalty</span> <span class="pre">==</span> <span class="pre">&quot;l1&quot;</span></code>且<code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">==</span>&#160; <span class="pre">&quot;hinge&quot;</span></code>时是非法的，这时我们可以用 <code class="docutils literal notranslate"><span class="pre">forbidden语句</span></code> 定义禁止关系</p>
+<p>我们为HDL超参描述语言增加了<code class="docutils literal notranslate"><span class="pre">forbidden</span></code>条件语句， 编写方法如下：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;__forbidden&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="c1"># 键为&quot;__forbidden&quot;, 值为一个列表，</span>
+    <span class="c1"># 每个列表项是一个字典，</span>
+    <span class="p">{</span>
+        <span class="c1"># 禁止一组变量的共现取值：</span>
+        <span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="s2">&quot;l1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;hinge&quot;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">HDL_forbidden</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;max_iter&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_quniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">600</span><span class="p">},</span>
+    <span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;l2&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;dual&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;hinge&quot;</span><span class="p">,</span> <span class="s2">&quot;squared_hinge&quot;</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;squared_hinge&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">10000</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+    <span class="s2">&quot;__forbidden&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;hinge&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="s2">&quot;l2&quot;</span><span class="p">,</span> <span class="s2">&quot;dual&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;hinge&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="s2">&quot;dual&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;penalty&quot;</span><span class="p">:</span> <span class="s2">&quot;l1&quot;</span><span class="p">,</span> <span class="s2">&quot;dual&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;squared_hinge&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_forbidden</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">HDL_forbidden</span><span class="p">)</span>
+<span class="n">CS_forbidden</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuration space object:
+  Hyperparameters:
+    C, Type: UniformFloat, Range: [0.01, 10000.0], Default: 1.0, on log-scale
+    dual, Type: Categorical, Choices: {True:bool, False:bool}, Default: True:bool
+    loss, Type: Categorical, Choices: {hinge, squared_hinge}, Default: squared_hinge
+    max_iter, Type: UniformInteger, Range: [300, 3000], Default: 600, Q: 100
+    penalty, Type: Categorical, Choices: {l1, l2}, Default: l2
+  Forbidden Clauses:
+    (Forbidden: penalty == &#39;l1&#39; &amp;&amp; Forbidden: loss == &#39;hinge&#39;)
+    (Forbidden: penalty == &#39;l2&#39; &amp;&amp; Forbidden: dual == &#39;False:bool&#39; &amp;&amp; Forbidden: loss == &#39;hinge&#39;)
+    (Forbidden: penalty == &#39;l1&#39; &amp;&amp; Forbidden: dual == &#39;False:bool&#39;)
+    (Forbidden: penalty == &#39;l1&#39; &amp;&amp; Forbidden: dual == &#39;True:bool&#39; &amp;&amp; Forbidden: loss == &#39;squared_hinge&#39;)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CS_forbidden</span><span class="o">.</span><span class="n">sample_configuration</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Configuration:
+  C, Value: 3.915967916341741
+  dual, Value: &#39;True:bool&#39;
+  loss, Value: &#39;hinge&#39;
+  max_iter, Value: 1900
+  penalty, Value: &#39;l2&#39;
+</pre></div></div>
+</div>
+<p><strong>参考文献</strong></p>
+<hr class="docutils" />
+<div id="refer-anchor-1"></div><ul class="simple">
+<li><p>[1] <a class="reference external" href="https://arxiv.org/abs/1208.3719">Thornton, Chris et al. “Auto-WEKA: combined selection and hyperparameter optimization of classification algorithms.” Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining (2013): n. pag.</a></p></li>
+</ul>
+<div id="refer-anchor-2"></div><ul class="simple">
+<li><p>[2] <a class="reference external" href="https://arxiv.org/abs/1904.12054">Zoller, Marc-Andre and Marco F. Huber. “Benchmark and Survey of Automated Machine Learning Frameworks.” arXiv: Learning (2019): n. pag.</a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="04._Explain_the_Otimizer_in_Detail.html" class="btn btn-neutral float-right" title="04. 详解优化器" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="02._Multiple_Parameters.html" class="btn btn-neutral float-left" title="02. 多元变量" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

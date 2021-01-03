@@ -1,0 +1,46 @@
+ultraopt.optimizer.bo package
+=============================
+
+Submodules
+----------
+
+ultraopt.optimizer.bo.config\_evaluator module
+----------------------------------------------
+
+.. automodule:: ultraopt.optimizer.bo.config_evaluator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.optimizer.bo.etpe\_opt module
+--------------------------------------
+
+.. automodule:: ultraopt.optimizer.bo.etpe_opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.optimizer.bo.sampling\_sort\_opt module
+------------------------------------------------
+
+.. automodule:: ultraopt.optimizer.bo.sampling_sort_opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.optimizer.bo.tree\_based\_opt module
+---------------------------------------------
+
+.. automodule:: ultraopt.optimizer.bo.tree_based_opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.optimizer.bo
+   :members:
+   :undoc-members:
+   :show-inheritance:

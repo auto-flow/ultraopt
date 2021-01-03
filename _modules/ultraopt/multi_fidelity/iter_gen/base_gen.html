@@ -1,0 +1,299 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.multi_fidelity.iter_gen.base_gen &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script src="../../../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.multi_fidelity.iter_gen.base_gen</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.multi_fidelity.iter_gen.base_gen 源代码</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Author  : qichun tang</span>
+<span class="c1"># @Date    : 2020-12-18</span>
+<span class="c1"># @Contact    : qichun.tang@bupt.edu.cn</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">ultraopt.multi_fidelity.iter</span> <span class="kn">import</span> <span class="n">BaseIteration</span><span class="p">,</span> <span class="n">RankReductionIteration</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.misc</span> <span class="kn">import</span> <span class="n">pbudget</span>
+
+
+<div class="viewcode-block" id="BaseIterGenerator"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator">[文档]</a><span class="k">class</span> <span class="nc">BaseIterGenerator</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">iter_klass</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">iter_klass</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">iter_klass</span> <span class="o">=</span> <span class="n">RankReductionIteration</span>
+        <span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">iter_klass</span><span class="p">,</span> <span class="n">BaseIteration</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iter_klass</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseIteration</span><span class="p">]</span> <span class="o">=</span> <span class="n">iter_klass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BaseIterGenerator.initialize"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator.initialize">[文档]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_configs_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_configs_list_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">budgets_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets_list_</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">iter_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_cycle_</span>
+
+<div class="viewcode-block" id="BaseIterGenerator.get_budgets"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator.get_budgets">[文档]</a>    <span class="k">def</span> <span class="nf">get_budgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BaseIterGenerator.num_all_configs"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator.num_all_configs">[文档]</a>    <span class="k">def</span> <span class="nf">num_all_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">get_sum</span><span class="p">(</span><span class="n">num_configs_list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">sum</span><span class="p">(</span><span class="n">num_configs</span><span class="p">)</span> <span class="k">for</span> <span class="n">num_configs</span> <span class="ow">in</span> <span class="n">num_configs_list</span><span class="p">])</span>
+
+        <span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_cycle</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">n_iterations</span> <span class="o">//</span> <span class="n">L</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">n_iterations</span> <span class="o">%</span> <span class="n">L</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">get_sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_configs_list</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="n">get_sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_configs_list</span><span class="p">[:</span><span class="n">M</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="BaseIterGenerator.get_next_iteration"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator.get_next_iteration">[文档]</a>    <span class="k">def</span> <span class="nf">get_next_iteration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">iter_ix</span> <span class="o">=</span> <span class="n">iteration</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_cycle</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_klass</span><span class="p">(</span>
+            <span class="n">HPB_iter</span><span class="o">=</span><span class="n">iteration</span><span class="p">,</span>
+            <span class="n">num_configs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_configs_list</span><span class="p">[</span><span class="n">iter_ix</span><span class="p">],</span>
+            <span class="n">budgets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">budgets_list</span><span class="p">[</span><span class="n">iter_ix</span><span class="p">],</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseIterGenerator.get_table"><a class="viewcode-back" href="../../../../_module/ultraopt.multi_fidelity.iter_gen.html#ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator.get_table">[文档]</a>    <span class="k">def</span> <span class="nf">get_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_iter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">column_index_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+        <span class="n">row_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;num_config&quot;</span><span class="p">,</span> <span class="s2">&quot;budget&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="nb">iter</span><span class="p">,</span> <span class="p">(</span><span class="n">num_configs</span><span class="p">,</span> <span class="n">budgets</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">num_configs_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">budgets_list</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">stage</span><span class="p">,</span> <span class="p">(</span><span class="n">num_config</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+                    <span class="n">num_configs</span><span class="p">,</span> <span class="n">budgets</span><span class="p">)):</span>
+                <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num_config</span><span class="p">))</span>
+                <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pbudget</span><span class="p">(</span><span class="n">budget</span><span class="p">))</span>
+                <span class="n">column_index_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;iter </span><span class="si">{</span><span class="nb">iter</span> <span class="o">+</span> <span class="n">init_iter</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;stage </span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">(</span><span class="n">column_index_list</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">row_index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; :</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_table</span><span class="p">())</span>
+
+    <span class="fm">__repr__</span> <span class="o">=</span> <span class="fm">__str__</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

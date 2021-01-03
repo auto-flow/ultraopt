@@ -1,0 +1,62 @@
+ultraopt package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   ultraopt.async_comm
+   ultraopt.benchmarks
+   ultraopt.facade
+   ultraopt.hdl
+   ultraopt.learning
+   ultraopt.multi_fidelity
+   ultraopt.optimizer
+   ultraopt.tests
+   ultraopt.utils
+
+Submodules
+----------
+
+ultraopt.constants module
+-------------------------
+
+.. automodule:: ultraopt.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.result module
+----------------------
+
+.. automodule:: ultraopt.result
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.structure module
+-------------------------
+
+.. automodule:: ultraopt.structure
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.viz module
+-------------------
+
+.. automodule:: ultraopt.viz
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt
+   :members:
+   :undoc-members:
+   :show-inheritance:

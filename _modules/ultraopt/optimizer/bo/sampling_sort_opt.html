@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.optimizer.bo.sampling_sort_opt &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script src="../../../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.optimizer.bo.sampling_sort_opt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.optimizer.bo.sampling_sort_opt 源代码</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Author  : qichun tang</span>
+<span class="c1"># @Date    : 2020-12-14</span>
+<span class="c1"># @Contact    : qichun.tang@bupt.edu.cn</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">ConfigSpace</span> <span class="kn">import</span> <span class="n">Configuration</span>
+<span class="kn">from</span> <span class="nn">ConfigSpace.util</span> <span class="kn">import</span> <span class="n">get_one_exchange_neighbourhood</span>
+<span class="kn">from</span> <span class="nn">skopt.learning.forest</span> <span class="kn">import</span> <span class="n">ExtraTreesRegressor</span>
+
+<span class="kn">from</span> <span class="nn">ultraopt.optimizer.base_opt</span> <span class="kn">import</span> <span class="n">BaseOptimizer</span>
+<span class="kn">from</span> <span class="nn">ultraopt.optimizer.bo.config_evaluator</span> <span class="kn">import</span> <span class="n">ConfigEvaluator</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.config_space</span> <span class="kn">import</span> <span class="n">add_configs_origin</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.config_transformer</span> <span class="kn">import</span> <span class="n">ConfigTransformer</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.loss_transformer</span> <span class="kn">import</span> <span class="n">LossTransformer</span><span class="p">,</span> <span class="n">LogScaledLossTransformer</span><span class="p">,</span> <span class="n">ScaledLossTransformer</span>
+
+<span class="n">get_one_exchange_neighbourhood</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">get_one_exchange_neighbourhood</span><span class="p">,</span> <span class="n">stdev</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SamplingSortOptimizer"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer">[文档]</a><span class="k">class</span> <span class="nc">SamplingSortOptimizer</span><span class="p">(</span><span class="n">BaseOptimizer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># model related</span>
+            <span class="n">epm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_transformer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="c1"># several hyper-parameters</span>
+            <span class="n">use_local_search</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loss_transformer</span><span class="o">=</span><span class="s2">&quot;log_scaled&quot;</span><span class="p">,</span>
+            <span class="n">min_points_in_model</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+            <span class="n">acq_func</span><span class="o">=</span><span class="s2">&quot;LogEI&quot;</span><span class="p">,</span> <span class="n">xi</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SamplingSortOptimizer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># ----------member variables-----------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xi</span> <span class="o">=</span> <span class="n">xi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acq_func</span> <span class="o">=</span> <span class="n">acq_func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_local_search</span> <span class="o">=</span> <span class="n">use_local_search</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_points_in_model</span> <span class="o">=</span> <span class="n">min_points_in_model</span>
+        <span class="c1"># ----------components-----------------</span>
+        <span class="c1"># experiment performance model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epm</span> <span class="o">=</span> <span class="n">epm</span> <span class="k">if</span> <span class="n">epm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ExtraTreesRegressor</span><span class="p">()</span>
+        <span class="c1"># config transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_transformer</span> <span class="o">=</span> <span class="n">config_transformer</span> <span class="k">if</span> <span class="n">config_transformer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ConfigTransformer</span><span class="p">()</span>
+        <span class="c1"># loss transformer</span>
+        <span class="k">if</span> <span class="n">loss_transformer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss_transformer</span> <span class="o">=</span> <span class="n">LossTransformer</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">loss_transformer</span> <span class="o">==</span> <span class="s2">&quot;log_scaled&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss_transformer</span> <span class="o">=</span> <span class="n">LogScaledLossTransformer</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">loss_transformer</span> <span class="o">==</span> <span class="s2">&quot;scaled&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss_transformer</span> <span class="o">=</span> <span class="n">ScaledLossTransformer</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.initialize"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.initialize">[文档]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_space</span><span class="p">,</span> <span class="n">budgets</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">initial_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">budget2obvs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SamplingSortOptimizer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">config_space</span><span class="p">,</span> <span class="n">budgets</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">initial_points</span><span class="p">,</span> <span class="n">budget2obvs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span> <span class="o">=</span> <span class="p">{</span><span class="n">budget</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">config_space</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget2confevt</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="n">budgets</span><span class="p">:</span>
+            <span class="n">config_evaluator</span> <span class="o">=</span> <span class="n">ConfigEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acq_func</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;xi&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">xi</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">budget2confevt</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_evaluator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_weight_cnt</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+    <span class="k">def</span> <span class="nf">_new_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">losses</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_points_in_model</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">X_obvs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+        <span class="n">y_obvs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_transformer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">epm</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">epm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="o">=</span> <span class="n">epm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_obvs</span><span class="p">,</span> <span class="n">y_obvs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="n">max_budget</span><span class="p">):</span>
+        <span class="c1"># choose model from max-budget</span>
+        <span class="n">epm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">[</span><span class="n">max_budget</span><span class="p">]</span>
+        <span class="c1"># random sampling</span>
+        <span class="k">if</span> <span class="n">epm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pick_random_initial_config</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+        <span class="c1"># model based pick</span>
+        <span class="n">info_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;model_based_pick&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="c1"># using config_evaluator evaluate random samples</span>
+        <span class="n">configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_space</span><span class="o">.</span><span class="n">sample_configuration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="n">losses</span><span class="p">,</span> <span class="n">configs_sorted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">max_budget</span><span class="p">,</span> <span class="n">return_loss_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">add_configs_origin</span><span class="p">(</span><span class="n">configs_sorted</span><span class="p">,</span> <span class="s2">&quot;Random Search (Sorted)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_local_search</span><span class="p">:</span>
+            <span class="n">start_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_local_search_initial_points</span><span class="p">(</span><span class="n">max_budget</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">configs_sorted</span><span class="p">)</span>
+            <span class="n">local_losses</span><span class="p">,</span> <span class="n">local_configs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_search</span><span class="p">(</span><span class="n">start_points</span><span class="p">,</span>
+                                                            <span class="n">max_budget</span><span class="p">)</span>
+            <span class="n">add_configs_origin</span><span class="p">(</span><span class="n">local_configs</span><span class="p">,</span> <span class="s2">&quot;Local Search&quot;</span><span class="p">)</span>
+            <span class="n">concat_losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">losses</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">local_losses</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span>
+            <span class="n">concat_configs</span> <span class="o">=</span> <span class="n">configs</span> <span class="o">+</span> <span class="n">local_configs</span>
+            <span class="n">random_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">concat_losses</span><span class="p">))</span>
+            <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">random_var</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">concat_losses</span><span class="p">))</span>
+            <span class="n">concat_configs_sorted</span> <span class="o">=</span> <span class="p">[</span><span class="n">concat_configs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">]</span>
+            <span class="n">concat_losses</span> <span class="o">=</span> <span class="n">concat_losses</span><span class="p">[</span><span class="n">indexes</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">concat_losses</span><span class="p">,</span> <span class="n">concat_configs_sorted</span> <span class="o">=</span> <span class="n">losses</span><span class="p">,</span> <span class="n">configs_sorted</span>
+        <span class="c1"># 选取获益最大，且没有出现过的一个配置</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">concat_configs_sorted</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_config_exist</span><span class="p">(</span><span class="n">budget</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The sample already exists and needs to be resampled. &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;It&#39;s the </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">-th time sampling in bayesian sampling. &quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_config_info_pair</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">info_dict</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_all_configs_exist</span><span class="p">(</span><span class="n">info_dict</span><span class="p">,</span> <span class="n">budget</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.get_available_max_budget"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.get_available_max_budget">[文档]</a>    <span class="k">def</span> <span class="nf">get_available_max_budget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">budgets</span> <span class="o">=</span> <span class="p">[</span><span class="n">budget</span> <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">budget</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">sorted_budgets</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">budgets</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">budget</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">budgets</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">budget</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2epm</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">budget</span>
+        <span class="k">return</span> <span class="n">sorted_budgets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.get_local_search_initial_points"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.get_local_search_initial_points">[文档]</a>    <span class="k">def</span> <span class="nf">get_local_search_initial_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="n">num_points</span><span class="p">,</span> <span class="n">additional_start_points</span><span class="p">):</span>
+        <span class="c1"># 对之前的样本做评价</span>
+        <span class="c1"># 1. 按acq排序，前num_points的历史样本</span>
+        <span class="n">config_evaluator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2confevt</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span>
+        <span class="n">configs_previous_runs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;configs&quot;</span><span class="p">]</span>
+        <span class="n">X_trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">configs_previous_runs</span><span class="p">)</span>
+        <span class="n">y_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">])</span>
+        <span class="n">rewards</span> <span class="o">=</span> <span class="n">config_evaluator</span><span class="p">(</span><span class="n">X_trans</span><span class="p">,</span> <span class="n">y_opt</span><span class="p">)</span>
+        <span class="c1"># 只取前num_points的样本</span>
+        <span class="n">random_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rewards</span><span class="p">))</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">random_var</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="o">-</span><span class="n">rewards</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+        <span class="n">configs_previous_runs_sorted_by_acq</span> <span class="o">=</span> <span class="p">[</span><span class="n">configs_previous_runs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">[:</span><span class="n">num_points</span><span class="p">]]</span>
+        <span class="c1"># 2. 按loss排序，前num_points的历史样本</span>
+        <span class="n">losses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">])</span>
+        <span class="n">random_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">))</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">random_var</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">losses</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+        <span class="n">configs_previous_runs_sorted_by_loss</span> <span class="o">=</span> <span class="p">[</span><span class="n">configs_previous_runs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">[:</span><span class="n">num_points</span><span class="p">]]</span>
+        <span class="n">additional_start_points</span> <span class="o">=</span> <span class="n">additional_start_points</span><span class="p">[:</span><span class="n">num_points</span><span class="p">]</span>
+        <span class="n">init_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">init_points_as_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+                <span class="n">configs_previous_runs_sorted_by_acq</span><span class="p">,</span>
+                <span class="n">configs_previous_runs_sorted_by_loss</span><span class="p">,</span>
+                <span class="n">additional_start_points</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">cand</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">init_points_as_set</span><span class="p">:</span>
+                <span class="n">init_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cand</span><span class="p">)</span>
+                <span class="n">init_points_as_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cand</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">init_points</span></div>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.get_y_opt"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.get_y_opt">[文档]</a>    <span class="k">def</span> <span class="nf">get_y_opt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="p">):</span>
+        <span class="n">y_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">budget2obvs</span><span class="p">[</span><span class="n">budget</span><span class="p">][</span><span class="s2">&quot;losses&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">y_opt</span></div>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.transform"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.transform">[文档]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">config</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+        <span class="n">X_trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X_trans</span></div>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.local_search"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.local_search">[文档]</a>    <span class="k">def</span> <span class="nf">local_search</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">start_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">],</span>
+            <span class="n">budget</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]]:</span>
+        <span class="n">y_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_opt</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+        <span class="c1"># Compute the acquisition value of the incumbents</span>
+        <span class="n">num_incumbents</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">start_points</span><span class="p">)</span>
+        <span class="n">acq_val_incumbents_</span><span class="p">,</span> <span class="n">incumbents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">start_points</span><span class="p">),</span> <span class="n">budget</span><span class="p">,</span> <span class="n">y_opt</span><span class="p">,</span>
+                                                        <span class="n">return_loss_config</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">acq_val_incumbents</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">acq_val_incumbents_</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1"># Set up additional variables required to do vectorized local search:</span>
+        <span class="c1"># whether the i-th local search is still running</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># number of plateau walks of the i-th local search. Reaching the maximum number is the stopping criterion of</span>
+        <span class="c1"># the local search.</span>
+        <span class="n">n_no_plateau_walk</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># tracking the number of steps for logging purposes</span>
+        <span class="n">local_search_steps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># tracking the number of neighbors looked at for logging purposes</span>
+        <span class="n">neighbors_looked_at</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># tracking the number of neighbors generated for logging purposse</span>
+        <span class="n">neighbors_generated</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># how many neighbors were obtained for the i-th local search. Important to map the individual acquisition</span>
+        <span class="c1"># function values to the correct local search run</span>
+        <span class="c1"># todo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectorization_min_obtain</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_steps_plateau_walk</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectorization_max_obtain</span> <span class="o">=</span> <span class="mi">64</span>
+        <span class="c1"># todo</span>
+        <span class="n">obtain_n</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">vectorization_min_obtain</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+        <span class="c1"># Tracking the time it takes to compute the acquisition function</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Set up the neighborhood generators</span>
+        <span class="n">neighborhood_iterators</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">incumbents</span><span class="p">):</span>
+            <span class="n">neighborhood_iterators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_one_exchange_neighbourhood</span><span class="p">(</span>
+                <span class="n">inc</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100000</span><span class="p">)))</span>
+            <span class="n">local_search_steps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># Keeping track of configurations with equal acquisition value for plateau walking</span>
+        <span class="n">neighbors_w_equal_acq</span> <span class="o">=</span> <span class="p">[[]]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+
+        <span class="n">num_iters</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">active</span><span class="p">):</span>
+
+            <span class="n">num_iters</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Whether the i-th local search improved. When a new neighborhood is generated, this is used to determine</span>
+            <span class="c1"># whether a step was made (improvement) or not (iterator exhausted)</span>
+            <span class="n">improved</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+            <span class="c1"># Used to request a new neighborhood for the incumbent of the i-th local search</span>
+            <span class="n">new_neighborhood</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_incumbents</span>
+
+            <span class="c1"># gather all neighbors</span>
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">neighborhood_iterator</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighborhood_iterators</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">active</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">neighbors_for_i</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">n</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">neighborhood_iterator</span><span class="p">)</span>  <span class="c1"># n : Configuration</span>
+                            <span class="n">neighbors_generated</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">neighbors_for_i</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                            <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors_for_i</span><span class="p">)</span>
+                            <span class="n">new_neighborhood</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">break</span>
+                    <span class="n">neighbors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">neighbors_for_i</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">acq_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">budget</span><span class="p">,</span> <span class="n">return_loss</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ndim</span><span class="p">(</span><span class="n">acq_val</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">acq_val</span> <span class="o">=</span> <span class="p">[</span><span class="n">acq_val</span><span class="p">]</span>
+
+                <span class="c1"># Comparing the acquisition function of the neighbors with the acquisition value of the incumbent</span>
+                <span class="n">acq_index</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Iterating the all i local searches</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_incumbents</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+                    <span class="c1"># And for each local search we know how many neighbors we obtained</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                        <span class="c1"># The next line is only true if there was an improvement and we basically need to iterate to</span>
+                        <span class="c1"># the i+1-th local search</span>
+                        <span class="k">if</span> <span class="n">improved</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                            <span class="n">acq_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">neighbors_looked_at</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="c1"># Found a better configuration</span>
+                            <span class="k">if</span> <span class="n">acq_val</span><span class="p">[</span><span class="n">acq_index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">acq_val_incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                                    <span class="s2">&quot;Local search </span><span class="si">%d</span><span class="s2">: Switch to one of the neighbors (after </span><span class="si">%d</span><span class="s2"> configurations).&quot;</span><span class="p">,</span>
+                                    <span class="n">i</span><span class="p">,</span>
+                                    <span class="n">neighbors_looked_at</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                <span class="p">)</span>
+                                <span class="n">incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">acq_index</span><span class="p">]</span>
+                                <span class="n">acq_val_incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">acq_val</span><span class="p">[</span><span class="n">acq_index</span><span class="p">]</span>
+                                <span class="n">new_neighborhood</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">improved</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="n">local_search_steps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">neighbors_w_equal_acq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                                <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                            <span class="c1"># Found an equally well performing configuration, keeping it for plateau walking</span>
+                            <span class="k">elif</span> <span class="n">acq_val</span><span class="p">[</span><span class="n">acq_index</span><span class="p">]</span> <span class="o">==</span> <span class="n">acq_val_incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                                <span class="n">neighbors_w_equal_acq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">acq_index</span><span class="p">])</span>
+
+                            <span class="n">acq_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Now we check whether we need to create new neighborhoods and whether we need to increase the number of</span>
+            <span class="c1"># plateau walks for one of the local searches. Also disables local searches if the number of plateau walks</span>
+            <span class="c1"># is reached (and all being switched off is the termination criterion).</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_incumbents</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">active</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">improved</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
+                    <span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">obtain_n</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorization_max_obtain</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">new_neighborhood</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">improved</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">and</span> <span class="n">n_no_plateau_walk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps_plateau_walk</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbors_w_equal_acq</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">neighbors_w_equal_acq</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">neighbors_w_equal_acq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">n_no_plateau_walk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">n_no_plateau_walk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps_plateau_walk</span><span class="p">:</span>
+                        <span class="n">active</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">neighborhood_iterators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_one_exchange_neighbourhood</span><span class="p">(</span>
+                        <span class="n">incumbents</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mi">100000</span><span class="p">),</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;Local searches took </span><span class="si">%s</span><span class="s2"> steps and looked at </span><span class="si">%s</span><span class="s2"> configurations. Computing the acquisition function in &quot;</span>
+            <span class="s2">&quot;vectorized for took </span><span class="si">%f</span><span class="s2"> seconds on average.&quot;</span><span class="p">,</span>
+            <span class="n">local_search_steps</span><span class="p">,</span> <span class="n">neighbors_looked_at</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">times</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="c1"># todo: origin 标注来自局部搜索</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">acq_val_incumbents</span><span class="p">),</span> <span class="n">incumbents</span></div>
+        <span class="c1"># return [(a, i) for a, i in zip(acq_val_incumbents, incumbents)]</span>
+
+<div class="viewcode-block" id="SamplingSortOptimizer.evaluate"><a class="viewcode-back" href="../../../../_module/ultraopt.optimizer.bo.html#ultraopt.optimizer.bo.sampling_sort_opt.SamplingSortOptimizer.evaluate">[文档]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">],</span> <span class="n">budget</span><span class="p">,</span> <span class="n">y_opt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">return_loss_config_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_loss</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_loss_config</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">config_evaluator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget2confevt</span><span class="p">[</span><span class="n">budget</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">configs</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">):</span>
+            <span class="n">configs</span> <span class="o">=</span> <span class="p">[</span><span class="n">configs</span><span class="p">]</span>
+        <span class="n">X_trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">configs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">y_opt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y_opt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_opt</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+        <span class="n">rewards</span> <span class="o">=</span> <span class="n">config_evaluator</span><span class="p">(</span><span class="n">X_trans</span><span class="p">,</span> <span class="n">y_opt</span><span class="p">)</span>
+        <span class="n">random_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rewards</span><span class="p">))</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">random_var</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="o">-</span><span class="n">rewards</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+        <span class="n">rewards_sorted</span> <span class="o">=</span> <span class="n">rewards</span><span class="p">[</span><span class="n">indexes</span><span class="p">]</span>
+        <span class="n">configs_sorted</span> <span class="o">=</span> <span class="p">[</span><span class="n">configs</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">return_loss_config_pairs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">-</span><span class="n">rewards_sorted</span><span class="p">,</span> <span class="n">configs_sorted</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">return_loss</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">rewards</span>
+        <span class="k">if</span> <span class="n">return_loss_config</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">rewards_sorted</span><span class="p">,</span> <span class="n">configs_sorted</span>
+        <span class="k">return</span> <span class="n">configs_sorted</span></div></div>
+
+    <span class="c1"># todo: develop and test weight update</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

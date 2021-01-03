@@ -1,0 +1,8 @@
+ultraopt
+========
+
+.. toctree::
+   :maxdepth: 4
+
+   setup
+   ultraopt

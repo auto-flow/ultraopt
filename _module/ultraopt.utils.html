@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.utils package &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ultraopt.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_module/ultraopt.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultraopt-utils-package">
+<h1>ultraopt.utils package<a class="headerlink" href="#ultraopt-utils-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-ultraopt.utils.config_space">
+<span id="ultraopt-utils-config-space-module"></span><h2>ultraopt.utils.config_space module<a class="headerlink" href="#module-ultraopt.utils.config_space" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.add_configs_origin">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">add_configs_origin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>ConfigSpace.configuration_space.Configuration<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">origin</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#add_configs_origin"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.add_configs_origin" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.deactivate">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">deactivate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_space</span></em>, <em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#deactivate"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.deactivate" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.get_array_from_configs">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">get_array_from_configs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>ConfigSpace.configuration_space.Configuration<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#get_array_from_configs"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.get_array_from_configs" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.get_dict_from_config">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">get_dict_from_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>dict<span class="p">, </span>ConfigSpace.configuration_space.Configuration<span class="p">]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#get_dict_from_config"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.get_dict_from_config" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.initial_design">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">initial_design</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cs</span></em>, <em class="sig-param"><span class="n">n_configs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#initial_design"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.initial_design" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.initial_design_2">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">initial_design_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cs</span></em>, <em class="sig-param"><span class="n">n_configs</span></em>, <em class="sig-param"><span class="n">rng</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#initial_design_2"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.initial_design_2" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.initial_design_cat">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">initial_design_cat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cs</span></em>, <em class="sig-param"><span class="n">n_configs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#initial_design_cat"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.initial_design_cat" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.is_top_level_activated">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">is_top_level_activated</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_space</span></em>, <em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="n">hp_name</span></em>, <em class="sig-param"><span class="n">hp_value</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#is_top_level_activated"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.is_top_level_activated" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.sample_configuration_except_default">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">sample_configuration_except_default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cs</span><span class="p">:</span> <span class="n">ConfigSpace.configuration_space.ConfigurationSpace</span></em>, <em class="sig-param"><span class="n">idx2val</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">is_child_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sampled_vectors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#sample_configuration_except_default"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.sample_configuration_except_default" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.sample_configurations">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">sample_configurations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_space</span></em>, <em class="sig-param"><span class="n">n_configs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#sample_configurations"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.sample_configurations" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.config_space.sample_vectors">
+<code class="sig-prename descclassname">ultraopt.utils.config_space.</code><code class="sig-name descname">sample_vectors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cs</span></em>, <em class="sig-param"><span class="n">n_samples</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_space.html#sample_vectors"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_space.sample_vectors" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.config_transformer">
+<span id="ultraopt-utils-config-transformer-module"></span><h2>ultraopt.utils.config_transformer module<a class="headerlink" href="#module-ultraopt.utils.config_transformer" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.config_transformer.</code><code class="sig-name descname">ConfigTransformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">impute</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">encoder</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_space</span><span class="p">:</span> <span class="n">ConfigSpace.configuration_space.ConfigurationSpace</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer.fit"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer.fit" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer.fit_encoder">
+<code class="sig-name descname">fit_encoder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vectors</span></em>, <em class="sig-param"><span class="n">losses</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer.fit_encoder"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer.fit_encoder" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer.impute_conditional_data">
+<code class="sig-name descname">impute_conditional_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer.impute_conditional_data"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer.impute_conditional_data" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer.inverse_transform">
+<code class="sig-name descname">inverse_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">return_vector</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union[numpy.ndarray, None, ConfigSpace.configuration_space.Configuration]<a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer.inverse_transform"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer.inverse_transform" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.config_transformer.ConfigTransformer.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vectors</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="reference internal" href="../_modules/ultraopt/utils/config_transformer.html#ConfigTransformer.transform"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.config_transformer.ConfigTransformer.transform" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.hash">
+<span id="ultraopt-utils-hash-module"></span><h2>ultraopt.utils.hash module<a class="headerlink" href="#module-ultraopt.utils.hash" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.utils.hash.get_hash_of_array">
+<code class="sig-prename descclassname">ultraopt.utils.hash.</code><code class="sig-name descname">get_hash_of_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">m</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/hash.html#get_hash_of_array"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.hash.get_hash_of_array" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.hash.get_hash_of_config">
+<code class="sig-prename descclassname">ultraopt.utils.hash.</code><code class="sig-name descname">get_hash_of_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ConfigSpace.configuration_space.Configuration<span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">m</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/hash.html#get_hash_of_config"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.hash.get_hash_of_config" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.hash.get_hash_of_dict">
+<code class="sig-prename descclassname">ultraopt.utils.hash.</code><code class="sig-name descname">get_hash_of_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_</span></em>, <em class="sig-param"><span class="n">m</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/hash.html#get_hash_of_dict"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.hash.get_hash_of_dict" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.hash.sort_dict">
+<code class="sig-prename descclassname">ultraopt.utils.hash.</code><code class="sig-name descname">sort_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/hash.html#sort_dict"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.hash.sort_dict" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.logging_">
+<span id="ultraopt-utils-logging-module"></span><h2>ultraopt.utils.logging_ module<a class="headerlink" href="#module-ultraopt.utils.logging_" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.logging_.</code><code class="sig-name descname">PickableLoggerAdapter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.critical">
+<code class="sig-name descname">critical</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.critical"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.critical" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.debug">
+<code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.debug"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.debug" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.error">
+<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.error"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.error" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.exception">
+<code class="sig-name descname">exception</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.exception"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.exception" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.info">
+<code class="sig-name descname">info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.info"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.info" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.isEnabledFor">
+<code class="sig-name descname">isEnabledFor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">level</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.isEnabledFor"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.isEnabledFor" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">level</span></em>, <em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.log"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.log" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.logging_.PickableLoggerAdapter.warning">
+<code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#PickableLoggerAdapter.warning"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.PickableLoggerAdapter.warning" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.logging_.get_logger">
+<code class="sig-prename descclassname">ultraopt.utils.logging_.</code><code class="sig-name descname">get_logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#get_logger"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.get_logger" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.logging_.setup_logger">
+<code class="sig-prename descclassname">ultraopt.utils.logging_.</code><code class="sig-name descname">setup_logger</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logging_config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/logging_.html#setup_logger"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.logging_.setup_logger" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.loss_transformer">
+<span id="ultraopt-utils-loss-transformer-module"></span><h2>ultraopt.utils.loss_transformer module<a class="headerlink" href="#module-ultraopt.utils.loss_transformer" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.utils.loss_transformer.LogScaledLossTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.loss_transformer.</code><code class="sig-name descname">LogScaledLossTransformer</code><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#LogScaledLossTransformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.LogScaledLossTransformer" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.utils.loss_transformer.LossTransformer" title="ultraopt.utils.loss_transformer.LossTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.utils.loss_transformer.LossTransformer</span></code></a></p>
+<dl class="py method">
+<dt id="ultraopt.utils.loss_transformer.LogScaledLossTransformer.fit_transform">
+<code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#LogScaledLossTransformer.fit_transform"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.LogScaledLossTransformer.fit_transform" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.utils.loss_transformer.LossTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.loss_transformer.</code><code class="sig-name descname">LossTransformer</code><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#LossTransformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.LossTransformer" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ultraopt.utils.loss_transformer.LossTransformer.fit_transform">
+<code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#LossTransformer.fit_transform"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.LossTransformer.fit_transform" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.utils.loss_transformer.ScaledLossTransformer">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.loss_transformer.</code><code class="sig-name descname">ScaledLossTransformer</code><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#ScaledLossTransformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.ScaledLossTransformer" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.utils.loss_transformer.LossTransformer" title="ultraopt.utils.loss_transformer.LossTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.utils.loss_transformer.LossTransformer</span></code></a></p>
+<dl class="py method">
+<dt id="ultraopt.utils.loss_transformer.ScaledLossTransformer.fit_transform">
+<code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/loss_transformer.html#ScaledLossTransformer.fit_transform"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.loss_transformer.ScaledLossTransformer.fit_transform" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.math_">
+<span id="ultraopt-utils-math-module"></span><h2>ultraopt.utils.math_ module<a class="headerlink" href="#module-ultraopt.utils.math_" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.utils.math_.float_gcd">
+<code class="sig-prename descclassname">ultraopt.utils.math_.</code><code class="sig-name descname">float_gcd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/math_.html#float_gcd"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.math_.float_gcd" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.misc">
+<span id="ultraopt-utils-misc-module"></span><h2>ultraopt.utils.misc module<a class="headerlink" href="#module-ultraopt.utils.misc" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.utils.misc.dump_checkpoint">
+<code class="sig-prename descclassname">ultraopt.utils.misc.</code><code class="sig-name descname">dump_checkpoint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">optimizer</span></em>, <em class="sig-param"><span class="n">checkpoint_file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/misc.html#dump_checkpoint"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.misc.dump_checkpoint" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.misc.get_import_error">
+<code class="sig-prename descclassname">ultraopt.utils.misc.</code><code class="sig-name descname">get_import_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pkg_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/misc.html#get_import_error"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.misc.get_import_error" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.misc.get_max_SH_iter">
+<code class="sig-prename descclassname">ultraopt.utils.misc.</code><code class="sig-name descname">get_max_SH_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_budget</span></em>, <em class="sig-param"><span class="n">max_budget</span></em>, <em class="sig-param"><span class="n">eta</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/misc.html#get_max_SH_iter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.misc.get_max_SH_iter" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.misc.pbudget">
+<code class="sig-prename descclassname">ultraopt.utils.misc.</code><code class="sig-name descname">pbudget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">budget</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/misc.html#pbudget"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.misc.pbudget" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.misc.print_incumbent_trajectory">
+<code class="sig-prename descclassname">ultraopt.utils.misc.</code><code class="sig-name descname">print_incumbent_trajectory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chal_perf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">inc_perf</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">challenger</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">incumbent</span><span class="p">:</span> <span class="n">dict</span></em>, <em class="sig-param"><span class="n">budget</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/misc.html#print_incumbent_trajectory"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.misc.print_incumbent_trajectory" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.net">
+<span id="ultraopt-utils-net-module"></span><h2>ultraopt.utils.net module<a class="headerlink" href="#module-ultraopt.utils.net" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.utils.net.check_port_is_used">
+<code class="sig-prename descclassname">ultraopt.utils.net.</code><code class="sig-name descname">check_port_is_used</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">port</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">'127.0.0.1'</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ultraopt/utils/net.html#check_port_is_used"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.net.check_port_is_used" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.net.get_a_free_port">
+<code class="sig-prename descclassname">ultraopt.utils.net.</code><code class="sig-name descname">get_a_free_port</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_port</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">'127.0.0.1'</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ultraopt/utils/net.html#get_a_free_port"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.net.get_a_free_port" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.progress">
+<span id="ultraopt-utils-progress-module"></span><h2>ultraopt.utils.progress module<a class="headerlink" href="#module-ultraopt.utils.progress" title="永久链接至标题">¶</a></h2>
+<p>Progress is reported using context managers.</p>
+<p>A progress context manager takes an <cite>initial</cite> and a <cite>total</cite> argument
+and should yield an object with an <cite>update(n)</cite> method.</p>
+<dl class="py function">
+<dt id="ultraopt.utils.progress.default_callback">
+<code class="sig-prename descclassname">ultraopt.utils.progress.</code><code class="sig-name descname">default_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">total</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.utils.progress.default_callback" title="永久链接至目标">¶</a></dt>
+<dd><p>Use tqdm for progress by default</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.progress.no_progress_callback">
+<code class="sig-prename descclassname">ultraopt.utils.progress.</code><code class="sig-name descname">no_progress_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">total</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/progress.html#no_progress_callback"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.progress.no_progress_callback" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.progress.tqdm_progress_callback">
+<code class="sig-prename descclassname">ultraopt.utils.progress.</code><code class="sig-name descname">tqdm_progress_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial</span></em>, <em class="sig-param"><span class="n">total</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/progress.html#tqdm_progress_callback"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.progress.tqdm_progress_callback" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils.std_out_err_redirect_tqdm">
+<span id="ultraopt-utils-std-out-err-redirect-tqdm-module"></span><h2>ultraopt.utils.std_out_err_redirect_tqdm module<a class="headerlink" href="#module-ultraopt.utils.std_out_err_redirect_tqdm" title="永久链接至标题">¶</a></h2>
+<p>Redirecting writing to tqdm (the progressbar).</p>
+<p>See here: <a class="reference external" href="https://github.com/tqdm/tqdm#redirecting-writing">https://github.com/tqdm/tqdm#redirecting-writing</a></p>
+<dl class="py class">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.utils.std_out_err_redirect_tqdm.</code><code class="sig-name descname">DummyTqdmFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#DummyTqdmFile"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dummy file-like that will write to tqdm.</p>
+<dl class="py method">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#DummyTqdmFile.close"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.close" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.file">
+<code class="sig-name descname">file</code><em class="property"> = None</em><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.file" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#DummyTqdmFile.flush"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.flush" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.isatty">
+<code class="sig-name descname">isatty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#DummyTqdmFile.isatty"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.isatty" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#DummyTqdmFile.write"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.DummyTqdmFile.write" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.utils.std_out_err_redirect_tqdm.std_out_err_redirect_tqdm">
+<code class="sig-prename descclassname">ultraopt.utils.std_out_err_redirect_tqdm.</code><code class="sig-name descname">std_out_err_redirect_tqdm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/utils/std_out_err_redirect_tqdm.html#std_out_err_redirect_tqdm"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.utils.std_out_err_redirect_tqdm.std_out_err_redirect_tqdm" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultraopt.utils" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

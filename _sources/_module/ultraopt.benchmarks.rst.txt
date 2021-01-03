@@ -1,0 +1,22 @@
+ultraopt.benchmarks package
+===========================
+
+Submodules
+----------
+
+ultraopt.benchmarks.synthetic\_functions module
+-----------------------------------------------
+
+.. automodule:: ultraopt.benchmarks.synthetic_functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.benchmarks
+   :members:
+   :undoc-members:
+   :show-inheritance:

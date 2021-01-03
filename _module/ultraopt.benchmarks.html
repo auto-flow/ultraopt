@@ -1,0 +1,655 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.benchmarks package &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ultraopt.benchmarks package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_module/ultraopt.benchmarks.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultraopt-benchmarks-package">
+<h1>ultraopt.benchmarks package<a class="headerlink" href="#ultraopt-benchmarks-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-ultraopt.benchmarks.synthetic_functions">
+<span id="ultraopt-benchmarks-synthetic-functions-module"></span><h2>ultraopt.benchmarks.synthetic_functions module<a class="headerlink" href="#module-ultraopt.benchmarks.synthetic_functions" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">MultiFidelityRosenbrock10D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock10D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">MultiFidelityRosenbrock20D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock20D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">MultiFidelityRosenbrock2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#MultiFidelityRosenbrock2D"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.Rosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#MultiFidelityRosenbrock2D.get_meta_information"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.objective_function">
+<code class="sig-name descname">objective_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.objective_function" title="永久链接至目标">¶</a></dt>
+<dd><p>Objective function.
+Override this function to provide your benchmark function. This
+function will be called by one of the evaluate functions. For
+flexibility you have to return a dictionary with the only mandatory
+key being <cite>function_value</cite>, the objective function value for the
+configuration which was passed. By convention, all benchmarks are
+minimization problems.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.objective_function_test">
+<code class="sig-name descname">objective_function_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#MultiFidelityRosenbrock2D.objective_function_test"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D.objective_function_test" title="永久链接至目标">¶</a></dt>
+<dd><p>If there is a different objective function for offline testing, e.g
+testing a machine learning on a hold extra test set instead
+on a validation set override this function here.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">MultiFidelityRosenbrock5D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.MultiFidelityRosenbrock5D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock10D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">Rosenbrock10D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock10D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.Rosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock10D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock10D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock10D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock10D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock20D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">Rosenbrock20D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock20D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.Rosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock20D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock20D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock20D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock20D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">Rosenbrock2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#Rosenbrock2D"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.AbstractBenchmark" title="ultraopt.benchmarks.AbstractBenchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.AbstractBenchmark</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#Rosenbrock2D.get_configuration_space"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#Rosenbrock2D.get_meta_information"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.objective_function">
+<code class="sig-name descname">objective_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.objective_function" title="永久链接至目标">¶</a></dt>
+<dd><p>Objective function.
+Override this function to provide your benchmark function. This
+function will be called by one of the evaluate functions. For
+flexibility you have to return a dictionary with the only mandatory
+key being <cite>function_value</cite>, the objective function value for the
+configuration which was passed. By convention, all benchmarks are
+minimization problems.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.objective_function_test">
+<code class="sig-name descname">objective_function_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks/synthetic_functions.html#Rosenbrock2D.objective_function_test"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D.objective_function_test" title="永久链接至目标">¶</a></dt>
+<dd><p>If there is a different objective function for offline testing, e.g
+testing a machine learning on a hold extra test set instead
+on a validation set override this function here.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock5D">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.synthetic_functions.</code><code class="sig-name descname">Rosenbrock5D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock5D" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<a class="reference internal" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock2D" title="ultraopt.benchmarks.synthetic_functions.Rosenbrock2D"><code class="xref py py-class docutils literal notranslate"><span class="pre">ultraopt.benchmarks.synthetic_functions.Rosenbrock2D</span></code></a></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock5D.get_configuration_space">
+<em class="property">static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock5D.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.synthetic_functions.Rosenbrock5D.get_meta_information">
+<em class="property">static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ultraopt.benchmarks.synthetic_functions.Rosenbrock5D.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.benchmarks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultraopt.benchmarks" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.benchmarks.AbstractBenchmark">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.benchmarks.</code><code class="sig-name descname">AbstractBenchmark</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface for benchmarks.
+A benchmark contains of two building blocks, the target function and
+the configuration space. Furthermore it can contain additional
+benchmark-specific information such as the location and the function
+value of the global optima. New benchmarks should be derived from
+this base class or one of its child classes.</p>
+<dl class="py method">
+<dt id="ultraopt.benchmarks.AbstractBenchmark.get_configuration_space">
+<em class="property">abstract static </em><code class="sig-name descname">get_configuration_space</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark.get_configuration_space"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark.get_configuration_space" title="永久链接至目标">¶</a></dt>
+<dd><p>Defines the configuration space for each benchmark.
+:returns: A valid configuration space for the benchmark’s parameters
+:rtype: ConfigSpace.ConfigurationSpace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.AbstractBenchmark.get_meta_information">
+<em class="property">abstract static </em><code class="sig-name descname">get_meta_information</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark.get_meta_information"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark.get_meta_information" title="永久链接至目标">¶</a></dt>
+<dd><p>Provides some meta information about the benchmark.
+:returns: some human-readable information
+:rtype: dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.AbstractBenchmark.objective_function">
+<em class="property">abstract </em><code class="sig-name descname">objective_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark.objective_function"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark.objective_function" title="永久链接至目标">¶</a></dt>
+<dd><p>Objective function.
+Override this function to provide your benchmark function. This
+function will be called by one of the evaluate functions. For
+flexibility you have to return a dictionary with the only mandatory
+key being <cite>function_value</cite>, the objective function value for the
+configuration which was passed. By convention, all benchmarks are
+minimization problems.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.AbstractBenchmark.objective_function_test">
+<em class="property">abstract </em><code class="sig-name descname">objective_function_test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark.objective_function_test"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark.objective_function_test" title="永久链接至目标">¶</a></dt>
+<dd><p>If there is a different objective function for offline testing, e.g
+testing a machine learning on a hold extra test set instead
+on a validation set override this function here.
+:param configuration:
+:type configuration: dict-like</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Must contain at least the key <cite>function_value</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.benchmarks.AbstractBenchmark.test">
+<code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_runs</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#AbstractBenchmark.test"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.AbstractBenchmark.test" title="永久链接至目标">¶</a></dt>
+<dd><p>Draws some random configuration and call objective_fucntion(_test).
+:param n_runs: number of random configurations to draw and evaluate
+:type n_runs: int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.benchmarks.create_rng">
+<code class="sig-prename descclassname">ultraopt.benchmarks.</code><code class="sig-name descname">create_rng</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#create_rng"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.create_rng" title="永久链接至目标">¶</a></dt>
+<dd><p>helper to create rng from RandomState or int
+:param rng: int or RandomState
+:return: RandomState</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.benchmarks.get_rng">
+<code class="sig-prename descclassname">ultraopt.benchmarks.</code><code class="sig-name descname">get_rng</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">self_rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/benchmarks.html#get_rng"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.benchmarks.get_rng" title="永久链接至目标">¶</a></dt>
+<dd><p>helper function to obtain RandomState.
+returns RandomState created from rng
+if rng then return RandomState created from rng
+if rng is None returns self_rng
+if self_rng and rng is None return random RandomState</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rng</strong> – int or RandomState</p></li>
+<li><p><strong>self_rng</strong> – RandomState</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>RandomState</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

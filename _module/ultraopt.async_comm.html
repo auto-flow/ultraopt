@@ -1,0 +1,629 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.async_comm package &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ultraopt.async_comm package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_module/ultraopt.async_comm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultraopt-async-comm-package">
+<h1>ultraopt.async_comm package<a class="headerlink" href="#ultraopt-async-comm-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-ultraopt.async_comm.dispatcher">
+<span id="ultraopt-async-comm-dispatcher-module"></span><h2>ultraopt.async_comm.dispatcher module<a class="headerlink" href="#module-ultraopt.async_comm.dispatcher" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.async_comm.dispatcher.</code><code class="sig-name descname">Dispatcher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_result_callback</span></em>, <em class="sig-param"><span class="n">run_id</span><span class="o">=</span><span class="default_value">'0'</span></em>, <em class="sig-param"><span class="n">ping_interval</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">nameserver</span><span class="o">=</span><span class="default_value">'localhost'</span></em>, <em class="sig-param"><span class="n">nameserver_port</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_callback</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The dispatcher is responsible for assigning tasks to free workers, report results back to the master and
+communicate to the nameserver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_result_callback</strong> (<em>function</em>) – function that will be called with a <a class="reference external" href="ultraopt.async_comm.dispatcher.Job">Job instance</a> as argument.
+From the <cite>Job</cite> the result can be read and e.g. logged.</p></li>
+<li><p><strong>run_id</strong> (<em>str</em>) – unique run_id associated with the HPB run</p></li>
+<li><p><strong>ping_interval</strong> (<em>int</em>) – how often to ping for workers (in seconds)</p></li>
+<li><p><strong>nameserver</strong> (<em>str</em>) – address of the Pyro4 nameserver</p></li>
+<li><p><strong>nameserver_port</strong> (<em>int</em>) – port of Pyro4 nameserver</p></li>
+<li><p><strong>host</strong> (<em>str</em>) – ip (or name that resolves to that) of the network interface to use</p></li>
+<li><p><strong>queue_callback</strong> (<em>function</em>) – gets called with the number of workers in the pool on every update-cycle</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.discover_workers">
+<code class="sig-name descname">discover_workers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.discover_workers"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.discover_workers" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.job_runner">
+<code class="sig-name descname">job_runner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.job_runner"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.job_runner" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.number_of_workers">
+<code class="sig-name descname">number_of_workers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.number_of_workers"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.number_of_workers" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.register_result">
+<code class="sig-name descname">register_result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">result</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.register_result"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.register_result" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.run"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.run" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shutdown_workers</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.shutdown"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.shutdown" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.shutdown_all_workers">
+<code class="sig-name descname">shutdown_all_workers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rediscover</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.shutdown_all_workers"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.shutdown_all_workers" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.submit_job">
+<code class="sig-name descname">submit_job</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.submit_job"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.submit_job" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Dispatcher.trigger_discover_worker">
+<code class="sig-name descname">trigger_discover_worker</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Dispatcher.trigger_discover_worker"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Dispatcher.trigger_discover_worker" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.async_comm.dispatcher.Worker">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.async_comm.dispatcher.</code><code class="sig-name descname">Worker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">uri</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Worker"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Worker" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Worker.is_alive">
+<code class="sig-name descname">is_alive</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Worker.is_alive"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Worker.is_alive" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Worker.is_busy">
+<code class="sig-name descname">is_busy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Worker.is_busy"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Worker.is_busy" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.dispatcher.Worker.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/dispatcher.html#Worker.shutdown"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.dispatcher.Worker.shutdown" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.async_comm.master">
+<span id="ultraopt-async-comm-master-module"></span><h2>ultraopt.async_comm.master module<a class="headerlink" href="#module-ultraopt.async_comm.master" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.async_comm.master.Master">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.async_comm.master.</code><code class="sig-name descname">Master</code><span class="sig-paren">(</span><em class="sig-param">run_id</em>, <em class="sig-param">optimizer: ultraopt.optimizer.base_opt.BaseOptimizer</em>, <em class="sig-param">iter_generator: ultraopt.multi_fidelity.iter_gen.base_gen.BaseIterGenerator</em>, <em class="sig-param">progress_callback=&lt;function no_progress_callback&gt;</em>, <em class="sig-param">checkpoint_file=None</em>, <em class="sig-param">checkpoint_freq=10</em>, <em class="sig-param">working_directory='.'</em>, <em class="sig-param">ping_interval=60</em>, <em class="sig-param">time_left_for_this_task=inf</em>, <em class="sig-param">nameserver='127.0.0.1'</em>, <em class="sig-param">nameserver_port=None</em>, <em class="sig-param">host=None</em>, <em class="sig-param">shutdown_workers=True</em>, <em class="sig-param">job_queue_sizes=(-1</em>, <em class="sig-param">0)</em>, <em class="sig-param">dynamic_queue_size=True</em>, <em class="sig-param">result_logger=None</em>, <em class="sig-param">previous_result=None</em>, <em class="sig-param">incumbents: Dict[float</em>, <em class="sig-param">dict] = None</em>, <em class="sig-param">incumbent_performances: Dict[float</em>, <em class="sig-param">float] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>The Master class is responsible for the book keeping and to decide what to run next. Optimizers are</dt><dd><p>instantiations of Master, that handle the important steps of deciding what configurations to run on what
+budget when.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> (<em>string</em>) – A unique identifier of that Hyperband run. Use, for example, the cluster’s JobID when running multiple
+concurrent runs to separate them</p></li>
+<li><p><strong>optimizer</strong> (<em>ultraopt.optimizer.base_opt.BaseOptimizer object</em>) – An object that can generate new configurations and registers results of executed runs</p></li>
+<li><p><strong>working_directory</strong> (<em>string</em>) – The top level working directory accessible to all compute nodes(shared filesystem).</p></li>
+<li><p><strong>eta</strong> (<em>float</em>) – In each iteration, a complete run of sequential halving is executed. In it,
+after evaluating each configuration on the same subset size, only a fraction of
+1/eta of them ‘advances’ to the next round.
+Must be greater or equal to 2.</p></li>
+<li><p><strong>min_budget</strong> (<em>float</em>) – The smallest budget to consider. Needs to be positive!</p></li>
+<li><p><strong>max_budget</strong> (<em>float</em>) – the largest budget to consider. Needs to be larger than min_budget!
+The budgets will be geometrically distributed <span class="math notranslate nohighlight">\(\sim \eta^k\)</span> for
+<span class="math notranslate nohighlight">\(k\in [0, 1, ... , num\_subsets - 1]\)</span>.</p></li>
+<li><p><strong>ping_interval</strong> (<em>int</em>) – number of seconds between pings to discover new nodes. Default is 60 seconds.</p></li>
+<li><p><strong>nameserver</strong> (<em>str</em>) – address of the Pyro4 nameserver</p></li>
+<li><p><strong>nameserver_port</strong> (<em>int</em>) – port of Pyro4 nameserver</p></li>
+<li><p><strong>host</strong> (<em>str</em>) – ip (or name that resolves to that) of the network interface to use</p></li>
+<li><p><strong>shutdown_workers</strong> (<em>bool</em>) – flag to control whether the workers are shutdown after the computation is done</p></li>
+<li><p><strong>job_queue_size</strong> (<em>tuple of ints</em>) – min and max size of the job queue. During the run, when the number of jobs in the queue
+reaches the min value, it will be filled up to the max size. Default: (0,1)</p></li>
+<li><p><strong>dynamic_queue_size</strong> (<em>bool</em>) – Whether or not to change the queue size based on the number of workers available.
+If true (default), the job_queue_sizes are relative to the current number of workers.</p></li>
+<li><p><strong>logger</strong> (<em>logging.logger like object</em>) – the logger to output some (more or less meaningful) information</p></li>
+<li><p><strong>result_logger</strong> – a result logger that writes live results to disk</p></li>
+<li><p><strong>previous_result</strong> – previous run to warmstart the run</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.active_iterations">
+<code class="sig-name descname">active_iterations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.active_iterations"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.active_iterations" title="永久链接至目标">¶</a></dt>
+<dd><p>function to find active (not marked as finished) multi_fidelity</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p><strong>list</strong></p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>all active iteration objects (empty if there are none)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.adjust_queue_size">
+<code class="sig-name descname">adjust_queue_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_of_workers</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.adjust_queue_size"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.adjust_queue_size" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.get_next_iteration">
+<code class="sig-name descname">get_next_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iteration</span></em>, <em class="sig-param"><span class="n">iteration_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.get_next_iteration"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.get_next_iteration" title="永久链接至目标">¶</a></dt>
+<dd><p>instantiates the next iteration</p>
+<p>Overwrite this to change the multi_fidelity for different optimizers</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> (<em>int</em>) – the index of the iteration to be instantiated</p></li>
+<li><p><strong>iteration_kwargs</strong> (<em>dict</em>) – additional kwargs for the iteration class</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><strong>HB_iteration</strong></p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>a valid HB iteration object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.job_callback">
+<code class="sig-name descname">job_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">job</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.job_callback"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.job_callback" title="永久链接至目标">¶</a></dt>
+<dd><p>method to be called when a job has finished</p>
+<p>this will do some book keeping and call the user defined
+new_result_callback if one was specified</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">min_n_workers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">iteration_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.run"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.run" title="永久链接至目标">¶</a></dt>
+<dd><blockquote>
+<div><p>run n_iterations of RankReductionIteration</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_iterations</strong> (<em>int</em>) – number of multi_fidelity to be performed in this run</p></li>
+<li><p><strong>min_n_workers</strong> (<em>int</em>) – minimum number of workers before starting the run</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shutdown_workers</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.shutdown"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.shutdown" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.master.Master.wait_for_workers">
+<code class="sig-name descname">wait_for_workers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_n_workers</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/master.html#Master.wait_for_workers"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.master.Master.wait_for_workers" title="永久链接至目标">¶</a></dt>
+<dd><p>helper function to hold execution until some workers are active</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>min_n_workers</strong> (<em>int</em>) – minimum number of workers present before the run starts</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.async_comm.nameserver">
+<span id="ultraopt-async-comm-nameserver-module"></span><h2>ultraopt.async_comm.nameserver module<a class="headerlink" href="#module-ultraopt.async_comm.nameserver" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.async_comm.nameserver.NameServer">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.async_comm.nameserver.</code><code class="sig-name descname">NameServer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_id</span></em>, <em class="sig-param"><span class="n">working_directory</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">port</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nic_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/nameserver.html#NameServer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.nameserver.NameServer" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The nameserver serves as a phonebook-like lookup table for your workers. Unique names are created so the workers
+can work in parallel and register their results without creating racing conditions. The implementation uses
+<a class="reference external" href="https://pythonhosted.org/Pyro4/nameserver.html">PYRO4</a> as a backend and this class is basically a wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> (<em>str</em>) – unique run_id associated with the HPB run</p></li>
+<li><p><strong>working_directory</strong> (<em>str</em>) – path to the working directory of the HPB run to store the nameservers credentials.
+If None, no config file will be written.</p></li>
+<li><p><strong>host</strong> (<em>str</em>) – the hostname to use for the nameserver</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – the port to be used. Default (=0) means a random port</p></li>
+<li><p><strong>nic_name</strong> (<em>str</em>) – name of the network interface to use (only used if host is not given)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.async_comm.nameserver.NameServer.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/nameserver.html#NameServer.shutdown"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.nameserver.NameServer.shutdown" title="永久链接至目标">¶</a></dt>
+<dd><p>clean shutdown of the nameserver and the config file (if written)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.nameserver.NameServer.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/nameserver.html#NameServer.start"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.nameserver.NameServer.start" title="永久链接至目标">¶</a></dt>
+<dd><p>starts a Pyro4 nameserver in a separate thread</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>the host name and the used port</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple (str, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.async_comm.nameserver.nic_name_to_host">
+<code class="sig-prename descclassname">ultraopt.async_comm.nameserver.</code><code class="sig-name descname">nic_name_to_host</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nic_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/nameserver.html#nic_name_to_host"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.nameserver.nic_name_to_host" title="永久链接至目标">¶</a></dt>
+<dd><p>helper function to translate the name of a network card into a valid host name</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.async_comm.worker">
+<span id="ultraopt-async-comm-worker-module"></span><h2>ultraopt.async_comm.worker module<a class="headerlink" href="#module-ultraopt.async_comm.worker" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.async_comm.worker.Worker">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.async_comm.worker.</code><code class="sig-name descname">Worker</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">run_id</span></em>, <em class="sig-param"><span class="n">nameserver</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nameserver_port</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">host</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">worker_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">debug</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The worker is responsible for evaluating a single configuration on a single budget at a time.
+Communication to the individual workers goes via the nameserver, management of the worker-pool and job
+scheduling is done by the Dispatcher and jobs are determined by the Master. In distributed systems, each
+cluster-node runs a Worker-instance. To implement your own worker, overwrite the <cite>__init__</cite>- and the <cite>compute</cite>-method.
+The first allows to perform inital computations, e.g. loading the dataset, when the worker is started, while the
+latter is repeatedly called during the optimization and evaluates a given configuration yielding the associated loss.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_id</strong> (<em>anything with a __str__ method</em>) – unique id to identify individual HpBandSter run</p></li>
+<li><p><strong>nameserver</strong> (<em>str</em>) – hostname or IP of the nameserver</p></li>
+<li><p><strong>nameserver_port</strong> (<em>int</em>) – port of the nameserver</p></li>
+<li><p><strong>logger</strong> (<em>logging.logger instance</em>) – logger used for debugging output</p></li>
+<li><p><strong>host</strong> (<em>str</em>) – hostname for this worker process</p></li>
+<li><p><strong>worker_id</strong> (<em>anything with a __str__method</em>) – if multiple workers are started in the same process, you MUST provide a unique id for each one of them using the <cite>id</cite> argument.</p></li>
+<li><p><strong>timeout</strong> (<em>int</em><em> or </em><em>float</em><em> or </em><em>None</em>) – specifies the timeout a worker will wait for a new after finishing a computation before shutting down.
+Towards the end of a long run with multiple workers, this helps to shutdown idling workers. We recommend
+a timeout that is roughly half the time it would take for the second largest budget to finish.
+The default (None) means that the worker will wait indefinitely and never shutdown on its own.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.compute">
+<code class="sig-name descname">compute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_id</span></em>, <em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="n">config_info</span></em>, <em class="sig-param"><span class="n">budget</span></em>, <em class="sig-param"><span class="n">working_directory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.compute"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.compute" title="永久链接至目标">¶</a></dt>
+<dd><p>The function you have to overload implementing your computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_id</strong> (<em>tuple</em>) – a triplet of ints that uniquely identifies a configuration. the convention is
+id = (iteration, budget index, running index) with the following meaning:
+- iteration: the iteration of the optimization algorithms. E.g, for Hyperband that is one round of Successive Halving
+- budget index: the budget (of the current iteration) for which this configuration was sampled by the optimizer. This is only nonzero if the majority of the runs fail and Hyperband resamples to fill empty slots, or you use a more ‘advanced’ optimizer.
+- running index: this is simply an int &gt;= 0 that sort the configs into the order they where sampled, i.e. (x,x,0) was sampled before (x,x,1).</p></li>
+<li><p><strong>config</strong> (<em>dict</em>) – the actual configuration to be evaluated.</p></li>
+<li><p><strong>budget</strong> (<em>float</em>) – the budget for the evaluate</p></li>
+<li><p><strong>working_directory</strong> (<em>str</em>) – a name of a directory that is unique to this configuration. Use this to store intermediate results on lower budgets that can be reused later for a larger budget (for iterative algorithms, for example).</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>needs to return a dictionary with two mandatory entries:</dt><dd><ul class="simple">
+<li><p>’loss’: a numerical value that is MINIMIZED</p></li>
+<li><p>’info’: This can be pretty much any build in python type, e.g. a dict with lists as value. Due to Pyro4 handling the async_comm function calls, 3rd party types like numpy arrays are not supported!</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eval_func</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.initialize"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.initialize" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.is_busy">
+<code class="sig-name descname">is_busy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.is_busy"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.is_busy" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.load_nameserver_credentials">
+<code class="sig-name descname">load_nameserver_credentials</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">working_directory</span></em>, <em class="sig-param"><span class="n">num_tries</span><span class="o">=</span><span class="default_value">60</span></em>, <em class="sig-param"><span class="n">interval</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.load_nameserver_credentials"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.load_nameserver_credentials" title="永久链接至目标">¶</a></dt>
+<dd><p>loads the nameserver credentials in cases where master and workers share a filesystem</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>working_directory</strong> (<em>str</em>) – the working directory for the HPB run (see master)</p></li>
+<li><p><strong>num_tries</strong> (<em>int</em>) – number of attempts to find the file (default 60)</p></li>
+<li><p><strong>interval</strong> (<em>float</em>) – waiting period between the attempts</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">background</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">concurrent_type</span><span class="o">=</span><span class="default_value">'thread'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.run"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.run" title="永久链接至目标">¶</a></dt>
+<dd><p>Method to start the worker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>background</strong> (<em>bool</em>) – If set to False (Default). the worker is executed in the current thread.
+If True, a new daemon thread is created that runs the worker. This is
+useful in a single worker scenario/when the compute function only simulates
+work.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.shutdown">
+<code class="sig-name descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.shutdown"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.shutdown" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.async_comm.worker.Worker.start_computation">
+<code class="sig-name descname">start_computation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">callback</span></em>, <em class="sig-param"><span class="n">config_id</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/async_comm/worker.html#Worker.start_computation"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.async_comm.worker.Worker.start_computation" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.async_comm">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultraopt.async_comm" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

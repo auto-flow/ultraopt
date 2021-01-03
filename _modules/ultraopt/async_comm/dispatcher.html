@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.async_comm.dispatcher &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.async_comm.dispatcher</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.async_comm.dispatcher 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">Pyro4</span>
+
+<span class="kn">from</span> <span class="nn">ultraopt.structure</span> <span class="kn">import</span> <span class="n">Job</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.logging_</span> <span class="kn">import</span> <span class="n">get_logger</span>
+
+
+<div class="viewcode-block" id="Worker"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Worker">[文档]</a><span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runs_job</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Worker.is_alive"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Worker.is_alive">[文档]</a>    <span class="k">def</span> <span class="nf">is_alive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">_pyroReconnect</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ConnectionClosedError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Worker.shutdown"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Worker.shutdown">[文档]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Worker.is_busy"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Worker.is_busy">[文档]</a>    <span class="k">def</span> <span class="nf">is_busy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">is_busy</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Dispatcher"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher">[文档]</a><span class="k">class</span> <span class="nc">Dispatcher</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The dispatcher is responsible for assigning tasks to free workers, report results back to the master and</span>
+<span class="sd">    communicate to the nameserver.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_result_callback</span><span class="p">,</span> <span class="n">run_id</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span>
+                 <span class="n">ping_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">nameserver</span><span class="o">=</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+                 <span class="n">nameserver_port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        new_result_callback: function</span>
+<span class="sd">            function that will be called with a `Job instance &lt;ultraopt.async_comm.dispatcher.Job&gt;`_ as argument.</span>
+<span class="sd">            From the `Job` the result can be read and e.g. logged.</span>
+<span class="sd">        run_id: str</span>
+<span class="sd">            unique run_id associated with the HPB run</span>
+<span class="sd">        ping_interval: int</span>
+<span class="sd">            how often to ping for workers (in seconds)</span>
+<span class="sd">        nameserver: str</span>
+<span class="sd">            address of the Pyro4 nameserver</span>
+<span class="sd">        nameserver_port: int</span>
+<span class="sd">            port of Pyro4 nameserver</span>
+<span class="sd">        host: str</span>
+<span class="sd">            ip (or name that resolves to that) of the network interface to use</span>
+<span class="sd">        queue_callback: function</span>
+<span class="sd">            gets called with the number of workers in the pool on every update-cycle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_result_callback</span> <span class="o">=</span> <span class="n">new_result_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue_callback</span> <span class="o">=</span> <span class="n">queue_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span> <span class="o">=</span> <span class="n">run_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nameserver</span> <span class="o">=</span> <span class="n">nameserver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nameserver_port</span> <span class="o">=</span> <span class="n">nameserver_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ping_interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ping_interval</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_all_threads</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">waiting_jobs</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_jobs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">thread_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_lock</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Condition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_lock</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pyro_id</span> <span class="o">=</span> <span class="s2">&quot;ultraopt.run_</span><span class="si">%s</span><span class="s2">.dispatcher&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span>
+
+<div class="viewcode-block" id="Dispatcher.run"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.run">[文档]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="p">:</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">discover_workers</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;discover_workers&#39;</span><span class="p">)</span>
+            <span class="n">t1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: started the </span><span class="se">\&#39;</span><span class="s1">discover_worker</span><span class="se">\&#39;</span><span class="s1"> thread&#39;</span><span class="p">)</span>
+            <span class="n">t2</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">job_runner</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;job_runner&#39;</span><span class="p">)</span>
+            <span class="n">t2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: started the </span><span class="se">\&#39;</span><span class="s1">job_runner</span><span class="se">\&#39;</span><span class="s1"> thread&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">pyro_daemon</span> <span class="o">=</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Daemon</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">locateNS</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver_port</span><span class="p">)</span> <span class="k">as</span> <span class="n">ns</span><span class="p">:</span>
+                <span class="n">uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pyro_daemon</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pyro_id</span><span class="p">)</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyro_id</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DISPATCHER: Pyro daemon running on </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyro_daemon</span><span class="o">.</span><span class="n">locationStr</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pyro_daemon</span><span class="o">.</span><span class="n">requestLoop</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_all_threads</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: Dispatcher shutting down&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">notify_all</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">notify_all</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">locateNS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver_port</span><span class="p">)</span> <span class="k">as</span> <span class="n">ns</span><span class="p">:</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pyro_id</span><span class="p">)</span>
+
+        <span class="n">t1</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: </span><span class="se">\&#39;</span><span class="s1">discover_worker</span><span class="se">\&#39;</span><span class="s1"> thread exited&#39;</span><span class="p">)</span>
+        <span class="n">t2</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: </span><span class="se">\&#39;</span><span class="s1">job_runner</span><span class="se">\&#39;</span><span class="s1"> thread exited&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: shut down complete&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Dispatcher.shutdown_all_workers"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.shutdown_all_workers">[文档]</a>    <span class="k">def</span> <span class="nf">shutdown_all_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rediscover</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">worker</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">rediscover</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Dispatcher.shutdown"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.shutdown">[文档]</a>    <span class="k">def</span> <span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shutdown_workers</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">shutdown_workers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_all_workers</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pyro_daemon</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Dispatcher.trigger_discover_worker"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.trigger_discover_worker">[文档]</a>    <span class="nd">@Pyro4</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@Pyro4</span><span class="o">.</span><span class="n">oneway</span>
+    <span class="k">def</span> <span class="nf">trigger_discover_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># time.sleep(1)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DISPATCHER: A new worker triggered discover_worker&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Dispatcher.discover_workers"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.discover_workers">[文档]</a>    <span class="k">def</span> <span class="nf">discover_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="n">sleep_interval</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: Starting worker discovery&#39;</span><span class="p">)</span>
+            <span class="n">update</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">with</span> <span class="n">Pyro4</span><span class="o">.</span><span class="n">locateNS</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameserver_port</span><span class="p">)</span> <span class="k">as</span> <span class="n">ns</span><span class="p">:</span>
+                <span class="n">worker_names</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;ultraopt.run_</span><span class="si">%s</span><span class="s2">.worker.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DISPATCHER: Found </span><span class="si">%i</span><span class="s2"> potential workers, </span><span class="si">%i</span><span class="s2"> currently in the pool.&quot;</span>
+                                  <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">worker_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">)))</span>
+
+                <span class="k">for</span> <span class="n">wn</span><span class="p">,</span> <span class="n">uri</span> <span class="ow">in</span> <span class="n">worker_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">wn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">:</span>
+                        <span class="n">w</span> <span class="o">=</span> <span class="n">Worker</span><span class="p">(</span><span class="n">wn</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: skipping dead worker, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">wn</span><span class="p">)</span>
+                            <span class="k">continue</span>
+                        <span class="n">update</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: discovered new worker, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">wn</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
+
+            <span class="c1"># check the current list of workers</span>
+            <span class="n">crashed_jobs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+            <span class="n">all_workers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">wn</span> <span class="ow">in</span> <span class="n">all_workers</span><span class="p">:</span>
+                <span class="c1"># remove dead entries from the nameserver</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: removing dead worker, </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">wn</span><span class="p">)</span>
+                    <span class="n">update</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># todo check if there were jobs running on that that need to be rescheduled</span>
+
+                    <span class="n">current_job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span><span class="o">.</span><span class="n">runs_job</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">current_job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Job </span><span class="si">%s</span><span class="s1"> was not completed&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">current_job</span><span class="p">))</span>
+                        <span class="n">crashed_jobs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">current_job</span><span class="p">)</span>
+
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">wn</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span><span class="o">.</span><span class="n">is_busy</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wn</span><span class="p">)</span>
+
+            <span class="c1"># try to submit more jobs if something changed</span>
+            <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue_callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">queue_callback</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">crashed_job</span> <span class="ow">in</span> <span class="n">crashed_jobs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_result</span><span class="p">(</span><span class="n">crashed_job</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">:</span> <span class="s1">&#39;Worker died unexpectedly.&#39;</span><span class="p">})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: Finished worker discovery&#39;</span><span class="p">)</span>
+
+            <span class="c1"># if (len(self.worker_pool) == 0 ): # ping for new workers if no workers are currently available</span>
+            <span class="c1">#    self.logger.debug(&#39;No workers available! Keep pinging&#39;)</span>
+            <span class="c1">#    self.discover_cond.wait(sleep_interval)</span>
+            <span class="c1">#    sleep_interval *= 2</span>
+            <span class="c1"># else:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ping_interval</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_all_threads</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: discover_workers shutting down&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Dispatcher.number_of_workers"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.number_of_workers">[文档]</a>    <span class="k">def</span> <span class="nf">number_of_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Dispatcher.job_runner"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.job_runner">[文档]</a>    <span class="k">def</span> <span class="nf">job_runner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_jobs</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: jobs to submit = </span><span class="si">%i</span><span class="s1">, number of idle workers = </span><span class="si">%i</span><span class="s1"> -&gt; waiting!&#39;</span>
+                                  <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">waiting_jobs</span><span class="o">.</span><span class="n">qsize</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: Trying to submit another job.&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shutdown_all_threads</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: job_runner shutting down&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">discover_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+                    <span class="k">return</span>
+
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">waiting_jobs</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="n">wn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">wn</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: starting job </span><span class="si">%s</span><span class="s1"> on </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+            <span class="n">job</span><span class="o">.</span><span class="n">time_it</span><span class="p">(</span><span class="s1">&#39;started&#39;</span><span class="p">)</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">runs_job</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">id</span>
+
+            <span class="n">worker</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">start_computation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">**</span><span class="n">job</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">job</span><span class="o">.</span><span class="n">worker_name</span> <span class="o">=</span> <span class="n">wn</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">running_jobs</span><span class="p">[</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: job </span><span class="si">%s</span><span class="s1"> dispatched on </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">worker</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Dispatcher.submit_job"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.submit_job">[文档]</a>    <span class="k">def</span> <span class="nf">submit_job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: trying to submit job </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">time_it</span><span class="p">(</span><span class="s1">&#39;submitted&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">waiting_jobs</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: trying to notify the job_runner thread.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Dispatcher.register_result"><a class="viewcode-back" href="../../../_module/ultraopt.async_comm.html#ultraopt.async_comm.dispatcher.Dispatcher.register_result">[文档]</a>    <span class="nd">@Pyro4</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@Pyro4</span><span class="o">.</span><span class="n">callback</span>
+    <span class="nd">@Pyro4</span><span class="o">.</span><span class="n">oneway</span>
+    <span class="k">def</span> <span class="nf">register_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: job </span><span class="si">%s</span><span class="s1"> finished&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: register_result: lock acquired&#39;</span><span class="p">)</span>
+            <span class="c1"># fill in missing information</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_jobs</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">time_it</span><span class="p">(</span><span class="s1">&#39;finished&#39;</span><span class="p">)</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">exception</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;exception&#39;</span><span class="p">]</span>
+            <span class="n">job</span><span class="o">.</span><span class="n">config_info</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;DISPATCHER: job </span><span class="si">%s</span><span class="s1"> on </span><span class="si">%s</span><span class="s1"> finished&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">job</span><span class="o">.</span><span class="n">worker_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">job</span><span class="p">))</span>
+
+            <span class="c1"># delete job</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">running_jobs</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
+
+            <span class="c1"># label worker as idle again</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">job</span><span class="o">.</span><span class="n">worker_name</span><span class="p">]</span><span class="o">.</span><span class="n">runs_job</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">worker_pool</span><span class="p">[</span><span class="n">job</span><span class="o">.</span><span class="n">worker_name</span><span class="p">]</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">_pyroRelease</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idle_workers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">worker_name</span><span class="p">)</span>
+                <span class="c1"># notify the job_runner to check for more jobs to run</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">runner_cond</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># happens for crashed workers, but we can just continue</span>
+                <span class="k">pass</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span>
+
+        <span class="c1"># call users callback function to register the result</span>
+        <span class="c1"># needs to be with the condition released, as the master can call</span>
+        <span class="c1"># submit_job quickly enough to cause a dead-lock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">new_result_callback</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

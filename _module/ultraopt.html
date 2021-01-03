@@ -1,0 +1,600 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt package &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>ultraopt package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_module/ultraopt.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="ultraopt-package">
+<h1>ultraopt package<a class="headerlink" href="#ultraopt-package" title="永久链接至标题">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="永久链接至标题">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.async_comm.html">ultraopt.async_comm package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#module-ultraopt.async_comm.dispatcher">ultraopt.async_comm.dispatcher module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#module-ultraopt.async_comm.master">ultraopt.async_comm.master module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#module-ultraopt.async_comm.nameserver">ultraopt.async_comm.nameserver module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#module-ultraopt.async_comm.worker">ultraopt.async_comm.worker module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.async_comm.html#module-ultraopt.async_comm">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.benchmarks.html">ultraopt.benchmarks package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.benchmarks.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.benchmarks.html#module-ultraopt.benchmarks.synthetic_functions">ultraopt.benchmarks.synthetic_functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.benchmarks.html#module-ultraopt.benchmarks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.facade.html">ultraopt.facade package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.facade.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.facade.html#module-ultraopt.facade.fmin">ultraopt.facade.fmin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.facade.html#module-ultraopt.facade.result">ultraopt.facade.result module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.facade.html#module-ultraopt.facade.utils">ultraopt.facade.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.facade.html#module-ultraopt.facade">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.hdl.html">ultraopt.hdl package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.hdl.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.hdl.html#module-ultraopt.hdl.hp_def">ultraopt.hdl.hp_def module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.hdl.html#module-ultraopt.hdl.utils">ultraopt.hdl.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.hdl.html#module-ultraopt.hdl.viz">ultraopt.hdl.viz module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.hdl.html#module-ultraopt.hdl">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.learning.html">ultraopt.learning package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.learning.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.learning.html#module-ultraopt.learning.tpe">ultraopt.learning.tpe module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.learning.html#module-ultraopt.learning">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.multi_fidelity.html">ultraopt.multi_fidelity package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.multi_fidelity.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html">ultraopt.multi_fidelity.iter package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html#module-ultraopt.multi_fidelity.iter.base_iter">ultraopt.multi_fidelity.iter.base_iter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html#module-ultraopt.multi_fidelity.iter.rank_iter">ultraopt.multi_fidelity.iter.rank_iter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html#module-ultraopt.multi_fidelity.iter.ws_iter">ultraopt.multi_fidelity.iter.ws_iter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter.html#module-ultraopt.multi_fidelity.iter">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html">ultraopt.multi_fidelity.iter_gen package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html#module-ultraopt.multi_fidelity.iter_gen.base_gen">ultraopt.multi_fidelity.iter_gen.base_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html#module-ultraopt.multi_fidelity.iter_gen.custom_gen">ultraopt.multi_fidelity.iter_gen.custom_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html#module-ultraopt.multi_fidelity.iter_gen.hyperband_gen">ultraopt.multi_fidelity.iter_gen.hyperband_gen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.multi_fidelity.iter_gen.html#module-ultraopt.multi_fidelity.iter_gen">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.multi_fidelity.html#module-ultraopt.multi_fidelity">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.optimizer.html">ultraopt.optimizer package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.optimizer.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ultraopt.optimizer.bo.html">ultraopt.optimizer.bo package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#module-ultraopt.optimizer.bo.config_evaluator">ultraopt.optimizer.bo.config_evaluator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#module-ultraopt.optimizer.bo.etpe_opt">ultraopt.optimizer.bo.etpe_opt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#module-ultraopt.optimizer.bo.sampling_sort_opt">ultraopt.optimizer.bo.sampling_sort_opt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#module-ultraopt.optimizer.bo.tree_based_opt">ultraopt.optimizer.bo.tree_based_opt module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ultraopt.optimizer.bo.html#module-ultraopt.optimizer.bo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.optimizer.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.optimizer.html#module-ultraopt.optimizer.base_opt">ultraopt.optimizer.base_opt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.optimizer.html#module-ultraopt.optimizer.random_opt">ultraopt.optimizer.random_opt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.optimizer.html#module-ultraopt.optimizer">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.tests.html">ultraopt.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.tests.html#module-ultraopt.tests.automl">ultraopt.tests.automl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.tests.html#module-ultraopt.tests.mock">ultraopt.tests.mock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.tests.html#module-ultraopt.tests">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ultraopt.utils.html">ultraopt.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.config_space">ultraopt.utils.config_space module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.config_transformer">ultraopt.utils.config_transformer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.hash">ultraopt.utils.hash module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.logging_">ultraopt.utils.logging_ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.loss_transformer">ultraopt.utils.loss_transformer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.math_">ultraopt.utils.math_ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.misc">ultraopt.utils.misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.net">ultraopt.utils.net module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.progress">ultraopt.utils.progress module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils.std_out_err_redirect_tqdm">ultraopt.utils.std_out_err_redirect_tqdm module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ultraopt.utils.html#module-ultraopt.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="永久链接至标题">¶</a></h2>
+</div>
+<div class="section" id="module-ultraopt.constants">
+<span id="ultraopt-constants-module"></span><h2>ultraopt.constants module<a class="headerlink" href="#module-ultraopt.constants" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.constants.Configs">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.constants.</code><code class="sig-name descname">Configs</code><a class="reference internal" href="../_modules/ultraopt/constants.html#Configs"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.constants.Configs" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="ultraopt.constants.Configs.FractionalBudget">
+<code class="sig-name descname">FractionalBudget</code><em class="property"> = True</em><a class="headerlink" href="#ultraopt.constants.Configs.FractionalBudget" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.result">
+<span id="ultraopt-result-module"></span><h2>ultraopt.result module<a class="headerlink" href="#module-ultraopt.result" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.result.Result">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.result.</code><code class="sig-name descname">Result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">HB_iteration_data</span></em>, <em class="sig-param"><span class="n">HB_config</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Object returned by the HB_master.run function</p>
+<p>This class offers a simple API to access the information from
+a Hyperband run.</p>
+<dl class="py method">
+<dt id="ultraopt.result.Result.from_dict">
+<em class="property">static </em><code class="sig-name descname">from_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">HB_config</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.from_dict"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.from_dict" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_all_runs">
+<code class="sig-name descname">get_all_runs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">only_largest_budget</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_all_runs"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_all_runs" title="永久链接至目标">¶</a></dt>
+<dd><p>returns all runs performed</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>only_largest_budget</strong> (<em>boolean</em>) – if True, only the largest budget for each configuration
+is returned. This makes sense if the runs are continued
+across budgets and the info field contains the information
+you care about. If False, all runs of a configuration
+are returned</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_fANOVA_data">
+<code class="sig-name descname">get_fANOVA_data</code><span class="sig-paren">(</span><em class="sig-param">config_space</em>, <em class="sig-param">budgets=None</em>, <em class="sig-param">loss_fn=&lt;function Result.&lt;lambda&gt;&gt;</em>, <em class="sig-param">failed_loss=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_fANOVA_data"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_fANOVA_data" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_id2config_mapping">
+<code class="sig-name descname">get_id2config_mapping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_id2config_mapping"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_id2config_mapping" title="永久链接至目标">¶</a></dt>
+<dd><p>returns a dict where the keys are the config_ids and the values
+are the actual configurations</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_incumbent_id">
+<code class="sig-name descname">get_incumbent_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_incumbent_id"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_incumbent_id" title="永久链接至目标">¶</a></dt>
+<dd><p>Find the config_id of the incumbent.</p>
+<p>The incumbent here is the configuration with the smallest loss
+among all runs on the maximum budget! If no run finishes on the
+maximum budget, None is returned!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_incumbent_trajectory">
+<code class="sig-name descname">get_incumbent_trajectory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">all_budgets</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">bigger_is_better</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">non_decreasing_budget</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_incumbent_trajectory"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_incumbent_trajectory" title="永久链接至目标">¶</a></dt>
+<dd><p>Returns the best configurations over time</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>all_budgets</strong> (<em>bool</em>) – If set to true all runs (even those not with the largest budget) can be the incumbent.
+Otherwise, only full budget runs are considered</p></li>
+<li><p><strong>bigger_is_better</strong> (<em>bool</em>) – flag whether an evaluate on a larger budget is always considered better.
+If True, the incumbent might increase for the first evaluations on a bigger budget</p></li>
+<li><p><strong>non_decreasing_budget</strong> (<em>bool</em>) – flag whether the budget of a new incumbent should be at least as big as the one for
+the current incumbent.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>dictionary with all the config IDs, the times the runs
+finished, their respective budgets, and corresponding losses</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_learning_curves">
+<code class="sig-name descname">get_learning_curves</code><span class="sig-paren">(</span><em class="sig-param">lc_extractor=&lt;function extract_HBS_learning_curves&gt;</em>, <em class="sig-param">config_ids=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_learning_curves"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_learning_curves" title="永久链接至目标">¶</a></dt>
+<dd><p>extracts all learning curves from all run configurations</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lc_extractor</strong> (<em>callable</em>) – a function to return a list of learning_curves.
+defaults to hpbanster.HB_result.extract_HP_learning_curves</p></li>
+<li><p><strong>config_ids</strong> (<em>list of valid config ids</em>) – if only a subset of the config ids is wanted</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>a dictionary with the config_ids as keys and the
+learning curves as values</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_pandas_dataframe">
+<code class="sig-name descname">get_pandas_dataframe</code><span class="sig-paren">(</span><em class="sig-param">budgets=None</em>, <em class="sig-param">loss_fn=&lt;function Result.&lt;lambda&gt;&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_pandas_dataframe"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_pandas_dataframe" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.get_runs_by_id">
+<code class="sig-name descname">get_runs_by_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.get_runs_by_id"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.get_runs_by_id" title="永久链接至目标">¶</a></dt>
+<dd><p>returns a list of runs for a given config id</p>
+<p>The runs are sorted by ascending budget, so ‘-1’ will give
+the longest run for this config.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ultraopt.result.Result.num_iterations">
+<code class="sig-name descname">num_iterations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Result.num_iterations"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Result.num_iterations" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.result.Run">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.result.</code><code class="sig-name descname">Run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_id</span></em>, <em class="sig-param"><span class="n">budget</span></em>, <em class="sig-param"><span class="n">loss</span></em>, <em class="sig-param"><span class="n">info</span></em>, <em class="sig-param"><span class="n">timestamps</span></em>, <em class="sig-param"><span class="n">error_logs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#Run"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.Run" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Not a proper class, more a ‘struct’ to bundle important
+information about a particular run</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.result.extract_HBS_learning_curves">
+<code class="sig-prename descclassname">ultraopt.result.</code><code class="sig-name descname">extract_HBS_learning_curves</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">runs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#extract_HBS_learning_curves"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.extract_HBS_learning_curves" title="永久链接至目标">¶</a></dt>
+<dd><p>function to get the hyperband learning curves</p>
+<p>This is an example function showing the interface to use the
+HB_result.get_learning_curves method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>runs</strong> (<em>list of HB_result.run objects</em>) – the performed runs for an unspecified config</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><strong>list of learning curves</strong> – An individual learning curve is a list of (t, x_t) tuples.
+This function must return a list of these. One could think
+of cases where one could extract multiple learning curves
+from these runs, e.g. if each run is an independent training
+run of a neural network on the data.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>list of lists of tuples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ultraopt.result.logged_results_to_HBS_result">
+<code class="sig-prename descclassname">ultraopt.result.</code><code class="sig-name descname">logged_results_to_HBS_result</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">directory</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/result.html#logged_results_to_HBS_result"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.result.logged_results_to_HBS_result" title="永久链接至目标">¶</a></dt>
+<dd><p>function to import logged ‘live-results’ and return a HB_result object</p>
+<p>You can load live run results with this function and the returned
+HB_result object gives you access to the results the same way
+a finished run would.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – the directory containing the results.json and config.json files</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><strong>ultraopt.async_comm.result.Result</strong> – TODO</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><dl class="field-list simple">
+<dt class="field-odd">object</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.structure">
+<span id="ultraopt-structure-module"></span><h2>ultraopt.structure module<a class="headerlink" href="#module-ultraopt.structure" title="永久链接至标题">¶</a></h2>
+<dl class="py class">
+<dt id="ultraopt.structure.Datum">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.structure.</code><code class="sig-name descname">Datum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em>, <em class="sig-param"><span class="n">config_info</span></em>, <em class="sig-param"><span class="n">results</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exceptions</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">status</span><span class="o">=</span><span class="default_value">'QUEUED'</span></em>, <em class="sig-param"><span class="n">budget</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/structure.html#Datum"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.structure.Datum" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ultraopt.structure.Job">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.structure.</code><code class="sig-name descname">Job</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/structure.html#Job"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.structure.Job" title="永久链接至目标">¶</a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ultraopt.structure.Job.time_it">
+<code class="sig-name descname">time_it</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">which_time</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/structure.html#Job.time_it"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.structure.Job.time_it" title="永久链接至目标">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt.viz">
+<span id="ultraopt-viz-module"></span><h2>ultraopt.viz module<a class="headerlink" href="#module-ultraopt.viz" title="永久链接至标题">¶</a></h2>
+<dl class="py function">
+<dt id="ultraopt.viz.plot_convergence">
+<code class="sig-prename descclassname">ultraopt.viz.</code><code class="sig-name descname">plot_convergence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y1</span></em>, <em class="sig-param"><span class="n">y2</span></em>, <em class="sig-param"><span class="n">xlabel</span><span class="o">=</span><span class="default_value">'Number of iterations $n$'</span></em>, <em class="sig-param"><span class="n">ylabel</span><span class="o">=</span><span class="default_value">'$\\min f(x)$ after $n$ iterations'</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">yscale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">true_minimum</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/viz.html#plot_convergence"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.viz.plot_convergence" title="永久链接至目标">¶</a></dt>
+<dd><p>Plot one or several convergence traces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong><strong>[</strong><strong>i</strong><strong>]</strong> (<cite>OptimizeResult</cite>, list of <cite>OptimizeResult</cite>, or tuple) – <p>The result(s) for which to plot the convergence trace.</p>
+<ul>
+<li><p>if <cite>OptimizeResult</cite>, then draw the corresponding single trace;</p></li>
+<li><p>if list of <cite>OptimizeResult</cite>, then draw the corresponding convergence
+traces in transparency, along with the average convergence trace;</p></li>
+<li><p>if tuple, then <cite>args[i][0]</cite> should be a string label and <cite>args[i][1]</cite>
+an <cite>OptimizeResult</cite> or a list of <cite>OptimizeResult</cite>.</p></li>
+</ul>
+</p></li>
+<li><p><strong>ax</strong> (<cite>Axes</cite>, optional) – The matplotlib axes on which to draw the plot, or <cite>None</cite> to create
+a new one.</p></li>
+<li><p><strong>true_minimum</strong> (<em>float</em><em>, </em><em>optional</em>) – The true minimum value of the function, if known.</p></li>
+<li><p><strong>yscale</strong> (<em>None</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – The scale for the y-axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><strong>ax</strong> – The matplotlib axes.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><cite>Axes</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-ultraopt">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-ultraopt" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

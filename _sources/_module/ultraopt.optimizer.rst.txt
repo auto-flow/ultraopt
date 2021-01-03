@@ -1,0 +1,38 @@
+ultraopt.optimizer package
+==========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   ultraopt.optimizer.bo
+
+Submodules
+----------
+
+ultraopt.optimizer.base\_opt module
+-----------------------------------
+
+.. automodule:: ultraopt.optimizer.base_opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.optimizer.random\_opt module
+-------------------------------------
+
+.. automodule:: ultraopt.optimizer.random_opt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.optimizer
+   :members:
+   :undoc-members:
+   :show-inheritance:

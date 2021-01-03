@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ultraopt.facade.fmin &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">模块代码</a> &raquo;</li>
+        
+      <li>ultraopt.facade.fmin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  <h1>ultraopt.facade.fmin 源代码</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># @Author  : qichun tang</span>
+<span class="c1"># @Date    : 2020-12-17</span>
+<span class="c1"># @Contact    : qichun.tang@bupt.edu.cn</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">from</span> <span class="nn">ConfigSpace</span> <span class="kn">import</span> <span class="n">ConfigurationSpace</span><span class="p">,</span> <span class="n">Configuration</span>
+<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
+
+<span class="kn">from</span> <span class="nn">ultraopt.async_comm.master</span> <span class="kn">import</span> <span class="n">Master</span>
+<span class="kn">from</span> <span class="nn">ultraopt.async_comm.nameserver</span> <span class="kn">import</span> <span class="n">NameServer</span>
+<span class="kn">from</span> <span class="nn">ultraopt.async_comm.worker</span> <span class="kn">import</span> <span class="n">Worker</span>
+<span class="kn">from</span> <span class="nn">ultraopt.facade.result</span> <span class="kn">import</span> <span class="n">FMinResult</span>
+<span class="kn">from</span> <span class="nn">ultraopt.facade.utils</span> <span class="kn">import</span> <span class="n">warm_start_optimizer</span><span class="p">,</span> <span class="n">get_wanted</span>
+<span class="kn">from</span> <span class="nn">ultraopt.hdl</span> <span class="kn">import</span> <span class="n">hdl2cs</span>
+<span class="kn">from</span> <span class="nn">ultraopt.multi_fidelity</span> <span class="kn">import</span> <span class="n">BaseIterGenerator</span><span class="p">,</span> <span class="n">CustomIterGenerator</span>
+<span class="kn">from</span> <span class="nn">ultraopt.optimizer.base_opt</span> <span class="kn">import</span> <span class="n">BaseOptimizer</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils</span> <span class="kn">import</span> <span class="n">progress</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.misc</span> <span class="kn">import</span> <span class="n">dump_checkpoint</span>
+<span class="kn">from</span> <span class="nn">ultraopt.utils.net</span> <span class="kn">import</span> <span class="n">get_a_free_port</span>
+
+
+<div class="viewcode-block" id="fmin"><a class="viewcode-back" href="../../../_module/ultraopt.facade.html#ultraopt.facade.fmin.fmin">[文档]</a><span class="k">def</span> <span class="nf">fmin</span><span class="p">(</span>
+        <span class="n">eval_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">config_space</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConfigurationSpace</span><span class="p">,</span> <span class="nb">dict</span><span class="p">],</span>
+        <span class="n">optimizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">BaseOptimizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ETPE&quot;</span><span class="p">,</span>
+        <span class="n">initial_points</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+        <span class="n">n_iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">parallel_strategy</span><span class="o">=</span><span class="s2">&quot;AsyncComm&quot;</span><span class="p">,</span>
+        <span class="n">auto_identify_serial_strategy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">multi_fidelity_iter_generator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BaseIterGenerator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">previous_result</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">FMinResult</span><span class="p">,</span> <span class="n">BaseOptimizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">warm_start_strategy</span><span class="o">=</span><span class="s2">&quot;continue&quot;</span><span class="p">,</span>
+        <span class="n">show_progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">checkpoint_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkpoint_freq</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">run_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ns_host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span>
+        <span class="n">ns_port</span><span class="o">=</span><span class="mi">9090</span>
+<span class="p">):</span>
+    <span class="c1"># fixme: 这合理吗</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+    <span class="c1"># 设计目标：单机并行、多保真优化</span>
+    <span class="c1"># ------------   config_space   ---------------#</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_space</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">cs_</span> <span class="o">=</span> <span class="n">hdl2cs</span><span class="p">(</span><span class="n">config_space</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_space</span><span class="p">,</span> <span class="n">ConfigurationSpace</span><span class="p">):</span>
+        <span class="n">cs_</span> <span class="o">=</span> <span class="n">config_space</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="c1"># ------------      budgets     ---------------#</span>
+    <span class="k">if</span> <span class="n">multi_fidelity_iter_generator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">budgets_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">budgets_</span> <span class="o">=</span> <span class="n">multi_fidelity_iter_generator</span><span class="o">.</span><span class="n">get_budgets</span><span class="p">()</span>
+    <span class="c1"># ------------ optimizer ---------------#</span>
+    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">BaseOptimizer</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;optimizer </span><span class="si">{</span><span class="n">optimizer</span><span class="si">}</span><span class="s2"> is not subclass of BaseOptimizer&quot;</span><span class="p">)</span>
+        <span class="n">opt_</span> <span class="o">=</span> <span class="n">optimizer</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">BaseOptimizer</span><span class="p">):</span>
+        <span class="n">opt_</span> <span class="o">=</span> <span class="n">optimizer</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">opt_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;ultraopt.optimizer&quot;</span><span class="p">),</span>
+                           <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">optimizer</span><span class="si">}</span><span class="s2">Optimizer&quot;</span><span class="p">)()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid optimizer string-indicator: </span><span class="si">{</span><span class="n">optimizer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="k">if</span> <span class="n">show_progressbar</span><span class="p">:</span>
+        <span class="n">progress_callback</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">default_callback</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">progress_callback</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">no_progress_callback</span>
+    <span class="c1"># 3种运行模式：</span>
+    <span class="c1"># 1. 串行，方便调试，不支持multi-fidelity</span>
+    <span class="c1"># 2. AsyncComm，RPC，支持multi-fidelity</span>
+    <span class="c1"># 3. MapReduce，不支持multi-fidelity</span>
+    <span class="c1"># non-parallelism debug mode</span>
+    <span class="k">if</span> <span class="n">auto_identify_serial_strategy</span> <span class="ow">and</span> <span class="n">n_jobs</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">multi_fidelity_iter_generator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">parallel_strategy</span> <span class="o">=</span> <span class="s2">&quot;Serial&quot;</span>
+    <span class="k">if</span> <span class="n">parallel_strategy</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Serial&quot;</span><span class="p">,</span> <span class="s2">&quot;MapReduce&quot;</span><span class="p">]:</span>
+        <span class="n">budgets_</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># initialize optimizer</span>
+    <span class="n">opt_</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">cs_</span><span class="p">,</span> <span class="n">budgets_</span><span class="p">,</span> <span class="n">random_state</span><span class="p">,</span> <span class="n">initial_points</span><span class="p">)</span>
+    <span class="n">opt_</span> <span class="o">=</span> <span class="n">warm_start_optimizer</span><span class="p">(</span><span class="n">opt_</span><span class="p">,</span> <span class="n">previous_result</span><span class="p">,</span> <span class="n">warm_start_strategy</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parallel_strategy</span> <span class="o">==</span> <span class="s2">&quot;Serial&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">progress_callback</span><span class="p">(</span>
+                <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">n_iterations</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">progress_ctx</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
+                <span class="n">config</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">opt_</span><span class="o">.</span><span class="n">ask</span><span class="p">()</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">eval_func</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+                <span class="n">opt_</span><span class="o">.</span><span class="n">tell</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">best_loss</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_wanted</span><span class="p">(</span><span class="n">opt_</span><span class="p">)</span>
+                <span class="n">progress_ctx</span><span class="o">.</span><span class="n">postfix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;best loss: </span><span class="si">{</span><span class="n">best_loss</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">progress_ctx</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">checkpoint_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">counts</span> <span class="o">%</span> <span class="n">checkpoint_freq</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">counts</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> \
+                            <span class="ow">or</span> <span class="p">(</span><span class="n">counts</span> <span class="o">==</span> <span class="n">n_iterations</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">dump_checkpoint</span><span class="p">(</span><span class="n">opt_</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">parallel_strategy</span> <span class="o">==</span> <span class="s2">&quot;AsyncComm&quot;</span><span class="p">:</span>
+        <span class="c1"># start name-server</span>
+        <span class="k">if</span> <span class="n">run_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">run_id</span> <span class="o">=</span> <span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
+        <span class="k">if</span> <span class="n">multi_fidelity_iter_generator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># todo: warning</span>
+            <span class="n">multi_fidelity_iter_generator</span> <span class="o">=</span> <span class="n">CustomIterGenerator</span><span class="p">([</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">NS</span> <span class="o">=</span> <span class="n">NameServer</span><span class="p">(</span><span class="n">run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">ns_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">get_a_free_port</span><span class="p">(</span><span class="n">ns_port</span><span class="p">,</span> <span class="n">ns_host</span><span class="p">))</span>
+        <span class="n">NS</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="c1"># start n workers</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span><span class="n">Worker</span><span class="p">(</span><span class="n">run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span> <span class="n">nameserver</span><span class="o">=</span><span class="n">ns_host</span><span class="p">,</span> <span class="n">nameserver_port</span><span class="o">=</span><span class="n">ns_port</span><span class="p">,</span>
+                          <span class="n">host</span><span class="o">=</span><span class="n">ns_host</span><span class="p">,</span> <span class="n">worker_id</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">worker</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">eval_func</span><span class="p">)</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;thread&quot;</span><span class="p">)</span>
+        <span class="c1"># start master</span>
+        <span class="n">master</span> <span class="o">=</span> <span class="n">Master</span><span class="p">(</span>
+            <span class="n">run_id</span><span class="p">,</span> <span class="n">opt_</span><span class="p">,</span> <span class="n">multi_fidelity_iter_generator</span><span class="p">,</span> <span class="n">progress_callback</span><span class="o">=</span><span class="n">progress_callback</span><span class="p">,</span>
+            <span class="n">checkpoint_file</span><span class="o">=</span><span class="n">checkpoint_file</span><span class="p">,</span> <span class="n">checkpoint_freq</span><span class="o">=</span><span class="n">checkpoint_freq</span><span class="p">,</span>
+            <span class="n">nameserver</span><span class="o">=</span><span class="n">ns_host</span><span class="p">,</span> <span class="n">nameserver_port</span><span class="o">=</span><span class="n">ns_port</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">ns_host</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">master</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">)</span>
+        <span class="n">master</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">NS</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+        <span class="c1"># todo: 将result添加到返回结果中</span>
+    <span class="k">elif</span> <span class="n">parallel_strategy</span> <span class="o">==</span> <span class="s2">&quot;MapReduce&quot;</span><span class="p">:</span>
+        <span class="c1"># todo: 支持multi-fidelity</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">with</span> <span class="n">progress_callback</span><span class="p">(</span>
+                <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">n_iterations</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">progress_ctx</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">counts</span> <span class="o">&lt;</span> <span class="n">n_iterations</span><span class="p">:</span>
+                <span class="n">n_parallels</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_jobs</span><span class="p">,</span> <span class="n">n_iterations</span> <span class="o">-</span> <span class="n">counts</span><span class="p">)</span>
+                <span class="n">config_info_pairs</span> <span class="o">=</span> <span class="n">opt_</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="n">n_points</span><span class="o">=</span><span class="n">n_parallels</span><span class="p">)</span>
+                <span class="n">losses</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_parallels</span><span class="p">)(</span>
+                    <span class="n">delayed</span><span class="p">(</span><span class="n">eval_func</span><span class="p">)(</span><span class="n">config</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">config</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">config_info_pairs</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">_</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">losses</span><span class="p">,</span> <span class="n">config_info_pairs</span><span class="p">)):</span>
+                    <span class="n">opt_</span><span class="o">.</span><span class="n">tell</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">update_model</span><span class="o">=</span><span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">n_parallels</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">counts</span> <span class="o">+=</span> <span class="n">n_parallels</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">best_loss</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_wanted</span><span class="p">(</span><span class="n">opt_</span><span class="p">)</span>
+                <span class="n">progress_ctx</span><span class="o">.</span><span class="n">postfix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;best loss: </span><span class="si">{</span><span class="n">best_loss</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">progress_ctx</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">n_parallels</span><span class="p">)</span>
+                <span class="n">iteration</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">//</span> <span class="n">n_jobs</span>
+                <span class="k">if</span> <span class="n">checkpoint_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">((</span><span class="n">iteration</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">checkpoint_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> \
+                            <span class="ow">or</span> <span class="p">(</span><span class="n">counts</span> <span class="o">==</span> <span class="n">n_iterations</span><span class="p">):</span>
+                        <span class="n">dump_checkpoint</span><span class="p">(</span><span class="n">opt_</span><span class="p">,</span> <span class="n">checkpoint_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="c1"># max_budget, best_loss, best_config = get_wanted(opt_)</span>
+    <span class="k">return</span> <span class="n">FMinResult</span><span class="p">(</span><span class="n">opt_</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

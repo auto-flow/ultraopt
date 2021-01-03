@@ -1,0 +1,30 @@
+ultraopt.tests package
+======================
+
+Submodules
+----------
+
+ultraopt.tests.automl module
+----------------------------
+
+.. automodule:: ultraopt.tests.automl
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.tests.mock module
+--------------------------
+
+.. automodule:: ultraopt.tests.mock
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.tests
+   :members:
+   :undoc-members:
+   :show-inheritance:

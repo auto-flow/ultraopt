@@ -1,0 +1,22 @@
+ultraopt.learning package
+=========================
+
+Submodules
+----------
+
+ultraopt.learning.tpe module
+----------------------------
+
+.. automodule:: ultraopt.learning.tpe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.learning
+   :members:
+   :undoc-members:
+   :show-inheritance:

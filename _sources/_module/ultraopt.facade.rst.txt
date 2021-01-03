@@ -1,0 +1,38 @@
+ultraopt.facade package
+=======================
+
+Submodules
+----------
+
+ultraopt.facade.fmin module
+---------------------------
+
+.. automodule:: ultraopt.facade.fmin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.facade.result module
+-----------------------------
+
+.. automodule:: ultraopt.facade.result
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.facade.utils module
+----------------------------
+
+.. automodule:: ultraopt.facade.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.facade
+   :members:
+   :undoc-members:
+   :show-inheritance:

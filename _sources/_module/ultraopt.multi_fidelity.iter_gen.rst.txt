@@ -1,0 +1,38 @@
+ultraopt.multi\_fidelity.iter\_gen package
+==========================================
+
+Submodules
+----------
+
+ultraopt.multi\_fidelity.iter\_gen.base\_gen module
+---------------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter_gen.base_gen
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.multi\_fidelity.iter\_gen.custom\_gen module
+-----------------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter_gen.custom_gen
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ultraopt.multi\_fidelity.iter\_gen.hyperband\_gen module
+--------------------------------------------------------
+
+.. automodule:: ultraopt.multi_fidelity.iter_gen.hyperband_gen
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.multi_fidelity.iter_gen
+   :members:
+   :undoc-members:
+   :show-inheritance:

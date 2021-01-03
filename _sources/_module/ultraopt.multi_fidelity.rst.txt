@@ -1,0 +1,19 @@
+ultraopt.multi\_fidelity package
+================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   ultraopt.multi_fidelity.iter
+   ultraopt.multi_fidelity.iter_gen
+
+Module contents
+---------------
+
+.. automodule:: ultraopt.multi_fidelity
+   :members:
+   :undoc-members:
+   :show-inheritance:
