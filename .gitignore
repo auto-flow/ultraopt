@@ -11,7 +11,7 @@ venv
 *.log
 .virtual_documents
 .ipynb_checkpoints
-build
+docs/zh_CN/build
 dist
 *.egg-info
 toy.ipynb
@@ -19,3 +19,7 @@ toy.ipynb
 dask-worker-space
 *.lock
 *.dirlock
+_tutorials
+_module
+!favicon.png
+!logo.png
