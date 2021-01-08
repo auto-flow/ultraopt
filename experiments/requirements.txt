@@ -3,3 +3,4 @@ git+https://github.com/automl/nas_benchmarks.git@master
 argparse
 click
 hyperopt
+hpbandster

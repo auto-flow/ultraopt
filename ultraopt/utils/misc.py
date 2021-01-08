@@ -21,8 +21,13 @@ def pbudget(budget: float):
         if budget - float(int(budget)) == 0:
             return str(int(budget))
         fraction = Fraction.from_float(budget)
-        return f"{fraction.numerator}/{fraction.denominator}"
-    return f"{budget:.4f}"
+        res = f"{fraction.numerator}/{fraction.denominator}"
+        if Configs.AutoAdjustFractionalBudget and len(res) >= 8:
+            Configs.FractionalBudget = False
+            return pbudget(budget)
+        else:
+            return res
+    return f"{budget:.2f}"
 
 
 def print_incumbent_trajectory(chal_perf: float, inc_perf: float, challenger: dict, incumbent: dict, budget: float):

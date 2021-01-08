@@ -80,7 +80,8 @@ def main(optimizer):
         m = res.mean(1)
         s = res.std(1)
         name = synthetic_function.get_meta_information()["name"]
-        final_result[name] = {"mean": m.tolist(), "std": s.tolist()}
+        final_result[name] = {"mean": m.tolist(), "std": s.tolist(), "q25": res.quantile(0.25, 1).tolist(),
+                              "q75": res.quantile(0.75, 1).tolist(), "q90": res.quantile(0.90, 1).tolist()}
     Path(f"ultraopt_{optimizer}.json").write_text(json.dumps(final_result))
 
 

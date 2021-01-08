@@ -22,7 +22,6 @@ from ultraopt.multi_fidelity import BaseIterGenerator, CustomIterGenerator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils import progress
 from ultraopt.utils.misc import dump_checkpoint
-from ultraopt.utils.net import get_a_free_port
 
 
 def fmin(
@@ -44,7 +43,7 @@ def fmin(
         verbose=0,
         run_id=None,
         ns_host="127.0.0.1",
-        ns_port=9090
+        ns_port=0
 ):
     # fixme: 这合理吗
     if verbose <= 0:
@@ -119,8 +118,8 @@ def fmin(
         if multi_fidelity_iter_generator is None:
             # todo: warning
             multi_fidelity_iter_generator = CustomIterGenerator([1], [1])
-        NS = NameServer(run_id=run_id, host=ns_host, port=get_a_free_port(ns_port, ns_host))
-        NS.start()
+        NS = NameServer(run_id=run_id, host=ns_host, port=ns_port)  # get_a_free_port(ns_port, ns_host)
+        _, ns_port = NS.start()
         # start n workers
         workers = [Worker(run_id=run_id, nameserver=ns_host, nameserver_port=ns_port,
                           host=ns_host, worker_id=i)

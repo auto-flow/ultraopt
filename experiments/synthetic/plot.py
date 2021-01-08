@@ -9,9 +9,9 @@ import numpy as np
 import pylab as plt
 
 info = {
-    "hyperopt": ("HyperOpt-TPE","r",),
-    "ultraopt_ETPE": ("UltraOpt-ETPE","g",),
-    "ultraopt_Random": ("Random","b",),
+    "hyperopt": ("HyperOpt-TPE", "r",),
+    "ultraopt_ETPE": ("UltraOpt-ETPE", "g",),
+    "ultraopt_Random": ("Random", "b",),
 }
 
 benchs = list(json.loads(Path(f"{info.copy().popitem()[0]}.json").read_text()).keys())
@@ -27,16 +27,20 @@ for log_scale in [True, False]:
     index = 1
     for bench in benchs:
         plt.subplot(rows, cols, index)
-        for fname, (name,color,) in info.items():
+        for fname, (name, color,) in info.items():
             mean_std = json.loads(Path(f"{fname}.json").read_text())[bench]
             mean = np.array(mean_std["mean"])
-            std = np.array(mean_std["std"])
+            q1 = np.array(mean_std["q25"])
+            if log_scale:
+                q2 = np.array(mean_std["q90"])
+            else:
+                q2 = np.array(mean_std["q75"])
             iters = range(len(mean))
-            if not log_scale:
-                plt.fill_between(
-                    iters, mean - std, mean + std, alpha=0.1,
-                    color=color
-                )
+            # if not log_scale:
+            plt.fill_between(
+                iters, q1, q2, alpha=0.1,
+                color=color
+            )
             plt.plot(
                 iters, mean, color=color, label=name, alpha=0.9
             )
@@ -51,7 +55,7 @@ for log_scale in [True, False]:
     title = "Comparison between Optimizers"
     if log_scale:
         title += "(log-scaled)"
-    plt.suptitle(title)
+    # plt.suptitle(title)
     plt.tight_layout()
     fname = "tpe_synthetic"
     if log_scale:
