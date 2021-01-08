@@ -3,6 +3,18 @@
     <link href="{{ pathto("_static/style.css", True) }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
+<!--https://stackoverflow.com/questions/44793811/change-the-colors-of-the-sphinx-read-the-docs-theme-->
+  {% block footer %} {{ super() }}
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #14026C;
+    }
+
+  </style>
+{% endblock %}
+
 {% block document %}
 {{super()}}
     <a href="https://github.com/auto-flow/ultraopt">

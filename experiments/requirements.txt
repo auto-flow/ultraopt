@@ -1,0 +1,5 @@
+git+https://github.com/automl/HPOlib1.5.git@development
+git+https://github.com/automl/nas_benchmarks.git@master
+argparse
+click
+hyperopt

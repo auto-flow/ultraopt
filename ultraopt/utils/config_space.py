@@ -8,9 +8,27 @@ from copy import deepcopy
 from typing import List, Union
 
 import numpy as np
-from ConfigSpace import CategoricalHyperparameter, ConfigurationSpace
+from ConfigSpace import CategoricalHyperparameter, ConfigurationSpace, UniformFloatHyperparameter
 from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
+
+
+def CS2HyperoptSpace(cs: ConfigurationSpace):
+    '''一个将configspace转hyperopt空间的函数'''
+    from hyperopt import hp
+    result = {}
+    for hyperparameter in cs.get_hyperparameters():
+        name = hyperparameter.name
+        if isinstance(hyperparameter, CategoricalHyperparameter):
+            result[name] = hp.choice(name, hyperparameter.choices)
+        elif isinstance(hyperparameter, UniformFloatHyperparameter):
+            lower = hyperparameter.lower
+            upper = hyperparameter.upper
+            result[name] = hp.uniform(name, lower, upper)
+        else:
+            raise ValueError
+        # todo: 考虑更多情况
+    return result
 
 
 def is_top_level_activated(config_space, config, hp_name, hp_value=None):
