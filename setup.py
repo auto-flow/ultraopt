@@ -24,7 +24,7 @@ if sys.version_info < (3, 5):
 
 install_file = 'requirements.txt'
 
-with open('README.rst') as fh:
+with open('README.md') as fh:
     long_description = fh.read()
 
 GIT_PATTERN = re.compile(r"git\+https://github\.com/(.*?)/(.*?)\.git")
@@ -93,7 +93,7 @@ setup(
     author_email='qichun.tang@bupt.edu.cn',
     description='Distributed Asynchronous Hyperparameter Optimization Better than HyperOpt',
     long_description=long_description,
-    long_description_content_type='text/x-rst',
+    long_description_content_type='text/markdown',
     license='BSD',
     url='https://github.com/auto-flow/ultraopt',
     packages=find_packages(".", include=all_pkgs),

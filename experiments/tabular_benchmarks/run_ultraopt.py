@@ -63,7 +63,7 @@ else:
 fmin_result = fmin(objective_function, cs, optimizer, n_iterations=args.n_iters, random_state=args.run_id,
                    multi_fidelity_iter_generator=iter_generator)
 print(fmin_result)
-dump(fmin_result, os.path.join(output_path, 'run_%d.pkl' % args.run_id))
+# dump(fmin_result, os.path.join(output_path, 'run_%d.pkl' % args.run_id))
 res = b.get_results()
 fh = open(os.path.join(output_path, 'run_%d.json' % args.run_id), 'w')
 json.dump(res, fh)

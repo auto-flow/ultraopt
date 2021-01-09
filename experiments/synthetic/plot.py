@@ -47,7 +47,7 @@ for log_scale in [True, False]:
         plt.title(bench)
         index += 1
         plt.xlabel("iterations")
-        plt.ylabel("losses")
+        plt.ylabel("loss")
         if log_scale:
             plt.yscale("log")
         plt.grid(alpha=0.4)
@@ -57,9 +57,9 @@ for log_scale in [True, False]:
         title += "(log-scaled)"
     # plt.suptitle(title)
     plt.tight_layout()
-    fname = "tpe_synthetic"
+    fname = "synthetic_benchmarks"
     if log_scale:
-        fname += "(log-scaled)"
+        fname += "_log"
     for suffix in ["pdf", "png"]:
         plt.savefig(f"{fname}.{suffix}")
     plt.show()

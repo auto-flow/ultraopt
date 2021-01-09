@@ -11,7 +11,7 @@ venv
 *.log
 .virtual_documents
 .ipynb_checkpoints
-docs/zh_CN/build
+build
 dist
 *.egg-info
 toy.ipynb
@@ -24,3 +24,4 @@ _module
 !favicon.png
 !logo.png
 smac3-output_*
+.coverage*

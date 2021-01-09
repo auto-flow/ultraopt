@@ -58,5 +58,5 @@ plt.tight_layout()
 # plt.suptitle("\n".join(wrap(title, 30)))
 
 plt.savefig("tabular_benchmarks.png")
-plt.savefig("compare.pdf")
+plt.savefig("tabular_benchmarks.pdf")
 plt.show()

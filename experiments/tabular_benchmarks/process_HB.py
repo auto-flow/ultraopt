@@ -19,8 +19,12 @@ info = {
     "ultraopt_Random": ("Random", "b",),
 }
 
-# benchmarks = ["protein_structure", ]
-benchmarks = ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]
+benchmarks = [
+    "protein_structure",
+    "slice_localization",
+    "naval_propulsion",
+    "parkinsons_telemonitoring"
+]
 
 
 def process(benchmark, fname):
@@ -51,10 +55,11 @@ def process(benchmark, fname):
     df_t.sort_index(inplace=True)
     n_rows = df_t.shape[0]
     for i, col in enumerate(df_t.columns):
-        pre_max = df_t.iloc[0, :].max()
+        pre_max=None
         for j in range(n_rows):
             if pd.isna(df_t.iloc[j, i]):
-                df_t.iloc[j, i] = pre_max
+                if pre_max is not None:
+                    df_t.iloc[j, i] = pre_max
             else:
                 pre_max = df_t.iloc[j, i]
     print(f"ok, {benchmark}-{fname}")

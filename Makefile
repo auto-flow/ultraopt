@@ -13,3 +13,14 @@ upload:
 
 clean:
 	rm -rf build dist *.egg-info
+
+cp_img:
+	cp -r experiments/synthetic/*.png ../ultraopt_img  && \
+ 	cp -r experiments/tabular_benchmarks/*.png ../ultraopt_img && \
+ 	cd ../ultraopt_img && \
+ 	git add . && \
+ 	git commit -m "update" && \
+ 	git push origin master
+
+ print_img_url:
+	sh shell_utils/print_img_url.sh
