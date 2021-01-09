@@ -3,6 +3,7 @@ python:
   - "3.7"
 # command to install dependencies
 install:
+  - pip install Cython
   - python setup.py install
 # command to run tests
 script:
