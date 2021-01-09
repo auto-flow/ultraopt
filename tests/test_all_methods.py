@@ -16,14 +16,14 @@ class TestAllMethod(unittest.TestCase):
             for parallel_strategie in valid_parallel_strategies:
                 if parallel_strategie == "AsyncComm":
                     multi_fidelity_iter_generators = [
-                        HyperBandIterGenerator(25, 100, 2),
-                        SuccessiveHalvingIterGenerator(25, 100, 2)]
+                        HyperBandIterGenerator(50, 100, 2),
+                        SuccessiveHalvingIterGenerator(50, 100, 2)]
                 else:
                     multi_fidelity_iter_generators = [None]
                 for multi_fidelity_iter_generator in multi_fidelity_iter_generators:
                     print(optimizer, parallel_strategie, multi_fidelity_iter_generator)
                     ret = fmin(
-                        evaluate, config_space, optimizer=optimizer, n_iterations=10, n_jobs=3,
+                        evaluate, config_space, optimizer=optimizer, n_iterations=3, n_jobs=3,
                         parallel_strategy=parallel_strategie, multi_fidelity_iter_generator=multi_fidelity_iter_generator
                     )
                     print(ret)

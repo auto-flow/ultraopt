@@ -47,7 +47,9 @@ def get_wanted(opt_: BaseOptimizer):
     obvs = budget2obvs[max_budget]
     losses = obvs["losses"]
     configs = obvs["configs"]
-    idx = np.argmin(losses)
-    best_loss = losses[idx]
-    best_config = get_dict_from_config(configs[idx])
-    return max_budget, best_loss, best_config
+    if len(losses):
+        idx = np.argmin(losses)
+        best_loss = losses[idx]
+        best_config = get_dict_from_config(configs[idx])
+        return max_budget, best_loss, best_config
+    return max_budget, np.inf, None

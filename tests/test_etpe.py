@@ -75,7 +75,7 @@ class TestETPE(unittest.TestCase):
             }
         }
         config_space = hdl2cs(HDL)
-        fmin(evaluate, config_space, "ETPE")
+        fmin(evaluate, config_space, "ETPE", n_iterations=30)
 
     def test_multi_rest_config_space(self):
         HDL = {
@@ -112,4 +112,4 @@ class TestETPE(unittest.TestCase):
             }
         }
         config_space = hdl2cs(HDL)
-        fmin(evaluate, config_space, "ETPE")
+        fmin(evaluate, config_space, "ETPE", n_iterations=30)

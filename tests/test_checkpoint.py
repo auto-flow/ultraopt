@@ -18,7 +18,7 @@ class TestCheckpoint(unittest.TestCase):
         for parallel_strategy in valid_parallel_strategies:
             print(parallel_strategy)
             optimizer = "ETPE"
-            n_iterations = 11
+            n_iterations = 3
             n_jobs = 4
             p_res = fmin(
                 evaluate,
@@ -28,7 +28,7 @@ class TestCheckpoint(unittest.TestCase):
                 n_iterations=n_iterations,
                 parallel_strategy=parallel_strategy,
                 checkpoint_file="checkpoint.pkl",
-                checkpoint_freq=9,
+                checkpoint_freq=2,
                 multi_fidelity_iter_generator=CustomIterGenerator([4, 2, 1], [25, 50, 100])
             )
             res = FMinResult(load("checkpoint.pkl"))
