@@ -23,7 +23,7 @@ class TestAllMethod(unittest.TestCase):
                 for multi_fidelity_iter_generator in multi_fidelity_iter_generators:
                     print(optimizer, parallel_strategie, multi_fidelity_iter_generator)
                     ret = fmin(
-                        evaluate, config_space, optimizer=optimizer, n_iterations=3, n_jobs=3,
+                        evaluate, config_space, optimizer=optimizer, n_iterations=2, n_jobs=2,
                         parallel_strategy=parallel_strategie, multi_fidelity_iter_generator=multi_fidelity_iter_generator
                     )
                     print(ret)
