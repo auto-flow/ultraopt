@@ -9,6 +9,6 @@
 
 Distributed Asynchronous Hyperparameter Optimization Better than HyperOpt
 
-```
+```python
 import ultraopt
 ```
