@@ -106,6 +106,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
 </ul>
+<p class="caption"><span class="caption-text">对比实验</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../experiments.html">Synthetic Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../experiments.html#tabular-benchmarks">Tabular Benchmarks</a></li>
+</ul>
 
             
           
@@ -192,8 +197,13 @@
         <span class="k">if</span> <span class="n">budget</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">budget</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">budget</span><span class="p">))</span>
         <span class="n">fraction</span> <span class="o">=</span> <span class="n">Fraction</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fraction</span><span class="o">.</span><span class="n">numerator</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fraction</span><span class="o">.</span><span class="n">denominator</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">budget</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fraction</span><span class="o">.</span><span class="n">numerator</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">fraction</span><span class="o">.</span><span class="n">denominator</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="n">Configs</span><span class="o">.</span><span class="n">AutoAdjustFractionalBudget</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">Configs</span><span class="o">.</span><span class="n">FractionalBudget</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">pbudget</span><span class="p">(</span><span class="n">budget</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">budget</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
 <div class="viewcode-block" id="print_incumbent_trajectory"><a class="viewcode-back" href="../../../_module/ultraopt.utils.html#ultraopt.utils.misc.print_incumbent_trajectory">[文档]</a><span class="k">def</span> <span class="nf">print_incumbent_trajectory</span><span class="p">(</span><span class="n">chal_perf</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">inc_perf</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">challenger</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">incumbent</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">budget</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>

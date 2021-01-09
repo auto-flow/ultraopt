@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Synthetic Benchmarks &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="09. MapReduce并行策略" href="_tutorials/09._MapReduce_Parallel_Strategy.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+<p class="caption"><span class="caption-text">对比实验</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Synthetic Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#tabular-benchmarks">Tabular Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#full-budget-evaluation-strategy">Full-Budget Evaluation Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hyperband-evaluation-strategy">HyperBand Evaluation Strategy</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Synthetic Benchmarks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/experiments.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="synthetic-benchmarks">
+<h1>Synthetic Benchmarks<a class="headerlink" href="#synthetic-benchmarks" title="永久链接至标题">¶</a></h1>
+<p>All experimental code are public available in <a class="reference external" href="https://github.com/auto-flow/ultraopt/tree/dev/experiments/synthetic">here</a> .</p>
+<p>We use 9 Synthetic Benchmarks in HPOlib<a class="reference external" href="#refer-5"><sup>[5]</sup></a>, you can find more synthetic function in <a class="reference external" href="http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page364.htm">here</a>.</p>
+<p>We compare three optimizers in this section:</p>
+<ol class="simple">
+<li><p>HyperOpt’s TPE<a class="reference external" href="#refer-1"><sup>[1]</sup></a> optimizer</p></li>
+<li><p>UltraOpt’s ETPE optimizer</p></li>
+<li><p>Random optimizer as baseline</p></li>
+</ol>
+<center id="figure-1">Figure 1: Performance over Iterations in Synthetic Benchmarks</center><p><img alt="synthetic_benchmarks_log.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/synthetic_benchmarks_log.png" /></p>
+<p>We can see UltraOpt’s ETPE optimizer better than HyperOpt’s TPE<a class="reference external" href="#refer-1"><sup>[1]</sup></a> optimizer in 5/9 times, tied it in 4 cases.</p>
+</div>
+<div class="section" id="tabular-benchmarks">
+<h1>Tabular Benchmarks<a class="headerlink" href="#tabular-benchmarks" title="永久链接至标题">¶</a></h1>
+<p>All experimental code are public available in <a class="reference external" href="https://github.com/auto-flow/ultraopt/tree/dev/experiments/tabular_benchmarks">here</a> .</p>
+<p>Tabular Benchmarks<a class="reference external" href="#refer-3"><sup>[3]</sup></a>  performed an exhaustive search for a large neural architecture search problem and
+compiled all architecture and performance pairs into a neural architecture search benchmark.</p>
+<p>Tabular Benchmarks<a class="reference external" href="#refer-3"><sup>[3]</sup></a> use 4 popular UCI<a class="reference external" href="#refer-4"><sup>[4]</sup></a> datasets(see <a class="reference external" href="#table-1">Table 1</a> for an overvie) for regression, and used a two layer feed forward neural network followed by a linear output
+layer on top. The configuration space (denoted in <a class="reference external" href="#table-2">Table 2</a>) only includes a modest number of 4
+architectural choice (number of units and activation functions for both layers) and 5 hyperparameters
+(dropout rates per layer, batch size, initial learning rate and learning rate schedule) in order to
+allow for an exhaustive evaluation of all the 62 208 configurations resulting from discretizing the
+hyperparameters as in <a class="reference external" href="#table-2">Table 2</a>. Tabular Benchmarks encode numerical hyperparameters as ordinals and all other
+hyperparameters as categoricals.</p>
+<center id="table-1">Table 1: Dataset splits</center><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Dataset</th>
+<th># training datapoints</th>
+<th># validation datapoints</th>
+<th># test datapoints</th>
+<th># features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HPO-Bench-Protein</td>
+<td>27 438</td>
+<td>9 146</td>
+<td>9 146</td>
+<td>9</td>
+</tr>
+<tr>
+<td>HPO-Bench-Slice</td>
+<td>32 100</td>
+<td>10 700</td>
+<td>10 700</td>
+<td>385</td>
+</tr>
+<tr>
+<td>HPO-Bench-Naval</td>
+<td>7 160</td>
+<td>2 388</td>
+<td>2 388</td>
+<td>15</td>
+</tr>
+<tr>
+<td>HPO-Bench-Parkinson</td>
+<td>3 525</td>
+<td>1 175</td>
+<td>1 175</td>
+<td>20</td>
+</tr>
+</tbody>
+</table><center id="table-2">Table 2: Configuration space of the fully connected neural network</center><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Hyperparameters</th>
+<th>Choices</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial LR</td>
+<td>{.0005, .001, .005, .01, .05, .1}</td>
+</tr>
+<tr>
+<td>Batch Size</td>
+<td>{8, 16, 32, 64}</td>
+</tr>
+<tr>
+<td>LR Schedule</td>
+<td>{cosine, fix}</td>
+</tr>
+<tr>
+<td>Activation/Layer 1</td>
+<td>{relu, tanh}</td>
+</tr>
+<tr>
+<td>Activation/Layer 2</td>
+<td>{relu, tanh}</td>
+</tr>
+<tr>
+<td>Layer 1 Size</td>
+<td>{16, 32, 64, 128, 256, 512}</td>
+</tr>
+<tr>
+<td>Layer 2 Size</td>
+<td>{16, 32, 64, 128, 256, 512}</td>
+</tr>
+<tr>
+<td>Dropout/Layer 1</td>
+<td>{0.0, 0.3, 0.6}</td>
+</tr>
+<tr>
+<td>Dropout/Layer 2</td>
+<td>{0.0, 0.3, 0.6}</td>
+</tr>
+</tbody>
+</table><p>Based on the gathered data, we compare ours optimization package to other optimizers such as HyperOpt<a class="reference external" href="#refer-1"><sup>[1]</sup></a> and HpBandSter<a class="reference external" href="#refer-2"><sup>[2]</sup></a> in two scenario: (1) <a class="reference external" href="#Full-Budget%20Evaluation%20Strategy">Full-Budget Evaluation Strategy</a> (2) <a class="reference external" href="#HyperBand%20Evaluation%20Strategy">HyperBand Evaluation Strategy</a>.</p>
+<p>Tabular Benchmarks<a class="reference external" href="#refer-3"><sup>[3]</sup></a> is publicly available at <a class="reference external" href="https://github.com/automl/nas_benchmarks">here</a>.</p>
+<div class="section" id="full-budget-evaluation-strategy">
+<h2>Full-Budget Evaluation Strategy<a class="headerlink" href="#full-budget-evaluation-strategy" title="永久链接至标题">¶</a></h2>
+<p>In this section we use the generated benchmarks to evaluate different HPO methods. To mimic the
+randomness that comes with evaluating a configuration, in each function evaluation Tabular Benchmarks randomly
+sample one of the four performance values.  Tabular Benchmarks do not take the additional overhead of the optimizer into account since it is negligible
+compared to the training time of the neural network.</p>
+<p>After each function evaluation we estimate the
+incumbent as the configuration with the lowest observed error and compute the regret between the
+incumbent and the globally best configuration in terms of test error. Each method that operates on the full budget of 100 epochs was allowed
+to perform 200 function evaluations (200 iterations). We performed 20 independent
+runs of each method and report the median and the 25th and 90th quantile.</p>
+<p>We compare three optimizers in this section:</p>
+<ol class="simple">
+<li><p>HyperOpt’s TPE optimizer</p></li>
+<li><p>UltraOpt’s ETPE optimizer</p></li>
+<li><p>Random optimizer as baseline</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">HyperOpt's</span> <span class="pre">TPE</span></code> optimizer’s experimental code uses <a class="reference external" href="https://github.com/automl/nas_benchmarks/blob/master/experiment_scripts/run_tpe.py">this</a>.</p>
+<center id="figure-2">Figure 2: Performance over Iterations</center><p><img alt="tabular_benchmarks.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/tabular_benchmarks.png" /></p>
+<p>We can see UltraOpt’s ETPE optimizer better than HyperOpt’s TPE<a class="reference external" href="#refer-1"><sup>[1]</sup></a> optimizer in 3/4 times, tied it in one case.</p>
+</div>
+<div class="section" id="hyperband-evaluation-strategy">
+<h2>HyperBand Evaluation Strategy<a class="headerlink" href="#hyperband-evaluation-strategy" title="永久链接至标题">¶</a></h2>
+<p>After evaluate optimizers in full-budget and compare performance over iterations, we want to know how much improvement <strong>HyperBand Evaluation Strategy</strong><a class="reference external" href="#refer-6"><sup>[6]</sup></a> can bring and compares optimizers’ performance over time.</p>
+<p>To obtain a realistic estimate of the wall-clock time
+required for each optimizer, we accumulated the stored runtime of each configuration the optimizer evaluated.</p>
+<p>For BOHB<a class="reference external" href="#refer-2"><sup>[2]</sup></a> and HyperBand<a class="reference external" href="#refer-6"><sup>[6]</sup></a> we set the minimum budget to 3 epochs, the maximum budget to 100,  $\eta$ to 3 and the number of successive halving iterations to 250.</p>
+<p>You can view iterations table by entering following code in IPython:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">ultraopt.multi_fidelity</span> <span class="kn">import</span> <span class="n">HyperBandIterGenerator</span>
+<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">HyperBandIterGenerator</span><span class="p">(</span><span class="n">min_budget</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_budget</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> 
+</pre></div>
+</div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="4" halign="left">iter 0</th>
+      <th colspan="3" halign="left">iter 1</th>
+      <th colspan="2" halign="left">iter 2</th>
+      <th>iter 3</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>stage 0</th>
+      <th>stage 1</th>
+      <th>stage 2</th>
+      <th>stage 3</th>
+      <th>stage 0</th>
+      <th>stage 1</th>
+      <th>stage 2</th>
+      <th>stage 0</th>
+      <th>stage 1</th>
+      <th>stage 0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>num_config</th>
+      <td>27</td>
+      <td>9</td>
+      <td>3</td>
+      <td>1</td>
+      <td>9</td>
+      <td>3</td>
+      <td>1</td>
+      <td>6</td>
+      <td>2</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>budget</th>
+      <td>3.70</td>
+      <td>11.11</td>
+      <td>33.33</td>
+      <td>100.00</td>
+      <td>11.11</td>
+      <td>33.33</td>
+      <td>100.00</td>
+      <td>33.33</td>
+      <td>100.00</td>
+      <td>100.00</td>
+    </tr>
+  </tbody>
+</table><p>In addition to the three optimizers described above, three optimizers are added in this section:</p>
+<ol class="simple">
+<li><p>HpBandster’s BOHB optimizer<a class="reference external" href="#refer-2"><sup>[2]</sup></a></p></li>
+<li><p>UltraOpt’s BOHB optimier</p></li>
+<li><p>HyperBand as baseline</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">HpBandster's</span> <span class="pre">BOHB</span></code> optimizer’s experimental code uses <a class="reference external" href="https://github.com/automl/nas_benchmarks/blob/master/experiment_scripts/run_bohb.py">this</a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">UltraOpt's</span> <span class="pre">BOHB</span></code> optimizer is implemented in following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iter_generator</span> <span class="o">=</span> <span class="n">HyperBandIterGenerator</span><span class="p">(</span><span class="n">min_budget</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_budget</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">fmin_result</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;ETPE&quot;</span><span class="p">,</span>
+                    <span class="n">multi_fidelity_iter_generator</span><span class="o">=</span><span class="n">iter_generator</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">HyperBand</span></code> optimizer is implemented in following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">iter_generator</span> <span class="o">=</span> <span class="n">HyperBandIterGenerator</span><span class="p">(</span><span class="n">min_budget</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_budget</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">fmin_result</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;Random&quot;</span><span class="p">,</span>
+                    <span class="n">multi_fidelity_iter_generator</span><span class="o">=</span><span class="n">iter_generator</span><span class="p">)</span>
+</pre></div>
+</div>
+<center id="figure-3">Figure 3: Performance over Time (Protein Structure)</center><p><img alt="protein_structure_HB.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/protein_structure_HB.png" /></p>
+<p>First, let’s draw some conclusions from <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Structure</span></code> dataset’s benchmarks:</p>
+<ul class="simple">
+<li><p>HyperBand achieved a reasonable performance relatively quickly but only slightly improves over simple Random Search eventually.</p></li>
+<li><p>BOHB is in the beginning as good as HyperBand but starts outperforming it as soon as it obtains a meaningful model.</p></li>
+<li><p>UltraOpt’s BOHB is better than HpBandSter’s BOHB .</p></li>
+</ul>
+<center id="figure-4">Figure 4: Performance over Time (Slice Localization)</center><p><img alt="slice_localization_HB.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/slice_localization_HB.png" /></p>
+<center id="figure-5">Figure 5: Performance over Time (Naval Propulsion)</center><p><img alt="naval_propulsion_HB.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/naval_propulsion_HB.png" /></p>
+<center id="figure-6">Figure 6: Performance over Time (Parkinsons Telemonitoring)</center><p><img alt="parkinsons_telemonitoring_HB.png" src="https://gitee.com/TQCAI/ultraopt_img/raw/master/parkinsons_telemonitoring_HB.png" /></p>
+<hr class="docutils" />
+<p><strong>Reference</strong></p>
+<div id="refer-1"></div><p>[1] <a class="reference external" href="https://dl.acm.org/doi/10.5555/2986459.2986743">James Bergstra, Rémi Bardenet, Yoshua Bengio, and Balázs Kégl. 2011. Algorithms for hyper-parameter optimization. In Proceedings of the 24th International Conference on Neural Information Processing Systems (NIPS’11). Curran Associates Inc., Red Hook, NY, USA, 2546–2554.</a></p>
+<div id="refer-2"></div><p>[2] <a class="reference external" href="https://arxiv.org/abs/1807.01774">Falkner, Stefan et al. “BOHB: Robust and Efficient Hyperparameter Optimization at Scale.” ICML (2018).</a></p>
+<div id="refer-3"></div><p>[3] <a class="reference external" href="https://arxiv.org/abs/1905.04970">Klein, A. and F. Hutter. “Tabular Benchmarks for Joint Architecture and Hyperparameter Optimization.” ArXiv abs/1905.04970 (2019): n. pag.</a></p>
+<div id="refer-4"></div><p>[4] <a class="reference external" href="https://archive.ics.uci.edu/ml/datasets.php">Lichman, M. (2013). UCI machine learning repository</a></p>
+<div id="refer-5"></div><p>[5] https://github.com/automl/HPOlib1.5/tree/development</p>
+<div id="refer-6"></div><p>[6] <a class="reference external" href="https://arxiv.org/abs/1603.06560">Li, L. et al. “Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization.” J. Mach. Learn. Res. 18 (2017): 185:1-185:52.</a></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="_tutorials/09._MapReduce_Parallel_Strategy.html" class="btn btn-neutral float-left" title="09. MapReduce并行策略" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #14026C;
+    }
+
+  </style>
+
+
+</body>
+</html>

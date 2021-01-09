@@ -13,6 +13,13 @@ Welcome to UltraOpt's documentation!
 
    _tutorials/*
 
+.. toctree::
+   :maxdepth: 4
+   :caption: 对比实验
+
+   experiments
+
+
 
 Indices and tables
 ==================
