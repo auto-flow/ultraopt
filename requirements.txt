@@ -7,3 +7,4 @@ Pyro4>=4.80
 terminaltables
 matplotlib>=3.0.0
 seaborn>=0.10.0
+tqdm
