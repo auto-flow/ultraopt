@@ -1,6 +1,7 @@
 
 
-<center><img src="https://gitee.com/TQCAI/ultraopt_img/raw/master/star_logo.png"></img></center>
+
+<p align="center"><img src="https://gitee.com/TQCAI/ultraopt_img/raw/master/star_logo.png"></img></p>
 
 
 
@@ -8,7 +9,7 @@
 [![PyPI version](https://badge.fury.io/py/ultraopt.svg?maxAge=2592000)](https://badge.fury.io/py/ultraopt)
 [![Download](https://img.shields.io/pypi/dm/ultraopt.svg)](https://pypi.python.org/pypi/ultraopt)
 ![](https://img.shields.io/badge/license-BSD-green)
-![PythonVersion](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)
+![PythonVersion](https://img.shields.io/badge/python-3.6+-blue)
 [![GitHub Star](https://img.shields.io/github/stars/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/stargazers)  [![GitHub forks](https://img.shields.io/github/forks/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/network)  
 
 `UltraOpt` : **Distributed Asynchronous Hyperparameter Optimization better than HyperOpt**.
@@ -19,11 +20,11 @@
 Automatic Machine Learning(**AutoML**). 
 
 After absorbing the advantages of existing optimization libraries such as 
-[HyperOpt](https://github.com/hyperopt/hyperopt), [SMAC3](https://github.com/automl/SMAC3), 
-[scikit-optimize](https://github.com/scikit-learn/scikit-learn) and [HpBandSter](https://github.com/automl/HpBandSter), we develop 
-`UltraOpt` , which implement a new bayesian optimization algorithm : Embedding-Tree-Parzen-Estimator(**ETPE**), which is better than HyperOpt' TPE algorithm in our experiment.
-Besides, The optimizer of  `UltraOpt` is redesigned to adapt **HyperBand and SuccessiveHalving Evaluation Strategies** and **MapReduce and Async Communication Conditions**.
-Finally, you can visualize ConfigSpace or results of optimization by `UltraOpt`'s tool function. Enjoy it !
+[HyperOpt](https://github.com/hyperopt/hyperopt)[<sup>[5]</sup>](#refer-5), [SMAC3](https://github.com/automl/SMAC3)[<sup>[3]</sup>](#refer-3), 
+[scikit-optimize](https://github.com/scikit-optimize/scikit-optimize)[<sup>[4]</sup>](#refer-4) and [HpBandSter](https://github.com/automl/HpBandSter)[<sup>[2]</sup>](#refer-2), we develop 
+`UltraOpt` , which implement a new bayesian optimization algorithm : Embedding-Tree-Parzen-Estimator(**ETPE**), which is better than HyperOpt' TPE algorithm in our experiments.
+Besides, The optimizer of  `UltraOpt` is redesigned to adapt **HyperBand & SuccessiveHalving Evaluation Strategies**[<sup>[6]</sup>](#refer-6)[<sup>[7]</sup>](#refer-7) and **MapReduce & Async Communication Conditions**.
+Finally, you can visualize ConfigSpace or process & results of optimization by `UltraOpt`'s tool function. Enjoy it !
 
 - **Documentation**
 
@@ -40,13 +41,13 @@ Finally, you can visualize ConfigSpace or results of optimization by `UltraOpt`'
 **Table of Contents**
 
 - [Installation](#Installation)
-- [Quick Start](#Quick%20Start)
-    + [Using UltraOpt in HPO](#Using%20UltraOpt%20in%20HPO)
-    + [Using UltraOpt in AutoML](#Using%20UltraOpt%20in%20AutoML)
-- [Our Advantages](#Our%20Advantages)
-    + [Advantage One: ETPE optimizer is more competitive](#Advantage%20One:%20ETPE%20optimizer%20is%20more%20competitive)
-    + [Advantage Two: UltraOpt is more adaptable to distributed computing](#Advantage%20Two:%20UltraOpt%20is%20more%20adaptable%20to%20distributed%20computing)
-    + [Advantage Three: UltraOpt is more user friendly](#Advantage%20Three:%20UltraOpt%20is%20more%20user%20friendly)
+- [Quick Start](#Quick-Start)
+    + [Using UltraOpt in HPO](#Using-UltraOpt-in-HPO)
+    + [Using UltraOpt in AutoML](#Using-UltraOpt-in-AutoML)
+- [Our Advantages](#Our-Advantages)
+    + [Advantage One: ETPE optimizer is more competitive](#Advantage-One-ETPE-optimizer-is-more-competitive)
+    + [Advantage Two: UltraOpt is more adaptable to distributed computing](#Advantage-Two-UltraOpt-is-more-adaptable-to-distributed-computing)
+    + [Advantage Three: UltraOpt is more function comlete and user friendly](#advantage-three-ultraopt-is-more-function-comlete-and-user-friendly)
 - [Citation](#Citation)
 - [Referance](#referance)
 
@@ -153,8 +154,8 @@ result.plot_hi(target_name="accuracy", loss2target_func=lambda x:1-x)
 
 ## Using UltraOpt in AutoML
 
-Let's try a more complex example: solve AutoML's **CASH Problem** (Combination problem of Algorithm Selection and Hyperparameter optimization) 
-by BOHB algorithm (Combine **HyperBand** Evaluation Strategies with `UltraOpt`'s **ETPE** optimizer) .
+Let's try a more complex example: solve AutoML's **CASH Problem** [<sup>[1]</sup>](#refer-1) (Combination problem of Algorithm Selection and Hyperparameter optimization) 
+by BOHB algorithm[<sup>[2]</sup>](#refer-2) (Combine **HyperBand**[<sup>[6]</sup>](#refer-6) Evaluation Strategies with `UltraOpt`'s **ETPE** optimizer) .
 
 You can learn Conditional Parameter and complex `HDL`'s Definition in [here](https://auto-flow.github.io/ultraopt/zh/_tutorials/03._Conditional_Parameter.html),  AutoML implementation tutorial in [here](https://auto-flow.github.io/ultraopt/zh/_tutorials/05._Implement_a_Simple_AutoML_System.html) and Multi-Fidelity Optimization in [here](https://auto-flow.github.io/ultraopt/zh/_tutorials/06._Combine_Multi-Fidelity_Optimization.html).
 
@@ -181,7 +182,7 @@ HDL = {
 }
 ```
 
-And then, define a objective function with an additional parameter `budget` to adapt to **HyperBand** evaluation strategy:
+And then, define a objective function with an additional parameter `budget` to adapt to **HyperBand**[<sup>[6]</sup>](#refer-6) evaluation strategy:
 
 
 
@@ -206,7 +207,7 @@ def evaluate(config: dict, budget: float) -> float:
     return 1 - score
 ```
 
-You should instance a `multi_fidelity_iter_generator` object for the purpose of using **HyperBand**  Evaluation Strategy :
+You should instance a `multi_fidelity_iter_generator` object for the purpose of using **HyperBand**[<sup>[6]</sup>](#refer-6)  Evaluation Strategy :
 
 ```python
 from ultraopt.multi_fidelity import HyperBandIterGenerator
@@ -348,14 +349,14 @@ UltraOpt is more function comlete and  user friendly than other optimize library
 
 |                                          | UltraOpt    | HyperOpt    |Scikit-Optimize|SMAC3        |HpBandSter   |
 |------------------------------------------|-------------|-------------|---------------|-------------|-------------|
-|Simple Usage like `fmin` function          |$\checkmark$ |$\checkmark$ |$\checkmark$   |$\checkmark$ |$\times$     |
-|Simple `Config Space` Definition           |$\checkmark$ |$\checkmark$ |$\checkmark$   |$\times$     |$\times$     |
-|Support Hierarchical `Config Space`        |$\checkmark$ |$\checkmark$ |$\times$       |$\checkmark$ |$\checkmark$ |
-|Support Serializable `Config Space`        |$\checkmark$ |$\times$     |$\times$       |$\times$     |$\times$     |
-|Support Visualizing `Config Space`         |$\checkmark$ |$\checkmark$ |$\times$       |$\times$     |$\times$     |
-|Can Analyse Optimization Process & Result |$\checkmark$ |$\times$     |$\checkmark$   |$\times$     |$\checkmark$ |
-|Distributed in Cluster                    |$\checkmark$ |$\checkmark$ |$\times$       |$\times$     |$\checkmark$ |
-|Support HyperBand & SuccessiveHalving     |$\checkmark$ |$\times$     |$\times$       |$\checkmark$ |$\checkmark$ |
+|Simple Usage like `fmin` function          |✓ |✓ |✓   |✓ |×|
+|Simple `Config Space` Definition           |✓ |✓ |✓   |×|×|
+|Support Conditional `Config Space`        |✓ |✓ |×  |✓ |✓ |
+|Support Serializable `Config Space`        |✓ |×|×  |×|×|
+|Support Visualizing `Config Space`         |✓ |✓ |×  |×|×|
+|Can Analyse Optimization Process & Result |✓ |×|✓   |×|✓ |
+|Distributed in Cluster                    |✓ |✓ |×  |×|✓ |
+|Support HyperBand[<sup>[6]</sup>](#refer-6) & SuccessiveHalving[<sup>[7]</sup>](#refer-7)     |✓ |×|×  |✓ |✓ |
 
 
 
@@ -367,3 +368,32 @@ UltraOpt is more function comlete and  user friendly than other optimize library
 -----
 
 <b id="referance">Reference</b>
+
+
+<div id="refer-1"></div>
+
+[1] [Thornton, Chris et al. “Auto-WEKA: combined selection and hyperparameter optimization of classification algorithms.” Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining (2013): n. pag.](https://arxiv.org/abs/1208.3719)
+
+<div id="refer-2"></div>
+
+[2] [Falkner, Stefan et al. “BOHB: Robust and Efficient Hyperparameter Optimization at Scale.” ICML (2018).](https://arxiv.org/abs/1807.01774)
+
+<div id="refer-3"></div>
+
+[3] [Hutter F., Hoos H.H., Leyton-Brown K. (2011) Sequential Model-Based Optimization for General Algorithm Configuration. In: Coello C.A.C. (eds) Learning and Intelligent Optimization. LION 2011. Lecture Notes in Computer Science, vol 6683. Springer, Berlin, Heidelberg.](https://link.springer.com/chapter/10.1007/978-3-642-25566-3_40)
+
+<div id="refer-4"></div>
+
+[4] https://github.com/scikit-optimize/scikit-optimize
+
+<div id="refer-5"></div>
+
+[5] [James Bergstra, Rémi Bardenet, Yoshua Bengio, and Balázs Kégl. 2011. Algorithms for hyper-parameter optimization. In Proceedings of the 24th International Conference on Neural Information Processing Systems (NIPS'11). Curran Associates Inc., Red Hook, NY, USA, 2546–2554.](https://dl.acm.org/doi/10.5555/2986459.2986743)
+
+<div id="refer-6"></div>
+
+[6] [Li, L. et al. “Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization.” J. Mach. Learn. Res. 18 (2017): 185:1-185:52.](https://arxiv.org/abs/1603.06560)
+
+<div id="refer-7"></div>
+
+[7] [Jamieson, K. and Ameet Talwalkar. “Non-stochastic Best Arm Identification and Hyperparameter Optimization.” AISTATS (2016).](https://arxiv.org/abs/1502.07943)
