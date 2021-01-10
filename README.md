@@ -25,7 +25,9 @@ After absorbing the advantages of existing optimization libraries such as
 [scikit-optimize](https://github.com/scikit-optimize/scikit-optimize)[<sup>[4]</sup>](#refer-4) and [HpBandSter](https://github.com/automl/HpBandSter)[<sup>[2]</sup>](#refer-2), we develop 
 `UltraOpt` , which implement a new bayesian optimization algorithm : Embedding-Tree-Parzen-Estimator(**ETPE**), which is better than HyperOpt' TPE algorithm in our experiments.
 Besides, The optimizer of  `UltraOpt` is redesigned to adapt **HyperBand & SuccessiveHalving Evaluation Strategies**[<sup>[6]</sup>](#refer-6)[<sup>[7]</sup>](#refer-7) and **MapReduce & Async Communication Conditions**.
-Finally, you can visualize ConfigSpace or process & results of optimization by `UltraOpt`'s tool function. Enjoy it !
+Finally, you can visualize `Config Space` and `optimization process & results` by `UltraOpt`'s tool function. Enjoy it !
+
+Other Language: [中文README](README.zh_CN.md)
 
 - **Documentation**
 
@@ -137,7 +139,7 @@ result
 +-------------------+---------------+
 ```
 
-And make a simple visualizaiton finally:
+Finally, make a simple visualizaiton:
 
 ```python
 result.plot_convergence()
