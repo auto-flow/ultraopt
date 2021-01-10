@@ -94,7 +94,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用教程</span></p>
+              <p class="caption"><span class="caption-text">简介</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#quick-start">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#our-advantages">Our Advantages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#citation">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">使用教程</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
@@ -223,10 +230,12 @@
     <span class="n">obvs</span> <span class="o">=</span> <span class="n">budget2obvs</span><span class="p">[</span><span class="n">max_budget</span><span class="p">]</span>
     <span class="n">losses</span> <span class="o">=</span> <span class="n">obvs</span><span class="p">[</span><span class="s2">&quot;losses&quot;</span><span class="p">]</span>
     <span class="n">configs</span> <span class="o">=</span> <span class="n">obvs</span><span class="p">[</span><span class="s2">&quot;configs&quot;</span><span class="p">]</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
-    <span class="n">best_loss</span> <span class="o">=</span> <span class="n">losses</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-    <span class="n">best_config</span> <span class="o">=</span> <span class="n">get_dict_from_config</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">max_budget</span><span class="p">,</span> <span class="n">best_loss</span><span class="p">,</span> <span class="n">best_config</span></div>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">losses</span><span class="p">):</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+        <span class="n">best_loss</span> <span class="o">=</span> <span class="n">losses</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">best_config</span> <span class="o">=</span> <span class="n">get_dict_from_config</span><span class="p">(</span><span class="n">configs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">max_budget</span><span class="p">,</span> <span class="n">best_loss</span><span class="p">,</span> <span class="n">best_config</span>
+    <span class="k">return</span> <span class="n">max_budget</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="kc">None</span></div>
 </pre></div>
 
            </div>

@@ -94,7 +94,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用教程</span></p>
+              <p class="caption"><span class="caption-text">简介</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#quick-start">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#our-advantages">Our Advantages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html#citation">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">使用教程</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
@@ -222,7 +229,7 @@
     <span class="k">return</span> <span class="n">bandwidth</span></div>
 
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator">[文档]</a><span class="k">class</span> <span class="nc">TreeStructuredParzenEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+<div class="viewcode-block" id="TreeParzenEstimator"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator">[文档]</a><span class="k">class</span> <span class="nc">TreeParzenEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">top_n_percent</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">min_points_in_kde</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -243,10 +250,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">good_kdes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bad_kdes</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator.set_config_transformer"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator.set_config_transformer">[文档]</a>    <span class="k">def</span> <span class="nf">set_config_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_transformer</span><span class="p">):</span>
+<div class="viewcode-block" id="TreeParzenEstimator.set_config_transformer"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator.set_config_transformer">[文档]</a>    <span class="k">def</span> <span class="nf">set_config_transformer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_transformer</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_transformer</span> <span class="o">=</span> <span class="n">config_transformer</span></div>
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator.calc_groups"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator.calc_groups">[文档]</a>    <span class="k">def</span> <span class="nf">calc_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<div class="viewcode-block" id="TreeParzenEstimator.calc_groups"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator.calc_groups">[文档]</a>    <span class="k">def</span> <span class="nf">calc_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">n_groups</span> <span class="o">=</span> <span class="mi">0</span>
@@ -263,7 +270,7 @@
                 <span class="n">n_groups</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span> <span class="n">n_groups</span></div>
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator.fit"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator.fit">[文档]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<div class="viewcode-block" id="TreeParzenEstimator.fit"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator.fit">[文档]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">groups</span><span class="p">,</span> <span class="n">n_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_groups</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_groups</span> <span class="o">=</span> <span class="n">n_groups</span>
@@ -309,7 +316,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bad_kdes</span> <span class="o">=</span> <span class="n">bad_kdes</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator.predict"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator.predict">[文档]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<div class="viewcode-block" id="TreeParzenEstimator.predict"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator.predict">[文档]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="n">n_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_groups</span>
         <span class="n">good_log_pdf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_groups</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">)</span>
         <span class="n">bad_log_pdf</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">good_log_pdf</span><span class="p">)</span>
@@ -342,7 +349,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">good_log_pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bad_log_pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
-<div class="viewcode-block" id="TreeStructuredParzenEstimator.sample"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeStructuredParzenEstimator.sample">[文档]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_candidates</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sort_by_EI</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bandwidth_factor</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]:</span>
+<div class="viewcode-block" id="TreeParzenEstimator.sample"><a class="viewcode-back" href="../../../_module/ultraopt.learning.html#ultraopt.learning.tpe.TreeParzenEstimator.sample">[文档]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_candidates</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sort_by_EI</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bandwidth_factor</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Configuration</span><span class="p">]:</span>
         <span class="c1"># https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">check_random_state</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>

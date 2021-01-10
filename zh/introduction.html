@@ -1,0 +1,699 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-CN" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-CN" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; UltraOpt  文档</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.png"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/translations.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="01. 基础教程" href="_tutorials/01._Basic_Tutorial.html" />
+    <link rel="prev" title="Welcome to UltraOpt’s documentation!" href="index.html" />
+    <link href="_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> UltraOpt
+          
+
+          
+            
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">简介</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-ultraopt-in-hpo">Using UltraOpt in HPO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-ultraopt-in-automl">Using UltraOpt in AutoML</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#our-advantages">Our Advantages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#advantage-one-etpe-optimizer-is-more-competitive">Advantage One: ETPE optimizer is more competitive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advantage-two-ultraopt-is-more-adaptable-to-distributed-computing">Advantage Two: UltraOpt is more adaptable to distributed computing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advantage-three-ultraopt-is-more-function-comlete-and-user-friendly">Advantage Three: UltraOpt is more function comlete and user friendly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#citation">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">使用教程</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/03._Conditional_Parameter.html">03. 条件变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/04._Explain_the_Otimizer_in_Detail.html">04. 详解优化器</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/05._Implement_a_Simple_AutoML_System.html">05. 实现一个简单的AutoML系统</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/06._Combine_Multi-Fidelity_Optimization.html">06. 结合多保真优化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/07._Checkpoint_and_Warmstart.html">07. 检查点与热启动</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">08. 异步通信并行策略</a></li>
+<li class="toctree-l1"><a class="reference internal" href="_tutorials/09._MapReduce_Parallel_Strategy.html">09. MapReduce并行策略</a></li>
+</ul>
+<p class="caption"><span class="caption-text">对比实验</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html">Synthetic Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="experiments.html#tabular-benchmarks">Tabular Benchmarks</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">UltraOpt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/introduction.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<p align="center"><img src="https://img-blog.csdnimg.cn/20210110141724960.png"></img></p><p><a class="reference external" href="https://travis-ci.org/auto-flow/ultraopt"><img alt="Build Status" src="https://travis-ci.org/auto-flow/ultraopt.svg?branch=main" /></a>
+<a class="reference external" href="https://badge.fury.io/py/ultraopt"><img alt="PyPI version" src="https://badge.fury.io/py/ultraopt.svg?maxAge=2592000" /></a>
+<a class="reference external" href="https://pypi.python.org/pypi/ultraopt"><img alt="Download" src="https://img.shields.io/pypi/dm/ultraopt.svg" /></a>
+<img alt="https://img.shields.io/badge/license-BSD-green" src="https://img.shields.io/badge/license-BSD-green" />
+<img alt="PythonVersion" src="https://img.shields.io/badge/python-3.6+-blue" />
+<a class="reference external" href="https://github.com/auto-flow/ultraopt/stargazers"><img alt="GitHub Star" src="https://img.shields.io/github/stars/auto-flow/ultraopt.svg" /></a>  <a class="reference external" href="https://github.com/auto-flow/ultraopt/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/auto-flow/ultraopt.svg" /></a><br /><a class="reference external" href="https://zenodo.org/record/4430148"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.4430148.svg" /></a></p>
+<p><code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code> : <strong>比HyperOpt更强的分布式异步超参优化库</strong>。</p>
+<hr class="docutils" />
+<p><code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code> 是一个简单有效的优化库用于优化含噪音且评估代价大的黑盒函数，他能在大量的领域中应用，如超参优化（HyperParameter Optimization，HPO）和自动机器学习（Automatic Machine Learning，AutoML）。</p>
+<p>在吸收了已有的优化库，如<a class="reference external" href="https://github.com/hyperopt/hyperopt">HyperOpt</a><a class="reference external" href="#refer-5"><sup>[5]</sup></a>, <a class="reference external" href="https://github.com/automl/SMAC3">SMAC3</a><a class="reference external" href="#refer-3"><sup>[3]</sup></a>, <a class="reference external" href="https://github.com/scikit-optimize/scikit-optimize">scikit-optimize</a><a class="reference external" href="#refer-4"><sup>[4]</sup></a> and <a class="reference external" href="https://github.com/automl/HpBandSter">HpBandSter</a><a class="reference external" href="#refer-2"><sup>[2]</sup></a>的优点后，我们开发了 <code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code> ，它实现了一个新的贝叶斯优化算法：ETPE（Embedding-Tree-Parzen-Estimator，嵌入树形Parzen估计器），在我们的实验中，这个算法比HyperOpt的TPE算法表现更好。除此之外，<code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code> 的优化器被重新设计为能够适应<strong>HyperBand 和 SuccessiveHalving 评价策略</strong><a class="reference external" href="#refer-6"><sup>[6]</sup></a><a class="reference external" href="#refer-7"><sup>[7]</sup></a>和<strong>MapReduce 和 异步通信 计算场景</strong>。最后，你可以通过<code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code>的工具函数对<code class="docutils literal notranslate"><span class="pre">配置空间</span></code>和<code class="docutils literal notranslate"><span class="pre">优化过程与结果</span></code>进行可视化。</p>
+<p>其他语言: <a class="reference external" href="README">English README</a></p>
+<ul class="simple">
+<li><p><strong>Documentation</strong></p>
+<ul>
+<li><p>English Documentation is not available now.</p></li>
+<li><p><a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/">中文文档</a></p></li>
+</ul>
+</li>
+<li><p><strong>Tutorials</strong></p>
+<ul>
+<li><p>English Tutorials is not available now.</p></li>
+<li><p><a class="reference external" href="https://github.com/auto-flow/ultraopt/tree/main/tutorials_zh">中文教程</a></p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Table of Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="#Installation">Installation</a></p></li>
+<li><p><a class="reference external" href="#Quick-Start">Quick Start</a></p>
+<ul>
+<li><p><a class="reference external" href="#Using-UltraOpt-in-HPO">Using UltraOpt in HPO</a></p></li>
+<li><p><a class="reference external" href="#Using-UltraOpt-in-AutoML">Using UltraOpt in AutoML</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Our-Advantages">Our Advantages</a></p>
+<ul>
+<li><p><a class="reference external" href="#Advantage-One-ETPE-optimizer-is-more-competitive">Advantage One: ETPE optimizer is more competitive</a></p></li>
+<li><p><a class="reference external" href="#Advantage-Two-UltraOpt-is-more-adaptable-to-distributed-computing">Advantage Two: UltraOpt is more adaptable to distributed computing</a></p></li>
+<li><p><a class="reference external" href="#advantage-three-ultraopt-is-more-function-comlete-and-user-friendly">Advantage Three: UltraOpt is more function comlete and user friendly</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Citation">Citation</a></p></li>
+<li><p><a class="reference external" href="#referance">Referance</a></p></li>
+</ul>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="永久链接至标题">¶</a></h1>
+<p>UltraOpt 需要 Python 3.6 或更高.</p>
+<p>You can install the latest release by <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ultraopt
+</pre></div>
+</div>
+<p>你可以下载仓库后手动安装:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/auto-flow/ultraopt.git <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ultraopt
+python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="永久链接至标题">¶</a></h1>
+<div class="section" id="using-ultraopt-in-hpo">
+<h2>Using UltraOpt in HPO<a class="headerlink" href="#using-ultraopt-in-hpo" title="永久链接至标题">¶</a></h2>
+<p>让我们通过几个例子学习<code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code>（你可以在<code class="docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">Notebook</span></code>中尝试）。</p>
+<p>你可以在 <a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/01._Basic_Tutorial.html">这里</a> 学习基础教程, 在 <a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/02._Multiple_Parameters.html">这里</a>学习<code class="docutils literal notranslate"><span class="pre">HDL</span></code>的定义。</p>
+<p>在开始一个黑盒优化任务前，你需要提供两个东西:</p>
+<ul class="simple">
+<li><p>参数的取值范围，或称 <strong>配置空间（Config Space）</strong></p></li>
+<li><p>目标函数, 接受 <code class="docutils literal notranslate"><span class="pre">config</span></code> (<code class="docutils literal notranslate"><span class="pre">config</span></code> 是 <strong>Config Space</strong>的一个采样), 返回 <code class="docutils literal notranslate"><span class="pre">loss</span></code></p></li>
+</ul>
+<p>让我们定义一个随机森林的  <strong>Config Space</strong> 通过 <code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code>的 <code class="docutils literal notranslate"><span class="pre">HDL</span></code> (Hyperparameter Description Language，超参描述语言):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">HDL</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_quniform&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+    <span class="s2">&quot;criterion&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;gini&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;max_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sqrt&quot;</span><span class="p">,</span><span class="s2">&quot;log2&quot;</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;sqrt&quot;</span><span class="p">},</span>
+    <span class="s2">&quot;min_samples_split&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+    <span class="s2">&quot;min_samples_leaf&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="s2">&quot;bootstrap&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="s2">&quot;random_state&quot;</span><span class="p">:</span> <span class="mi">42</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>然后再定义一个目标函数:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_digits</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_val_score</span><span class="p">,</span> <span class="n">StratifiedKFold</span>
+<span class="kn">from</span> <span class="nn">ultraopt.hdl</span> <span class="kn">import</span> <span class="n">layering_config</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">return_X_y</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">layering_config</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">cross_val_score</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>现在，让我们开启一个优化过程:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ultraopt</span> <span class="kn">import</span> <span class="n">fmin</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">eval_func</span><span class="o">=</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">config_space</span><span class="o">=</span><span class="n">HDL</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;ETPE&quot;</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">result</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|██████████| 30/30 [00:36&lt;00:00,  1.23s/trial, best loss: 0.023]
+
++-----------------------------------+
+| HyperParameters   | Optimal Value |
++-------------------+---------------+
+| bootstrap         | True:bool     |
+| criterion         | gini          |
+| max_features      | log2          |
+| min_samples_leaf  | 1             |
+| min_samples_split | 2             |
+| n_estimators      | 200           |
++-------------------+---------------+
+| Optimal Loss      | 0.0228        |
++-------------------+---------------+
+| Num Configs       | 30            |
++-------------------+---------------+
+</pre></div>
+</div>
+<p>最后，进行一个简单的可视化:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot_convergence</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="quickstart1" src="https://img-blog.csdnimg.cn/20210110141723520.png" /></p>
+<p>你可以通过 facebook 的 hiplot 查看高维交互图:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>!pip install hiplot
+result.plot_hi(target_name=&quot;accuracy&quot;, loss2target_func=lambda x:1-x)
+</pre></div>
+</div>
+<p><img alt="hiplot" src="https://img-blog.csdnimg.cn/20210110130444272.png" /></p>
+</div>
+<div class="section" id="using-ultraopt-in-automl">
+<h2>Using UltraOpt in AutoML<a class="headerlink" href="#using-ultraopt-in-automl" title="永久链接至标题">¶</a></h2>
+<p>让我们尝试一个更复杂的例子：通过BOHB算法<a class="reference external" href="#refer-2"><sup>[2]</sup></a>（结合了<strong>HyperBand</strong><a class="reference external" href="#refer-6"><sup>[6]</sup></a>评价策略和 <code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code>的 <strong>ETPE</strong> 优化器）解决AutoML的 <strong>CASH 问题</strong> <a class="reference external" href="#refer-1"><sup>[1]</sup></a> (Combination problem of Algorithm Selection and Hyperparameter optimization).</p>
+<p>你可以在<a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/03._Conditional_Parameter.html">这里</a>学习条件参数和复杂<code class="docutils literal notranslate"><span class="pre">HDL</span></code>的定义，在<a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/05._Implement_a_Simple_AutoML_System.html">这里</a>学习怎么实现一个简单的AutoML，在<a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/06._Combine_Multi-Fidelity_Optimization.html">这里</a>学习AutoML的实现。</p>
+<p>首先，我们需要定义一个解决 <strong>CASH 问题</strong> 的 <code class="docutils literal notranslate"><span class="pre">HDL</span></code> :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">HDL</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;classifier(choice)&#39;</span><span class="p">:{</span>
+        <span class="s2">&quot;RandomForestClassifier&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_quniform&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">},</span>
+          <span class="s2">&quot;criterion&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span> <span class="s2">&quot;entropy&quot;</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;gini&quot;</span><span class="p">},</span>
+          <span class="s2">&quot;max_features&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sqrt&quot;</span><span class="p">,</span><span class="s2">&quot;log2&quot;</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;sqrt&quot;</span><span class="p">},</span>
+          <span class="s2">&quot;min_samples_split&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+          <span class="s2">&quot;min_samples_leaf&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+          <span class="s2">&quot;bootstrap&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span><span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+          <span class="s2">&quot;random_state&quot;</span><span class="p">:</span> <span class="mi">42</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;KNeighborsClassifier&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">&quot;n_neighbors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;int_loguniform&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+          <span class="s2">&quot;weights&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="s2">&quot;uniform&quot;</span><span class="p">},</span>
+          <span class="s2">&quot;p&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;_type&quot;</span><span class="p">:</span> <span class="s2">&quot;choice&quot;</span><span class="p">,</span> <span class="s2">&quot;_value&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span><span class="s2">&quot;_default&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>然后，定义一个附加<code class="docutils literal notranslate"><span class="pre">budget</span></code>参数的目标函数，以适应<strong>HyperBand</strong><a class="reference external" href="#refer-6"><sup>[6]</sup></a>评估策略：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">budget</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+   <span class="n">layered_dict</span> <span class="o">=</span> <span class="n">layering_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+   <span class="n">AS_HP</span> <span class="o">=</span> <span class="n">layered_dict</span><span class="p">[</span><span class="s1">&#39;classifier&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+   <span class="n">AS</span><span class="p">,</span> <span class="n">HP</span> <span class="o">=</span> <span class="n">AS_HP</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+   <span class="n">ML_model</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">AS</span><span class="p">)(</span><span class="o">**</span><span class="n">HP</span><span class="p">)</span>
+   <span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+   <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">train_ix</span><span class="p">,</span> <span class="n">valid_ix</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)):</span>
+       <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+       <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">train_ix</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">budget</span><span class="p">)</span>
+       <span class="n">train_ix</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">train_ix</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+       <span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">train_ix</span><span class="p">,</span> <span class="p">:],</span><span class="n">y</span><span class="p">[</span><span class="n">train_ix</span><span class="p">]</span>
+       <span class="n">X_valid</span><span class="p">,</span><span class="n">y_valid</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">valid_ix</span><span class="p">,</span> <span class="p">:],</span><span class="n">y</span><span class="p">[</span><span class="n">valid_ix</span><span class="p">]</span>
+       <span class="n">ML_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+       <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ML_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span><span class="p">))</span>
+   <span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+   <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">score</span>
+</pre></div>
+</div>
+<p>你应该实例化一个<code class="docutils literal notranslate"><span class="pre">multi_fidelity_iter_generator</span></code>对象，用来使用<strong>HyperBand</strong><a class="reference external" href="#refer-6"><sup>[6]</sup></a>评估策略：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ultraopt.multi_fidelity</span> <span class="kn">import</span> <span class="n">HyperBandIterGenerator</span>
+<span class="n">hb</span> <span class="o">=</span> <span class="n">HyperBandIterGenerator</span><span class="p">(</span><span class="n">min_budget</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">max_budget</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">hb</span><span class="o">.</span><span class="n">get_table</span><span class="p">()</span>
+</pre></div>
+</div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3" halign="left">iter 0</th>
+      <th colspan="2" halign="left">iter 1</th>
+      <th>iter 2</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>stage 0</th>
+      <th>stage 1</th>
+      <th>stage 2</th>
+      <th>stage 0</th>
+      <th>stage 1</th>
+      <th>stage 0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>num_config</th>
+      <td>4</td>
+      <td>2</td>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>budget</th>
+      <td>1/4</td>
+      <td>1/2</td>
+      <td>1</td>
+      <td>1/2</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table><p>让我们将 <strong>HyperBand</strong> 评估策略和 <code class="docutils literal notranslate"><span class="pre">UltraOpt</span></code>的 <strong>ETPE</strong> 优化器结合在一起 , 然后开启一个优化过程:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">eval_func</span><span class="o">=</span><span class="n">evaluate</span><span class="p">,</span> <span class="n">config_space</span><span class="o">=</span><span class="n">HDL</span><span class="p">,</span> 
+              <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;ETPE&quot;</span><span class="p">,</span> <span class="c1"># using bayesian optimizer: ETPE</span>
+              <span class="n">multi_fidelity_iter_generator</span><span class="o">=</span><span class="n">hb</span><span class="p">,</span> <span class="c1"># using HyperBand</span>
+              <span class="n">n_jobs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>         <span class="c1"># 3 threads</span>
+              <span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">result</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>100%|██████████| 88/88 [00:11&lt;00:00,  7.48trial/s, max budget: 1.0, best loss: 0.012]
+
++--------------------------------------------------------------------------------------------------------------------------+
+| HyperParameters                                     | Optimal Value                                                      |
++-----------------------------------------------------+----------------------+----------------------+----------------------+
+| classifier:__choice__                               | KNeighborsClassifier | KNeighborsClassifier | KNeighborsClassifier |
+| classifier:KNeighborsClassifier:n_neighbors         | 4                    | 1                    | 3                    |
+| classifier:KNeighborsClassifier:p                   | 2:int                | 2:int                | 2:int                |
+| classifier:KNeighborsClassifier:weights             | distance             | uniform              | uniform              |
+| classifier:RandomForestClassifier:bootstrap         | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:criterion         | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:max_features      | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:min_samples_leaf  | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:min_samples_split | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:n_estimators      | -                    | -                    | -                    |
+| classifier:RandomForestClassifier:random_state      | -                    | -                    | -                    |
++-----------------------------------------------------+----------------------+----------------------+----------------------+
+| Budgets                                             | 1/4                  | 1/2                  | 1 (max)              |
++-----------------------------------------------------+----------------------+----------------------+----------------------+
+| Optimal Loss                                        | 0.0328               | 0.0178               | 0.0122               |
++-----------------------------------------------------+----------------------+----------------------+----------------------+
+| Num Configs                                         | 28                   | 28                   | 32                   |
++-----------------------------------------------------+----------------------+----------------------+----------------------+
+</pre></div>
+</div>
+<p>你可以对 <code class="docutils literal notranslate"><span class="pre">多保真度</span></code> 场景下的优化过程与结果进行可视化:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylab</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot_convergence_over_time</span><span class="p">();</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot_concurrent_over_time</span><span class="p">(</span><span class="n">num_points</span><span class="o">=</span><span class="mi">200</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot_finished_over_time</span><span class="p">();</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot_correlation_across_budgets</span><span class="p">();</span>
+</pre></div>
+</div>
+<p><img alt="quickstart2" src="https://img-blog.csdnimg.cn/20210110141724946.png" /></p>
+</div>
+</div>
+<div class="section" id="our-advantages">
+<h1>Our Advantages<a class="headerlink" href="#our-advantages" title="永久链接至标题">¶</a></h1>
+<div class="section" id="advantage-one-etpe-optimizer-is-more-competitive">
+<h2>Advantage One: ETPE optimizer is more competitive<a class="headerlink" href="#advantage-one-etpe-optimizer-is-more-competitive" title="永久链接至标题">¶</a></h2>
+<p>我们实现了4种优化器(在下表中列出), 并且 <code class="docutils literal notranslate"><span class="pre">ETPE</span></code> 优化器是我们原创的优化器, 在我们的试验中，它比其他<code class="docutils literal notranslate"><span class="pre">基于TPE的优化器</span></code>如 <code class="docutils literal notranslate"><span class="pre">HyperOpt的TPE</span></code> 和 <code class="docutils literal notranslate"><span class="pre">HpBandSter的BOHB</span></code> 要表现更好。</p>
+<p>Our experimental code is public available in <a class="reference external" href="https://github.com/auto-flow/ultraopt/tree/main/experiments">here</a>, experimental documentation can be found in <a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/experiments.html">here</a> .</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Optimizer</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ETPE</td>
+<td>Embedding-Tree-Parzen-Estimator, is our original creation,  converting high-cardinality categorical variables to low-dimension continuous variables based on TPE algorithm, and some other aspects have also been improved, is proved to be better than  <code>HyperOpt's TPE</code> in our experiments.</td>
+</tr>
+<tr>
+<td>Forest</td>
+<td>Bayesian Optimization based on Random Forest. Surrogate model import <code>scikit-optimize</code> 's <code>skopt.learning.forest</code> model, and integrate Local Search methods in <code>SMAC3</code></td>
+</tr>
+<tr>
+<td>GBRT</td>
+<td>Bayesian Optimization based on Gradient Boosting Resgression Tree. Surrogate model import <code>scikit-optimize</code> 's <code>skopt.learning.gbrt</code> model.</td>
+</tr>
+<tr>
+<td>Random</td>
+<td>Random Search for baseline or dummy model.</td>
+</tr>
+</tbody>
+</table><p>Key result figure in experiment (you can see details in <a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/experiments.html">experimental documentation</a> ) :</p>
+<p><img alt="experiment" src="https://img-blog.csdnimg.cn/20210110141724952.png" /></p>
+</div>
+<div class="section" id="advantage-two-ultraopt-is-more-adaptable-to-distributed-computing">
+<h2>Advantage Two: UltraOpt is more adaptable to distributed computing<a class="headerlink" href="#advantage-two-ultraopt-is-more-adaptable-to-distributed-computing" title="永久链接至标题">¶</a></h2>
+<p>You can see this section in the documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/08._Asynchronous_Communication_Parallel_Strategy.html">Asynchronous Communication Parallel Strategy</a></p></li>
+<li><p><a class="reference external" href="https://auto-flow.github.io/ultraopt/zh/_tutorials/09._MapReduce_Parallel_Strategy.html">MapReduce Parallel Strategy</a></p></li>
+</ul>
+</div>
+<div class="section" id="advantage-three-ultraopt-is-more-function-comlete-and-user-friendly">
+<h2>Advantage Three: UltraOpt is more function comlete and user friendly<a class="headerlink" href="#advantage-three-ultraopt-is-more-function-comlete-and-user-friendly" title="永久链接至标题">¶</a></h2>
+<p>UltraOpt is more function comlete and  user friendly than other optimize library:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th></th>
+<th>UltraOpt</th>
+<th>HyperOpt</th>
+<th>Scikit-Optimize</th>
+<th>SMAC3</th>
+<th>HpBandSter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simple Usage like <code>fmin</code> function</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>×</td>
+</tr>
+<tr>
+<td>Simple <code>Config Space</code> Definition</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>Support Conditional <code>Config Space</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>×</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Support Serializable <code>Config Space</code></td>
+<td>✓</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>Support Visualizing <code>Config Space</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>Can Analyse Optimization Process &amp; Result</td>
+<td>✓</td>
+<td>×</td>
+<td>✓</td>
+<td>×</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Distributed in Cluster</td>
+<td>✓</td>
+<td>✓</td>
+<td>×</td>
+<td>×</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Support HyperBand<a href="#refer-6"><sup>[6]</sup></a> &amp; SuccessiveHalving<a href="#refer-7"><sup>[7]</sup></a></td>
+<td>✓</td>
+<td>×</td>
+<td>×</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="citation">
+<h1>Citation<a class="headerlink" href="#citation" title="永久链接至标题">¶</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@misc</span><span class="p">{</span><span class="n">Tang_UltraOpt</span><span class="p">,</span>
+    <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Qichun</span> <span class="n">Tang</span><span class="p">},</span>
+    <span class="n">title</span>        <span class="o">=</span> <span class="p">{{</span><span class="n">UltraOpt</span> <span class="p">:</span> <span class="n">Distributed</span> <span class="n">Asynchronous</span> <span class="n">Hyperparameter</span> <span class="n">Optimization</span> <span class="n">better</span> <span class="n">than</span> <span class="n">HyperOpt</span><span class="p">}},</span>
+    <span class="n">month</span>        <span class="o">=</span> <span class="n">January</span><span class="p">,</span>
+    <span class="n">year</span>         <span class="o">=</span> <span class="mi">2021</span><span class="p">,</span>
+    <span class="n">doi</span>          <span class="o">=</span> <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="o">.</span><span class="mi">4430148</span><span class="p">},</span>
+    <span class="n">version</span>      <span class="o">=</span> <span class="p">{</span><span class="n">v0</span><span class="o">.</span><span class="mf">1.0</span><span class="p">},</span>
+    <span class="n">publisher</span>    <span class="o">=</span> <span class="p">{</span><span class="n">Zenodo</span><span class="p">},</span>
+    <span class="n">url</span>          <span class="o">=</span> <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="o">.</span><span class="mi">4430148</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><b id="referance">Reference</b></p>
+<div id="refer-1"></div><p>[1] <a class="reference external" href="https://arxiv.org/abs/1208.3719">Thornton, Chris et al. “Auto-WEKA: combined selection and hyperparameter optimization of classification algorithms.” Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining (2013): n. pag.</a></p>
+<div id="refer-2"></div><p>[2] <a class="reference external" href="https://arxiv.org/abs/1807.01774">Falkner, Stefan et al. “BOHB: Robust and Efficient Hyperparameter Optimization at Scale.” ICML (2018).</a></p>
+<div id="refer-3"></div><p>[3] <a class="reference external" href="https://link.springer.com/chapter/10.1007/978-3-642-25566-3_40">Hutter F., Hoos H.H., Leyton-Brown K. (2011) Sequential Model-Based Optimization for General Algorithm Configuration. In: Coello C.A.C. (eds) Learning and Intelligent Optimization. LION 2011. Lecture Notes in Computer Science, vol 6683. Springer, Berlin, Heidelberg.</a></p>
+<div id="refer-4"></div><p>[4] https://github.com/scikit-optimize/scikit-optimize</p>
+<div id="refer-5"></div><p>[5] <a class="reference external" href="https://dl.acm.org/doi/10.5555/2986459.2986743">James Bergstra, Rémi Bardenet, Yoshua Bengio, and Balázs Kégl. 2011. Algorithms for hyper-parameter optimization. In Proceedings of the 24th International Conference on Neural Information Processing Systems (NIPS’11). Curran Associates Inc., Red Hook, NY, USA, 2546–2554.</a></p>
+<div id="refer-6"></div><p>[6] <a class="reference external" href="https://arxiv.org/abs/1603.06560">Li, L. et al. “Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization.” J. Mach. Learn. Res. 18 (2017): 185:1-185:52.</a></p>
+<div id="refer-7"></div><p>[7] <a class="reference external" href="https://arxiv.org/abs/1502.07943">Jamieson, K. and Ameet Talwalkar. “Non-stochastic Best Arm Identification and Hyperparameter Optimization.” AISTATS (2016).</a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+    <a href="https://github.com/auto-flow/ultraopt">
+        <img style="position: fixed; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+    </a>
+
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="_tutorials/01._Basic_Tutorial.html" class="btn btn-neutral float-right" title="01. 基础教程" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to UltraOpt’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Qichun Tang
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+    
+
+  <style>
+    /* Sidebar header (and topbar for mobile) */
+    .wy-side-nav-search, .wy-nav-top {
+      background: #14026C;
+    }
+
+  </style>
+
+
+</body>
+</html>

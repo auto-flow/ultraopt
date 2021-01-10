@@ -94,7 +94,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用教程</span></p>
+              <p class="caption"><span class="caption-text">简介</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html#quick-start">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html#our-advantages">Our Advantages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html#citation">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">使用教程</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
@@ -207,32 +214,32 @@
 <div class="section" id="module-ultraopt.learning.tpe">
 <span id="ultraopt-learning-tpe-module"></span><h2>ultraopt.learning.tpe module<a class="headerlink" href="#module-ultraopt.learning.tpe" title="永久链接至标题">¶</a></h2>
 <dl class="py class">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator">
-<em class="property">class </em><code class="sig-prename descclassname">ultraopt.learning.tpe.</code><code class="sig-name descname">TreeStructuredParzenEstimator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_n_percent</span><span class="o">=</span><span class="default_value">15</span></em>, <em class="sig-param"><span class="n">min_points_in_kde</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">bw_method</span><span class="o">=</span><span class="default_value">'scott'</span></em>, <em class="sig-param"><span class="n">cv_times</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">kde_sample_weight_scaler</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator">
+<em class="property">class </em><code class="sig-prename descclassname">ultraopt.learning.tpe.</code><code class="sig-name descname">TreeParzenEstimator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_n_percent</span><span class="o">=</span><span class="default_value">15</span></em>, <em class="sig-param"><span class="n">min_points_in_kde</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">bw_method</span><span class="o">=</span><span class="default_value">'scott'</span></em>, <em class="sig-param"><span class="n">cv_times</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">kde_sample_weight_scaler</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator" title="永久链接至目标">¶</a></dt>
 <dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
 <dl class="py method">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator.calc_groups">
-<code class="sig-name descname">calc_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator.calc_groups"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator.calc_groups" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator.calc_groups">
+<code class="sig-name descname">calc_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator.calc_groups"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator.calc_groups" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator.fit"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator.fit" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em>, <em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator.fit"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator.fit" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator.predict">
-<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator.predict"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator.predict" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span><span class="p">:</span> <span class="n">numpy.ndarray</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator.predict"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator.predict" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator.sample">
-<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_candidates</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">sort_by_EI</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bandwidth_factor</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>ConfigSpace.configuration_space.Configuration<span class="p">]</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator.sample"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator.sample" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator.sample">
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_candidates</span><span class="o">=</span><span class="default_value">20</span></em>, <em class="sig-param"><span class="n">sort_by_EI</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">random_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">bandwidth_factor</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span>ConfigSpace.configuration_space.Configuration<span class="p">]</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator.sample"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator.sample" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ultraopt.learning.tpe.TreeStructuredParzenEstimator.set_config_transformer">
-<code class="sig-name descname">set_config_transformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_transformer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeStructuredParzenEstimator.set_config_transformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeStructuredParzenEstimator.set_config_transformer" title="永久链接至目标">¶</a></dt>
+<dt id="ultraopt.learning.tpe.TreeParzenEstimator.set_config_transformer">
+<code class="sig-name descname">set_config_transformer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config_transformer</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ultraopt/learning/tpe.html#TreeParzenEstimator.set_config_transformer"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#ultraopt.learning.tpe.TreeParzenEstimator.set_config_transformer" title="永久链接至目标">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

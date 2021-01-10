@@ -94,7 +94,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">使用教程</span></p>
+              <p class="caption"><span class="caption-text">简介</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html#quick-start">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html#our-advantages">Our Advantages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html#citation">Citation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">使用教程</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/01._Basic_Tutorial.html">01. 基础教程</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../_tutorials/02._Multiple_Parameters.html">02. 多元变量</a></li>
@@ -185,7 +192,7 @@
 <span class="kn">from</span> <span class="nn">tabular_nn</span> <span class="kn">import</span> <span class="n">EmbeddingEncoder</span>
 <span class="kn">from</span> <span class="nn">tabular_nn</span> <span class="kn">import</span> <span class="n">EquidistanceEncoder</span>
 
-<span class="kn">from</span> <span class="nn">ultraopt.learning.tpe</span> <span class="kn">import</span> <span class="n">TreeStructuredParzenEstimator</span>
+<span class="kn">from</span> <span class="nn">ultraopt.learning.tpe</span> <span class="kn">import</span> <span class="n">TreeParzenEstimator</span>
 <span class="kn">from</span> <span class="nn">ultraopt.optimizer.base_opt</span> <span class="kn">import</span> <span class="n">BaseOptimizer</span>
 <span class="kn">from</span> <span class="nn">ultraopt.utils.config_space</span> <span class="kn">import</span> <span class="n">add_configs_origin</span><span class="p">,</span> <span class="n">initial_design_2</span><span class="p">,</span> <span class="n">sample_configurations</span>
 <span class="kn">from</span> <span class="nn">ultraopt.utils.config_transformer</span> <span class="kn">import</span> <span class="n">ConfigTransformer</span>
@@ -217,7 +224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sort_by_EI</span> <span class="o">=</span> <span class="n">sort_by_EI</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_candidates_factor</span> <span class="o">=</span> <span class="n">n_candidates_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_candidates</span> <span class="o">=</span> <span class="n">n_candidates</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tpe</span> <span class="o">=</span> <span class="n">TreeStructuredParzenEstimator</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tpe</span> <span class="o">=</span> <span class="n">TreeParzenEstimator</span><span class="p">(</span>
             <span class="n">top_n_percent</span><span class="o">=</span><span class="n">top_n_percent</span><span class="p">,</span>
             <span class="n">min_points_in_kde</span><span class="o">=</span><span class="n">min_points_in_kde</span><span class="p">,</span>
             <span class="n">bw_method</span><span class="o">=</span><span class="n">bw_method</span><span class="p">,</span>
