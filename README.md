@@ -1,7 +1,7 @@
 
 
 
-<p align="center"><img src="https://gitee.com/TQCAI/ultraopt_img/raw/master/star_logo.png"></img></p>
+<p align="center"><img src="https://img-blog.csdnimg.cn/20210110141724960.png"></img></p>
 
 
 
@@ -142,7 +142,8 @@ And make a simple visualizaiton finally:
 ```python
 result.plot_convergence()
 ```
-![](https://gitee.com/TQCAI/ultraopt_img/raw/master/quick_start1.png)
+
+![quickstart1](https://img-blog.csdnimg.cn/20210110141723520.png)
 
 You can visualize high dimensional interaction by facebook's hiplot:
 
@@ -311,9 +312,8 @@ plt.subplot(2, 2, 4)
 result.plot_correlation_across_budgets();
 ```
 
-![](https://gitee.com/TQCAI/ultraopt_img/raw/master/quick_start2.png)
 
-
+![quickstart2](https://img-blog.csdnimg.cn/20210110141724946.png)
 
 # Our Advantages
 
@@ -333,7 +333,7 @@ Our experimental code is public available in [here](https://github.com/auto-flow
 
 Key result figure in experiment (you can see details in [experimental documentation](https://auto-flow.github.io/ultraopt/zh/experiments.html) ) :
 
-![protein_structure_HB.png](https://gitee.com/TQCAI/ultraopt_img/raw/master/protein_structure_HB.png)
+![experiment](https://img-blog.csdnimg.cn/20210110141724952.png)
 
 ## Advantage Two: UltraOpt is more adaptable to distributed computing
 
