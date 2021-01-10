@@ -9,7 +9,7 @@ import numpy as np
 from tabular_nn import EmbeddingEncoder
 from tabular_nn import EquidistanceEncoder
 
-from ultraopt.learning.tpe import TreeStructuredParzenEstimator
+from ultraopt.learning.tpe import TreeParzenEstimator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
@@ -41,7 +41,7 @@ class ETPEOptimizer(BaseOptimizer):
         self.sort_by_EI = sort_by_EI
         self.n_candidates_factor = n_candidates_factor
         self.n_candidates = n_candidates
-        self.tpe = TreeStructuredParzenEstimator(
+        self.tpe = TreeParzenEstimator(
             top_n_percent=top_n_percent,
             min_points_in_kde=min_points_in_kde,
             bw_method=bw_method,

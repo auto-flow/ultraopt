@@ -46,7 +46,7 @@ def estimate_bw(data, bw_method="scott", cv_times=100):
     return bandwidth
 
 
-class TreeStructuredParzenEstimator(BaseEstimator):
+class TreeParzenEstimator(BaseEstimator):
     def __init__(
             self,
             top_n_percent=15, min_points_in_kde=2,
