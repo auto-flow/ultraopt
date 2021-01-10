@@ -150,7 +150,7 @@ You can visualize high dimensional interaction by facebook's hiplot:
 result.plot_hi(target_name="accuracy", loss2target_func=lambda x:1-x)
 ```
 
-![](https://gitee.com/TQCAI/ultraopt_img/raw/master/hiplot.png)
+![hiplot](https://img-blog.csdnimg.cn/20210110130444272.png)
 
 ## Using UltraOpt in AutoML
 
