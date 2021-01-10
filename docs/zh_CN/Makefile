@@ -30,3 +30,6 @@ cp_tutorial:
 	mkdir  -p source/_tutorials
 	cp -r ../../tutorials_zh/*.ipynb source/_tutorials/
 #	cp -r ../../tutorials_zh/README.md source/tutorial.md
+
+cp_readme:
+	cp -r ../../README.zh_CN.md source/introduction.md

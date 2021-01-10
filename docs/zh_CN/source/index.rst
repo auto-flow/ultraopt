@@ -8,6 +8,12 @@ Welcome to UltraOpt's documentation!
 
 .. toctree::
    :maxdepth: 4
+   :caption: 简介
+
+   introduction
+
+.. toctree::
+   :maxdepth: 4
    :glob:
    :caption: 使用教程
 
