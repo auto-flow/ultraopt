@@ -41,8 +41,11 @@ pip install ultraopt
 首先，定义一个超参空间，在`UltraOpt`中超参空间可以用`HDL`（Hyperparameters Description Language，超参描述语言）来定义：
 
 ![HDL](https://img-blog.csdnimg.cn/20210111172610619.png)
+
 然后我们定义一个用于评判超参好坏的目标函数，接受一个字典类型的`config`，返回`loss`，即 `1` 减去交叉验证中验证集的平均正确率。我们的优化目标是 `loss` 越小越好。
+
 ![eval](https://img-blog.csdnimg.cn/20210111172639405.png)
+
 在定义了超参空间和目标函数后，进行优化其实就是一行代码的事情，只需要调用`UltraOpt`的`fmin`函数就行了：
 
 ```python
@@ -55,6 +58,7 @@ print(result)
 优化过程中会打印进度条，完成后打印`result`对象会对优化结果进行一个汇总。
 
 ![result](https://img-blog.csdnimg.cn/20210111173309236.png)
+
 调用`result`对象的`plot_convergence`方法会绘制拟合曲线。
 
 ![plot_convergence](https://img-blog.csdnimg.cn/20210111173554453.png)
@@ -62,11 +66,13 @@ print(result)
 在安装了Facebook的可视化工具`hiplot`后，你可以查看这次超参优化结果的高维交互图
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20210111174056527.png)
+
 ## 考虑算法选择与较少代价的评估策略
 
 可能有小伙伴要问，如果我想先从一组优化器中选一个优化器（**算法选择**），再对这个优化器进行**超参优化**，`UltraOpt`能解决这样的算法选择与超参优化问题(`CASH Problem`)吗？答案是可以的。首先我们定义一个解决`CASH Problem`的`HDL`：
 
 ![HDL2](https://img-blog.csdnimg.cn/20210111174859829.png)
+
 我们看到，首先我们要从`【随机森林，KNN】`这两个优化器中选一个，再对这个优化器进行超参优化。
 
 这时又有小伙伴提问：上个案例中AutoML的评估函数需要进行一次**完整**的训练与预测流程，耗时比较长，换句话说就是代价比较大。有什么方法可以解决这个问题呢？有的大佬就提出了一种简单粗暴的方法：连续减半（Successive Halving，SH），即用少量样本来评价大量超参配置，将表现好的超参配置保留到下一轮迭代中，如图所示：
@@ -78,6 +84,7 @@ print(result)
 我们在考虑了`评估代价`（或者称为预算，budget）这一影响因素后，需要重新设计我们的目标函数，即添加`budget`参数并做相应的改变：
 
 ![eval2](https://img-blog.csdnimg.cn/20210111180455248.png)
+
 这段代码可能有点难理解，简单说做了以下修改：
 
 1. 考虑了评估代价(量化为`budget`，取值范围0到1，表示训练样本采样率)
@@ -86,8 +93,11 @@ print(result)
 再实例化用于支持SH的迭代生成器：
 
 ![iter](https://img-blog.csdnimg.cn/20210111180815559.png)
+
 现在菜都配齐了，往`ultraopt.fmin`的锅里一扔，炖了：
+
 ![result2](https://img-blog.csdnimg.cn/20210111181047745.png)
+
 `UltraOpt`提供了大量的可视化工具函数，您可以查看优化过程与优化结果：
 
 
@@ -102,9 +112,11 @@ print(result)
 - Synthetic Benchmark
 
 ![Synthetic Benchmark](https://img-blog.csdnimg.cn/20210111182852515.png)
+
 - Tabular Benchmark
 
 ![Tabular Benchmark](https://img-blog.csdnimg.cn/20210111182852255.png)
+
 - Tabular Benchmark（考虑HyperBand评价策略）
 
 ![Tabular Benchmark2](https://img-blog.csdnimg.cn/20210111182852298.png)
