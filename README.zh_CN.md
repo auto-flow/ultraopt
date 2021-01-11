@@ -10,8 +10,7 @@
 [![Download](https://img.shields.io/pypi/dm/ultraopt.svg)](https://pypi.python.org/pypi/ultraopt)
 ![](https://img.shields.io/badge/license-BSD-green)
 ![PythonVersion](https://img.shields.io/badge/python-3.6+-blue)
-[![GitHub Star](https://img.shields.io/github/stars/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/stargazers)  [![GitHub forks](https://img.shields.io/github/forks/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/network)  
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4430148.svg)](https://zenodo.org/record/4430148)
+[![GitHub Star](https://img.shields.io/github/stars/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/stargazers)[![GitHub forks](https://img.shields.io/github/forks/auto-flow/ultraopt.svg)](https://github.com/auto-flow/ultraopt/network)[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4430148.svg)](https://zenodo.org/record/4430148)
 
 `UltraOpt` : **比HyperOpt更强的分布式异步超参优化库**。
 
@@ -361,7 +360,7 @@ UltraOpt is more function comlete and  user friendly than other optimize library
 ```
 @misc{Tang_UltraOpt,
     author       = {Qichun Tang},
-    title        = {{UltraOpt : Distributed Asynchronous Hyperparameter Optimization better than HyperOpt}},
+    title        = {UltraOpt : Distributed Asynchronous Hyperparameter Optimization better than HyperOpt}
     month        = January,
     year         = 2021,
     doi          = {10.5281/zenodo.4430148},
