@@ -8,7 +8,7 @@ import sys
 
 from setuptools import setup, find_packages
 
-with open("ultraopt/__version__.py") as fh:
+with open("ultraopt/__version__.py", encoding='utf-8') as fh:
     version = fh.readlines()[-1].split()[-1].strip("\"'")
 
 
@@ -24,7 +24,7 @@ if sys.version_info < (3, 5):
 
 install_file = 'requirements.txt'
 
-with open('README.md') as fh:
+with open('README.md', encoding='utf-8') as fh:
     long_description = fh.read()
 
 GIT_PATTERN = re.compile(r"git\+https://github\.com/(.*?)/(.*?)\.git")
