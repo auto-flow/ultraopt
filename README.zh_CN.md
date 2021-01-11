@@ -344,14 +344,14 @@ UltraOpt is more function comlete and  user friendly than other optimize library
 
 |                                          | UltraOpt    | HyperOpt    |Scikit-Optimize|SMAC3        |HpBandSter   |
 |------------------------------------------|-------------|-------------|---------------|-------------|-------------|
-|Simple Usage like `fmin` function          |✓ |✓ |✓   |✓ |×|
-|Simple `Config Space` Definition           |✓ |✓ |✓   |×|×|
-|Support Conditional `Config Space`        |✓ |✓ |×  |✓ |✓ |
-|Support Serializable `Config Space`        |✓ |×|×  |×|×|
-|Support Visualizing `Config Space`         |✓ |✓ |×  |×|×|
-|Can Analyse Optimization Process & Result |✓ |×|✓   |×|✓ |
-|Distributed in Cluster                    |✓ |✓ |×  |×|✓ |
-|Support HyperBand[<sup>[6]</sup>](#refer-6) & SuccessiveHalving[<sup>[7]</sup>](#refer-7)     |✓ |×|×  |✓ |✓ |
+|调用方便，如 `fmin` 函数          |✓ |✓ |✓   |✓ |×|
+|简单的 `配置空间` 定义           |✓ |✓ |✓   |×|×|
+|支持 条件`配置空间`        |✓ |✓ |×  |✓ |✓ |
+|`配置空间` 可序列化        |✓ |×|×  |×|×|
+|支持 `配置空间` 可视化         |✓ |✓ |×  |×|×|
+|可以分析优化结果与优化过程 |✓ |×|✓   |×|✓ |
+|能够在集群中分布式运行                    |✓ |✓ |×  |×|✓ |
+|支持HyperBand[<sup>[6]</sup>](#refer-6)与连续减半[<sup>[7]</sup>](#refer-7)     |✓ |×|×  |✓ |✓ |
 
 
 
