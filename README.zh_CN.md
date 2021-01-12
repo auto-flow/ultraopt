@@ -357,10 +357,10 @@ UltraOpt is more function comlete and  user friendly than other optimize library
 
 # Citation
 
-```
+```bibtex
 @misc{Tang_UltraOpt,
     author       = {Qichun Tang},
-    title        = {UltraOpt : Distributed Asynchronous Hyperparameter Optimization better than HyperOpt}
+    title        = {UltraOpt : Distributed Asynchronous Hyperparameter Optimization better than HyperOpt},
     month        = January,
     year         = 2021,
     doi          = {10.5281/zenodo.4430148},
