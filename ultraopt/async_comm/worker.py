@@ -1,4 +1,5 @@
 import inspect
+import logging
 import multiprocessing as mp
 # from billiard.context import Process
 import os
@@ -12,6 +13,8 @@ from uuid import uuid4
 import Pyro4
 
 # from autoflow.utils.sys_ import get_trance_back_msg
+import pynisher
+
 from ultraopt.utils.logging_ import get_logger
 
 
@@ -33,7 +36,8 @@ class Worker(object):
             host=None,
             worker_id=None,
             timeout=None,
-            debug=False
+            debug=False,
+            limit_resource=False,
     ):
         """
 
@@ -57,6 +61,7 @@ class Worker(object):
             a timeout that is roughly half the time it would take for the second largest budget to finish.
             The default (None) means that the worker will wait indefinitely and never shutdown on its own.
         """
+        self.limit_resource = limit_resource
         self.debug = debug
         self.run_id = run_id
         self.host = host
@@ -215,10 +220,17 @@ class Worker(object):
         if self.eval_func is None:
             raise NotImplementedError(
                 "Subclass ultraopt.distributed.worker and overwrite the compute method in your worker script")
+        kwargs = {}
         if self.support_budget:
-            loss = self.eval_func(config, budget=budget)
+            kwargs = dict(budget=budget)
+        if self.limit_resource:
+            arguments = {'logger': logging.getLogger("pynisher"),
+                         'wall_time_in_s': 200,
+                         'mem_in_mb': 1000}
+            obj = pynisher.enforce_limits(**arguments)(self.eval_func)
+            loss = obj(config, **kwargs)
         else:
-            loss = self.eval_func(config)
+            loss = self.eval_func(config, **kwargs) # todo: 支持返回更多信息
         return {
             "loss": loss
         }

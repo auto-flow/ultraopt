@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : tqichun@gmail.com
+import json
+from collections import defaultdict
+
+import numpy as np
 import pandas as pd
 import pylab as plt
 from joblib import load
@@ -25,21 +29,29 @@ benchmarks = [
     "naval_propulsion",
     "parkinsons_telemonitoring"
 ]
-xlim_list=[
+xlim_list = [
     [10, 1e5],
-    [80, 2*1e5],
-    [10, 0.4*1e5],
-    [10, 0.2*1e5],
+    [80, 2 * 1e5],
+    [10, 0.4 * 1e5],
+    [10, 0.2 * 1e5],
 ]
-ylim_list=[
+ylim_list = [
     None,
-    [0.5*1e-5, 0.99],
+    [0.5 * 1e-5, 0.99],
     None,
     None
 ]
+performances = [
+    0.001,
+    0.00005,
+    0.000001,
+    0.02,
+]
+time_compare = defaultdict(dict)
 
 for idx, (benchmark, xlim, ylim) in enumerate(zip(benchmarks, xlim_list, ylim_list)):
     # plt.subplot(2, 2, idx + 1)
+    print(benchmark)
     plt.title(benchmark)
     for fname, (name, color, linestyle, marker) in info.items():
         df_t: pd.DataFrame = load(f"{benchmark}-{fname}.pkl")
@@ -55,6 +67,13 @@ for idx, (benchmark, xlim, ylim) in enumerate(zip(benchmarks, xlim_list, ylim_li
             isna = pd.isna(df_t[col])
             df_t.loc[isna, col] = df_t.loc[~isna, col].values[0]
         mean = df_t.mean(axis=1).tolist()
+        t_index = np.searchsorted(-np.array(mean), -performances[idx], 'left')
+        if t_index >= len(df_t.index):
+            t_index = t_index - 1
+        time = df_t.index[t_index]
+        print(name, ":", time)
+        time_compare[benchmark][name] = time
+        time_compare[benchmark]['full_time']=df_t.index[-1]
         # for i in range(1, len(mean)):
         #     mean[i] = min(mean[i], mean[i - 1])
         q1 = df_t.quantile(q=.25, axis=1)
@@ -89,3 +108,4 @@ for idx, (benchmark, xlim, ylim) in enumerate(zip(benchmarks, xlim_list, ylim_li
     plt.savefig(f"{benchmark}_HB.png")
     plt.savefig(f"{benchmark}_HB.pdf")
     plt.show()
+json.dump(time_compare, open('time_compare.json', 'w'))
