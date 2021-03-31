@@ -38,6 +38,8 @@ class Worker(object):
             timeout=None,
             debug=False,
             limit_resource=False,
+            time_limit=1800,
+            memory_limit=None
     ):
         """
 
@@ -61,6 +63,8 @@ class Worker(object):
             a timeout that is roughly half the time it would take for the second largest budget to finish.
             The default (None) means that the worker will wait indefinitely and never shutdown on its own.
         """
+        self.memory_limit = memory_limit
+        self.time_limit = time_limit
         self.limit_resource = limit_resource
         self.debug = debug
         self.run_id = run_id
@@ -225,10 +229,22 @@ class Worker(object):
             kwargs = dict(budget=budget)
         if self.limit_resource:
             arguments = {'logger': logging.getLogger("pynisher"),
-                         'wall_time_in_s': 200,
-                         'mem_in_mb': 1000}
+                         'wall_time_in_s': self.time_limit,
+                         'mem_in_mb': self.memory_limit}
             obj = pynisher.enforce_limits(**arguments)(self.eval_func)
             loss = obj(config, **kwargs)
+            # 处理几种失败的情况
+            if obj.exit_status is pynisher.TimeoutException:
+                self.logger.warning(f"TimeoutException!\nconfig = \n{config}")
+            elif obj.exit_status is pynisher.MemorylimitException:
+                self.logger.warning(f"MemorylimitException!\nconfig = \n{config}")
+            elif obj.exit_status == 0 and loss is not None:
+                pass
+            else:
+                self.logger.warning(f"status = StatusType.CRASHED\nconfig = \n{config}")
+            # 失败了，就取一个损失的最大值
+            if loss is None:
+                loss=65535
         else:
             loss = self.eval_func(config, **kwargs) # todo: 支持返回更多信息
         return {

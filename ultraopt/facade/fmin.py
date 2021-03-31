@@ -43,7 +43,10 @@ def fmin(
         verbose=0,
         run_id=None,
         ns_host="127.0.0.1",
-        ns_port=0
+        ns_port=0,
+        limit_resource=False,
+        time_limit=1800,
+        memory_limit=None
 ):
     # fixme: 这合理吗
     if verbose <= 0:
@@ -52,6 +55,9 @@ def fmin(
         logging.basicConfig(level=logging.INFO)
     else:
         logging.basicConfig(level=logging.DEBUG)
+    if verbose < 2:
+        logging.getLogger("tabular_nn.component.embedding_encoder.EmbeddingEncoder").setLevel(logging.WARNING)
+        logging.getLogger("tabular_nn.entity_embedding_nn.TrainEntityEmbeddingNN").setLevel(logging.WARNING)
     # 设计目标：单机并行、多保真优化
     # ------------   config_space   ---------------#
     if isinstance(config_space, dict):
@@ -122,7 +128,8 @@ def fmin(
         _, ns_port = NS.start()
         # start n workers
         workers = [Worker(run_id=run_id, nameserver=ns_host, nameserver_port=ns_port,
-                          host=ns_host, worker_id=i)
+                          host=ns_host, worker_id=i, limit_resource=limit_resource,
+                          time_limit=time_limit,memory_limit=memory_limit)
                    for i in range(n_jobs)]
         for worker in workers:
             worker.initialize(eval_func)
