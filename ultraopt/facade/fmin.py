@@ -8,6 +8,7 @@ import inspect
 import logging
 from typing import Callable, Union, Optional, List, Type
 from uuid import uuid4
+import numpy as np
 
 from ConfigSpace import ConfigurationSpace, Configuration
 from joblib import Parallel, delayed
@@ -46,7 +47,9 @@ def fmin(
         ns_port=0,
         limit_resource=False,
         time_limit=1800,
-        memory_limit=None
+        memory_limit=None,
+        early_stopping_rounds=-1,
+        total_time_limit=np.inf
 ):
     # fixme: 这合理吗
     if verbose <= 0:
@@ -138,7 +141,10 @@ def fmin(
         master = Master(
             run_id, opt_, multi_fidelity_iter_generator, progress_callback=progress_callback,
             checkpoint_file=checkpoint_file, checkpoint_freq=checkpoint_freq,
-            nameserver=ns_host, nameserver_port=ns_port, host=ns_host)
+            nameserver=ns_host, nameserver_port=ns_port, host=ns_host,
+            early_stopping_rounds=early_stopping_rounds,
+            time_left_for_this_task=total_time_limit, workers_refer=workers
+        )
         result = master.run(n_iterations)
         master.shutdown(True)
         NS.shutdown()

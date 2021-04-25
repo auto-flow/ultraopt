@@ -20,7 +20,8 @@ from ultraopt.viz import plot_convergence
 
 
 class FMinResult():
-    def __init__(self, optimizer: BaseOptimizer):
+    def __init__(self, optimizer: BaseOptimizer = None):
+        if optimizer is None: return
         self.optimizer = deepcopy(optimizer)
         self.configs_table = []
         self.hyperparameters = [hp.name for hp in optimizer.config_space.get_hyperparameters()]
@@ -98,7 +99,10 @@ class FMinResult():
         return render_table
 
     def __str__(self):
-        return self.get_str()
+        try:
+            return self.get_str()
+        except Exception:
+            return f"FMinResult: {id(self)}"
 
     __repr__ = __str__
 

@@ -5,6 +5,7 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 
 import itertools
+from collections import defaultdict
 from copy import deepcopy
 from functools import partial
 from typing import Tuple, List
@@ -21,6 +22,10 @@ from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
 
 get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0.05, num_neighbors=8)
+
+def construct_None():
+    return None
+
 
 
 class SamplingSortOptimizer(BaseOptimizer):
@@ -57,6 +62,8 @@ class SamplingSortOptimizer(BaseOptimizer):
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
         super(SamplingSortOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
+        self.budget2epm = defaultdict(construct_None)
+        self.budget2epm.update({budget: None for budget in budgets})
         self.budget2epm = {budget: None for budget in budgets}
         self.config_transformer.fit(config_space)
         self.budget2confevt = {}

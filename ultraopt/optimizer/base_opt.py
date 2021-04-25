@@ -21,6 +21,9 @@ from ultraopt.utils.logging_ import get_logger
 def runId_info():
     return {"start_time": time(), "end_time": -1}
 
+def get_obvs():
+    return {"losses": [], "configs": [], "vectors": [], "locks": []}
+
 
 class BaseOptimizer():
     def __init__(self):
@@ -38,16 +41,19 @@ class BaseOptimizer():
         self.config_space = config_space
         self.config_space.seed(random_state)
         self.budgets = budgets
+        budget2obvs_ = defaultdict(get_obvs)
         if budget2obvs is None:
-            budget2obvs = self.get_initial_budget2obvs(self.budgets)
-        self.budget2obvs = budget2obvs
+            budget2obvs_.update(self.get_initial_budget2obvs(self.budgets))
+        else:
+            budget2obvs_.update(budget2obvs)
+        self.budget2obvs = budget2obvs_
         # other variable
         self.rng = check_random_state(self.random_state)
         self.initial_points_index = 0
 
     @classmethod
     def get_initial_budget2obvs(cls, budgets):
-        return {budget: {"losses": [], "configs": [], "vectors": [], "locks": []} for budget in budgets}
+        return {budget: get_obvs() for budget in budgets}
 
     def tell(self, config: Union[dict, Configuration], loss: float, budget: float = 1, update_model=True):
         config = get_dict_from_config(config)
@@ -79,11 +85,11 @@ class BaseOptimizer():
         config_dict = job.kwargs["config"]
         configId = get_hash_of_config(config_dict)
         runId = (configId, budget)
-        if runId in self.runId2info:
-            self.runId2info[runId]["end_time"] = time()
-            self.runId2info[runId]["loss"] = loss
-        else:
-            self.logger.error(f"runId {runId} not in runId2info, it's impossible!!!")
+        self.runId2info[runId]["end_time"] = time()
+        self.runId2info[runId]["loss"] = loss
+        # if runId in self.runId2info:
+        # else:
+        #     self.logger.error(f"runId {runId} not in runId2info, it's impossible!!!")
         # config_info = job.kwargs["config_info"]
         config = Configuration(self.config_space, config_dict)
         # add lock (It may be added twice, but it does not affect)

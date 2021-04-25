@@ -2,6 +2,7 @@ import copy
 import os
 import threading
 import time
+import traceback
 from collections import defaultdict
 from typing import Dict
 
@@ -38,7 +39,9 @@ class Master(object):
                  result_logger=None,
                  previous_result=None,
                  incumbents: Dict[float, dict] = None,
-                 incumbent_performances: Dict[float, float] = None
+                 incumbent_performances: Dict[float, float] = None,
+                 early_stopping_rounds=-1,
+                 workers_refer=None
                  ):
         """The Master class is responsible for the book keeping and to decide what to run next. Optimizers are
                 instantiations of Master, that handle the important steps of deciding what configurations to run on what
@@ -87,6 +90,8 @@ class Master(object):
         previous_result:
             previous run to warmstart the run
         """
+        self.workers_refer = workers_refer
+        self.early_stopping_rounds = early_stopping_rounds
         self.checkpoint_freq = checkpoint_freq
         self.checkpoint_file = checkpoint_file
         self.progress_callback = progress_callback
@@ -109,7 +114,19 @@ class Master(object):
         self.job_queue_sizes = job_queue_sizes
         self.user_job_queue_sizes = job_queue_sizes
         self.dynamic_queue_size = dynamic_queue_size
-
+        # 构造early_stopping windows
+        if self.early_stopping_rounds > 0:
+            self.budget2esw = {}
+            self.budget2idx = {}
+            self.should_es = False
+            pre_budget = None
+            for budget in sorted(optimizer.budgets):
+                if pre_budget is not None:
+                    early_stopping_rounds = round(early_stopping_rounds * (pre_budget / budget))
+                self.budget2esw[budget] = np.zeros([early_stopping_rounds]) + np.inf
+                self.budget2idx[budget] = 0
+                pre_budget = budget
+        # end of 构造early_stopping windows
         if job_queue_sizes[0] >= job_queue_sizes[1]:
             raise ValueError("The queue size range needs to be (min, max) with min<max!")
 
@@ -141,9 +158,21 @@ class Master(object):
         self.dispatcher_thread = threading.Thread(target=self.dispatcher.run)
         self.dispatcher_thread.start()
 
-    def shutdown(self, shutdown_workers=False):
-        self.logger.info('HBMASTER: shutdown initiated, shutdown_workers = %s' % (str(shutdown_workers)))
+    def shutdown(self, shutdown_workers=True):
+        self.logger.warning('HBMASTER: shutdown initiated, shutdown_workers = %s' % (str(shutdown_workers)))
         self.dispatcher.shutdown(shutdown_workers)
+        if shutdown_workers and self.workers_refer is not None and isinstance(self.workers_refer, list):
+            for i, worker in enumerate(self.workers_refer):
+                try:
+                    try:  # fixme: 太莽了
+                        worker.thread._tstate_lock.release()
+                    except:
+                        pass
+                    worker.thread._stop()
+                    self.logger.info(f"worker thread-{i} is_alive: {worker.thread.is_alive()}")
+                    # worker.thread.raise_exception()
+                except Exception as e:
+                    self.logger.warning(traceback.format_exc())
         self.dispatcher_thread.join()
 
     def wait_for_workers(self, min_n_workers=1):
@@ -221,6 +250,10 @@ class Master(object):
                     self.logger.warning(f"cost_time = {cost_time:.2f}, "
                                         f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
                     break
+                if self.should_es:
+                    self.logger.warning("The early stop condition is triggered, exit.")
+                    break
+                self._queue_wait()
                 next_run = None
                 # find a new run to schedule
                 for i in self.active_iterations():  # 对self.iterations的过滤
@@ -237,11 +270,6 @@ class Master(object):
                         self.iterations.append(self.get_next_iteration(len(self.iterations), iteration_kwargs))
                         n_iterations -= 1
                         continue
-                cost_time = time.time() - start_time
-                if cost_time > self.time_left_for_this_task:
-                    self.logger.warning(f"cost_time = {cost_time:.2f}, "
-                                        f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
-                    break
                 # at this point there is no immediate run that can be scheduled,
                 # so wait for some job to finish if there are active multi_fidelity
                 if self.active_iterations():
@@ -284,6 +312,19 @@ class Master(object):
                 budget = job.kwargs["budget"]
                 challenger = job.kwargs["config"]
                 challenger_performance = job.result["loss"]
+                # 早停窗口更新
+                if self.early_stopping_rounds > 0:
+                    idx = self.budget2idx[budget]
+                    size = self.budget2esw[budget].size
+                    # todo: 设置一个参数，可以不早停 比窗口中最差的还差
+                    if (challenger_performance >= self.budget2esw[budget].max()):
+                        self.should_es = True
+                        self.logger.info(f"The early stop condition is triggered in budget = {budget}.")
+                        self.logger.info(f"budget2esw[budget] = {list(self.budget2esw[budget])}")
+                        self.logger.info(f"idx = {idx}")
+                    self.budget2esw[budget][idx % size] = challenger_performance
+                    self.budget2idx[budget] += 1
+                # end of 早停窗口更新
                 incumbent_performance = self.incumbent_performances[budget]
                 incumbent = self.incumbents[budget]
                 if challenger_performance < incumbent_performance:

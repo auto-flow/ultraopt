@@ -8,6 +8,6 @@ from ultraopt import fmin
 import warnings
 warnings.filterwarnings("ignore")
 
-result = fmin(evaluator, HDL, n_jobs=3, limit_resource=True, verbose=1,
-              time_limit=1,memory_limit=0)
+result = fmin(evaluator, HDL, n_jobs=6, limit_resource=True, verbose=1,
+              time_limit=5,memory_limit=0)
 print(result)

@@ -67,6 +67,8 @@ class Evaluator():
         self.cv = cv
 
     def __call__(self, config: dict, budget: float = 1) -> float:
+        from time import sleep;sleep(1)
+        print(config)
         layered_dict = layering_config(config)
         AS_HP = layered_dict['classifier'].copy()
         AS, HP = AS_HP.popitem()
