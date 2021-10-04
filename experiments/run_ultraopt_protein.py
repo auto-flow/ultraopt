@@ -71,7 +71,7 @@ def main():
         # print('----------------------------')
         ret = fmin(
             evaluation, config_space, optimizer=ETPEOptimizer(
-                gamma1=0.95
+                lambda1=0.95
             ),
             random_state=random_state, n_iterations=max_iter)
         print(ret)

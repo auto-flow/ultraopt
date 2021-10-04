@@ -8,7 +8,6 @@ import json
 import os
 import time
 
-from joblib import dump
 from tabular_benchmarks import FCNetProteinStructureBenchmark, FCNetSliceLocalizationBenchmark, \
     FCNetNavalPropulsionBenchmark, FCNetParkinsonsTelemonitoringBenchmark
 
@@ -59,9 +58,17 @@ elif args.optimizer == "HyperBand":
 else:
     optimizer = args.optimizer
     iter_generator = None
+from ultraopt.optimizer import ETPEOptimizer
 
-fmin_result = fmin(objective_function, cs, optimizer, n_iterations=args.n_iters, random_state=args.run_id,
-                   multi_fidelity_iter_generator=iter_generator)
+if optimizer == "ETPE":
+    # gamma_ = lambda x: min(int(np.ceil(0.20 * x)), 15)
+    gamma_ = None
+    optimizer = ETPEOptimizer(gamma=gamma_)
+
+fmin_result = fmin(
+    objective_function, cs, optimizer,
+    n_iterations=args.n_iters, random_state=args.run_id,
+    multi_fidelity_iter_generator=iter_generator)
 print(fmin_result)
 # dump(fmin_result, os.path.join(output_path, 'run_%d.pkl' % args.run_id))
 res = b.get_results()

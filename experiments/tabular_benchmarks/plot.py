@@ -17,6 +17,8 @@ plt.rcParams['font.family'] = 'YaHei Consolas Hybrid'
 plt.rcParams['figure.figsize'] = (12, 10)
 
 benchmarks = ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]
+print("| benchmark | method name | final loss |")
+print("|-----------|-------------|------------|")
 for idx, benchmark in enumerate(benchmarks):
     plt.subplot(2, 2, idx + 1)
     plt.title(benchmark)
@@ -35,6 +37,7 @@ for idx, benchmark in enumerate(benchmarks):
         df_m = df_m.iloc[:200, :]
         plt.grid()
         mean = df_m.mean(axis=1)
+        print("|", benchmark, "|", name, "|", mean.to_list()[-1], "|")
         q1 = df_m.quantile(q=.25, axis=1)
         q2 = df_m.quantile(q=.9, axis=1)
         iters = range(df_m.shape[0])
