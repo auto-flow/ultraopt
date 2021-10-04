@@ -11,7 +11,6 @@ from typing import Tuple, Union, List, Dict
 import numpy as np
 from ConfigSpace import Configuration
 from sklearn.utils.validation import check_random_state
-
 from ultraopt.structure import Job
 from ultraopt.utils.config_space import add_configs_origin, get_dict_from_config
 from ultraopt.utils.hash import get_hash_of_config
@@ -20,6 +19,7 @@ from ultraopt.utils.logging_ import get_logger
 
 def runId_info():
     return {"start_time": time(), "end_time": -1}
+
 
 def get_obvs():
     return {"losses": [], "configs": [], "vectors": [], "locks": []}
@@ -31,6 +31,7 @@ class BaseOptimizer():
         self.is_init = False
         self.configId2config: Dict[str, dict] = {}
         self.runId2info: Dict[Tuple[str, float], dict] = defaultdict(runId_info)
+        self.trajectory = np.array([np.inf])
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
         if self.is_init:
@@ -67,6 +68,7 @@ class BaseOptimizer():
             "loss": loss
         }
         self.new_result(job, update_model=update_model)
+        self.trajectory = np.append(self.trajectory, min(loss, self.trajectory[-1]))
 
     def new_result(self, job: Job, update_model=True):
 

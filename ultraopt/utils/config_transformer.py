@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-14
 # @Contact    : qichun.tang@bupt.edu.cn
+import warnings
 from copy import copy
 from typing import Optional, Union
 
@@ -12,12 +13,12 @@ from ConfigSpace import ConfigurationSpace, Constant, CategoricalHyperparameter,
 from ConfigSpace.util import deactivate_inactive_hyperparameters
 from sklearn.preprocessing import LabelEncoder
 from tabular_nn.base_tnn import get_embed_dims
-
 from ultraopt.utils.config_space import deactivate
 
 
 class ConfigTransformer():
-    def __init__(self, impute: Optional[float] = -1, encoder=None):
+    def __init__(self, impute: Optional[float] = -1, encoder=None, multivariate=True):
+        self.multivariate = multivariate
         self.impute = impute
         self.encoder = encoder
 
@@ -33,6 +34,7 @@ class ConfigTransformer():
         parents = []
         parent_values = []
         is_child = []
+        n_variables_embedded_list = []
         # todo: 划分parents与groups
         for hp in config_space.get_hyperparameters():
             if isinstance(hp, Constant) or \
@@ -41,16 +43,20 @@ class ConfigTransformer():
                 # ignore
                 mask.append(False)
                 n_constants += 1
+                n_variables_embedded_list.append(0)
             else:
                 mask.append(True)
                 n_variables += 1
                 if isinstance(hp, CategoricalHyperparameter):
                     n_choices = len(hp.choices)
                     n_choices_list.append(n_choices)
-                    n_variables_embedded += int(get_embed_dims(n_choices)) # avoid bug
+                    n_embeds = int(get_embed_dims(n_choices))  # avoid bug
+                    n_variables_embedded += n_embeds
+                    n_variables_embedded_list.append(n_embeds)
                 else:
                     n_choices_list.append(0)
                     n_variables_embedded += 1
+                    n_variables_embedded_list.append(1)
                 if isinstance(hp, OrdinalHyperparameter):
                     is_ordinal_list.append(True)
                     sequence_mapper[len(is_ordinal_list) - 1] = hp.sequence
@@ -71,7 +77,11 @@ class ConfigTransformer():
         groups_str = [f"{parent}-{parent_value}" for parent, parent_value in zip(parents, parent_values)]
         group_encoder = LabelEncoder()
         groups = group_encoder.fit_transform(groups_str)
+        if self.multivariate == False:
+            warnings.warn('ETPE consider every variable is independent, performance may be lost.')
+            groups = np.arange(len(groups), dtype=int)
         self.is_child = is_child
+        self.n_variables_embedded_list = n_variables_embedded_list
         self.sequence_mapper = sequence_mapper
         self.is_ordinal_list = is_ordinal_list
         self.config_space = config_space
@@ -107,6 +117,7 @@ class ConfigTransformer():
             self.encoder.fit(df, losses)
 
     def transform(self, vectors: np.ndarray) -> np.ndarray:
+        # fixme: 做NN编码在这
         vectors = np.array(vectors)
         vectors = vectors[:, self.mask]
         if self.encoder is not None:
@@ -122,6 +133,7 @@ class ConfigTransformer():
         return vectors
 
     def inverse_transform(self, array: np.ndarray, return_vector=False) -> Union[np.ndarray, None, Configuration]:
+        # fixme: 做NN编码在这
         if self.encoder is not None:
             array = self.encoder.inverse_transform(array)
         array = np.array(array)
