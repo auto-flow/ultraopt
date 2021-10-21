@@ -25,17 +25,20 @@ class ETPEOptimizer(BaseOptimizer):
             overlap_bagging_ratio=0,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            # lambda1=0.96, lambda2=3, max_bw_factor=4, min_bw_factor=1, max_try=3,
-            # min_points_in_model=20, min_n_candidates=8,
-            # n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
-            # window_size=10, n_candidates_decay_ratio=0.95,
-            lambda1=0.96, lambda2=3,
-            max_bw_factor=4, min_bw_factor=1,
+            lambda1=1, lambda2=1,
+            max_bw_factor=1, min_bw_factor=1,
             anneal_steps=0,
             max_try=3,
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
             window_size=10, n_candidates_decay_ratio=1,
+            # lambda1=0.96, lambda2=3,
+            # max_bw_factor=4, min_bw_factor=1,
+            # anneal_steps=0,
+            # max_try=3,
+            # min_points_in_model=20, min_n_candidates=8,
+            # n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
+            # window_size=10, n_candidates_decay_ratio=1,
 
             # Embedding Encoder
             embedding_encoder="default"
