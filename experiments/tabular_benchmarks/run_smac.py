@@ -57,7 +57,7 @@ scenario = Scenario({
     "run_obj": "quality",
     "runcount-limit": args.n_iters,
     "cs": cs,
-    "deterministic": "true",
+    "deterministic": "false",
     "initial_incumbent": "RANDOM",
     "output_dir": ""
 })

@@ -13,8 +13,10 @@ import click
 def main(data_dir, n_iters):
     cmds = []
     pairs = [
-        ["ultraopt", "ETPE", "univar"],
-        ["ultraopt", "ETPE", "univar_cat"],
+        ["ultraopt", "ETPE", "default"],
+        # ["ultraopt", "ETPE", "univar"],
+        # ["ultraopt", "ETPE", "univar_cat"],
+        
         # ["ultraopt", "Random"],
         # ["tpe", ""],
     ]
