@@ -11,39 +11,14 @@ import pandas as pd
 from ConfigSpace import Configuration
 from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
-from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import KFold
 from sklearn.neighbors import KernelDensity
 from sklearn.utils import check_random_state
+from ultraopt.learning.kernel_density import estimate_bw, UnivariateCategoricalKernelDensity
+from ultraopt.learning.nn_projector import NN_projector
 from ultraopt.utils.config_space import add_configs_origin, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.hash import get_hash_of_array
 from ultraopt.utils.logging_ import get_logger
-
-
-def estimate_bw(data, bw_method="scott", cv_times=100):
-    # https://scikit-learn.org/stable/modules/generated/sklearn.cluster.estimate_bandwidth.html
-    ndata = data.shape[0]
-    if bw_method == 'scott':
-        bandwidth = ndata ** (-1 / 5) * np.std(data, ddof=1)
-        bandwidth = np.clip(bandwidth, 0.01, None)
-    elif bw_method == 'silverman':
-        bandwidth = (ndata * 3 / 4) ** (-1 / 5) * np.std(data, ddof=1)
-        bandwidth = np.clip(bandwidth, 0.01, None)
-    elif bw_method == 'cv':
-        if ndata <= 3:
-            return estimate_bw(data)
-        bandwidths = np.std(data, ddof=1) ** np.linspace(-1, 1, cv_times)
-        bandwidths = np.clip(bandwidths, 0.01, None)
-        grid = GridSearchCV(KernelDensity(), {'bandwidth': bandwidths},
-                            cv=KFold(n_splits=3, shuffle=True, random_state=0))
-        grid.fit(data)
-        bandwidth = grid.best_params_['bandwidth']
-    elif np.isscalar(bw_method):
-        bandwidth = bw_method
-    else:
-        raise ValueError("Unrecognized input for bw_method.")
-    return bandwidth
 
 
 def top15_gamma(x: int) -> int:
@@ -63,9 +38,14 @@ class TreeParzenEstimator(BaseEstimator):
             self,
             gamma=None, min_points_in_kde=2,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
-            overlap_bagging_ratio=0.5
+            multivariate=True,
+            embed_cat_var=True,
+            overlap_bagging_ratio=0.5,
+
             # fill_deactivated_value=False
     ):
+        self.embed_cat_var = embed_cat_var
+        self.multivariate = multivariate
         self.overlap_bagging_ratio = overlap_bagging_ratio
         self.min_points_in_kde = min_points_in_kde
         # self.bw_estimation = bw_estimation
@@ -111,8 +91,7 @@ class TreeParzenEstimator(BaseEstimator):
         overlap_key2idxs = {k: np.array(v) for k, v in key2idxs.items()}
         return overlap_key2idxs
 
-    def estimate_group_kde(self, active_X, active_y) -> Tuple[object, object]:
-
+    def estimate_group_kde(self, active_X, active_y, nn_projector=None, uni_cat=0) -> Tuple[object, object]:
         if active_X.shape[0] < 4:  # at least have 4 samples
             return None, None
         N, M = active_X.shape
@@ -122,9 +101,15 @@ class TreeParzenEstimator(BaseEstimator):
                 N - n_good < self.min_points_in_kde:
             # Too few observation samples
             return None, None
+        if nn_projector is not None and \
+                active_X.shape[1] > 3 and active_X.shape[0] > nn_projector.n_bins_in_y:
+            # 通过线性变换映射到一个新空间中
+            X_proj = nn_projector.fit_transform(active_X, active_y)
+        else:
+            X_proj = active_X
         idx = np.argsort(active_y)
-        X_good = active_X[idx[:n_good]]
-        X_bad = active_X[idx[n_good:]]
+        X_good = X_proj[idx[:n_good]]
+        X_bad = X_proj[idx[n_good:]]
         y_good = -active_y[idx[:n_good]]
         sample_weight = None
         if self.kde_sample_weight_scaler is not None and y_good.std() != 0:
@@ -141,9 +126,13 @@ class TreeParzenEstimator(BaseEstimator):
                 raise ValueError(f"Invalid kde_sample_weight_scaler '{self.kde_sample_weight_scaler}'")
         bw_good = estimate_bw(X_good, self.bw_method, self.cv_times)
         bw_bad = estimate_bw(X_bad, self.bw_method, self.cv_times)
+        if uni_cat:
+            klass = UnivariateCategoricalKernelDensity
+        else:
+            klass = KernelDensity
         return (
-            KernelDensity(bandwidth=bw_good).fit(X_good, sample_weight=sample_weight),
-            KernelDensity(bandwidth=bw_bad).fit(X_bad)
+            klass(bandwidth=bw_good).fit(X_good, sample_weight=sample_weight),
+            klass(bandwidth=bw_bad).fit(X_bad)
         )
 
     @property
@@ -151,16 +140,19 @@ class TreeParzenEstimator(BaseEstimator):
         return self.config_transformer.multivariate and self.n_groups != 1 and self.overlap_bagging_ratio > 0
 
     def fit(self, X: np.ndarray, y: np.ndarray):
-        if self.config_transformer.multivariate:
+        if self.multivariate:
             # 当时设计的时候，构造config_transformer时算了分组， 现在fit也算了分组
             self.groups, self.n_groups = self.calc_groups(X)
         else:
             self.groups, self.n_groups = self.config_transformer.groups, self.config_transformer.n_groups
+        n_choices_list = self.config_transformer.n_choices_list
         # =============================================
         # =              group kde                    =
         # =============================================
         self.good_kde_groups = [None] * self.n_groups
         self.bad_kde_groups = self.good_kde_groups[:]
+        # todo: 不每次都拟合一个NN
+        self.nn_projectors = [NN_projector() for _ in range(self.n_groups)]
         for group in range(self.n_groups):
             group_mask = self.groups == group
             grouped_X = X[:, group_mask]
@@ -168,7 +160,11 @@ class TreeParzenEstimator(BaseEstimator):
             active_X = grouped_X[~inactive_mask, :]
             active_y = y[~inactive_mask]
             self.good_kde_groups[group], self.bad_kde_groups[group] = \
-                self.estimate_group_kde(active_X, active_y)
+                self.estimate_group_kde(
+                    active_X, active_y,
+                    uni_cat=n_choices_list[group] if not self.embed_cat_var else 0
+                    # self.nn_projectors[group]
+                )
         # =============================================
         # =              overlap kde                  =
         # =============================================
@@ -179,7 +175,9 @@ class TreeParzenEstimator(BaseEstimator):
         for mask_tuple, idx in overlap_key2idxs.items():
             active_X = X[idx, :][:, np.array(mask_tuple).astype(bool)]
             active_y = y[idx]
-            kde_pairs = self.estimate_group_kde(active_X, active_y)
+            kde_pairs = self.estimate_group_kde(
+                active_X, active_y,
+            )
             self.maskTuple_to_overlapKdePairs[mask_tuple] = kde_pairs
         return self
 
@@ -193,7 +191,8 @@ class TreeParzenEstimator(BaseEstimator):
         good_log_pdf = np.zeros([X.shape[0], n_groups], dtype="float64")
         bad_log_pdf = deepcopy(good_log_pdf)
         groups = self.groups
-        for group, (good_kde, bad_kde) in enumerate(zip(self.good_kde_groups, self.bad_kde_groups)):
+        for group, (good_kde, bad_kde, nn_projector) in \
+                enumerate(zip(self.good_kde_groups, self.bad_kde_groups, self.nn_projectors)):
             if (good_kde, bad_kde) == (None, None):
                 continue
             group_mask = groups == group
@@ -206,8 +205,9 @@ class TreeParzenEstimator(BaseEstimator):
             if np.any(pd.isna(active_X)):
                 self.logger.warning("ETPE contains nan, mean impute.")
                 active_X = SimpleImputer(strategy="mean").fit_transform(active_X)
-            good_log_pdf[~inactive_mask, group] = self.good_kde_groups[group].score_samples(active_X)
-            bad_log_pdf[~inactive_mask, group] = self.bad_kde_groups[group].score_samples(active_X)
+            X_proj = nn_projector.transform(active_X)
+            good_log_pdf[~inactive_mask, group] = self.good_kde_groups[group].score_samples(X_proj)
+            bad_log_pdf[~inactive_mask, group] = self.bad_kde_groups[group].score_samples(X_proj)
             # if N_deactivated > 0 and self.fill_deactivated_value:
             #     good_log_pdf[~mask, i] = np.random.choice(good_pdf_activated)
             #     bad_log_pdf[~mask, i] = np.random.choice(bad_pdf_activated)
@@ -271,6 +271,7 @@ class TreeParzenEstimator(BaseEstimator):
             return sample_configurations(self.config_transformer.config_space, n_candidates)
         sampled_matrix = np.zeros([n_candidates, len(self.groups)])
         for group, good_kde in enumerate(self.good_kde_groups):
+            nn_projector = self.nn_projectors[group]
             group_mask = groups == group
             if good_kde:
                 # KDE采样
@@ -279,6 +280,8 @@ class TreeParzenEstimator(BaseEstimator):
                 bw *= bandwidth_factor
                 good_kde.set_params(bandwidth=bw)
                 result = good_kde.sample(n_candidates, random_state=random_state)
+                # 从采样后的空间恢复到原来的空间中
+                result = nn_projector.inverse_transform(result)
                 good_kde.set_params(bandwidth=prev_bw)
             else:
                 # 随机采样(0-1)

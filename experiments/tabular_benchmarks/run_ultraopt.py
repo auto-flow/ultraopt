@@ -10,13 +10,13 @@ import time
 
 from tabular_benchmarks import FCNetProteinStructureBenchmark, FCNetSliceLocalizationBenchmark, \
     FCNetNavalPropulsionBenchmark, FCNetParkinsonsTelemonitoringBenchmark
-
 from ultraopt import fmin
 from ultraopt.multi_fidelity import HyperBandIterGenerator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--run_id', default=0, type=int, nargs='?', help='unique number to identify this run')
 parser.add_argument('--optimizer', default="ETPE", type=str, nargs='?', help='Which optimizer to use')
+parser.add_argument('--mode', default="none", type=str, nargs='?', help='mode: {none, univar, univar_cat}')
 parser.add_argument('--benchmark', default="protein_structure", type=str, nargs='?', help='specifies the benchmark')
 parser.add_argument('--n_iters', default=100, type=int, nargs='?', help='number of iterations for optimization method')
 parser.add_argument('--output_path', default="./", type=str, nargs='?',
@@ -24,7 +24,7 @@ parser.add_argument('--output_path', default="./", type=str, nargs='?',
 parser.add_argument('--data_dir', default="./", type=str, nargs='?', help='specifies the path to the tabular data')
 
 args = parser.parse_args()
-
+mode = args.mode
 if args.benchmark == "protein_structure":
     b = FCNetProteinStructureBenchmark(data_dir=args.data_dir)
 elif args.benchmark == "slice_localization":
@@ -37,7 +37,6 @@ else:
     raise NotImplementedError
 
 output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}")
-os.makedirs(os.path.join(output_path), exist_ok=True)
 
 
 def objective_function(config: dict, budget: int = 100):
@@ -60,10 +59,21 @@ else:
     iter_generator = None
 from ultraopt.optimizer import ETPEOptimizer
 
+if mode != "default":
+    output_path += f"_{mode}"
+
+os.makedirs(os.path.join(output_path), exist_ok=True)
+
+
 if optimizer == "ETPE":
-    # gamma_ = lambda x: min(int(np.ceil(0.20 * x)), 15)
-    gamma_ = None
-    optimizer = ETPEOptimizer(gamma=gamma_)
+    if mode == 'univar':
+        optimizer = ETPEOptimizer(multivariate=False)
+    elif mode == 'univar_cat':
+        optimizer = ETPEOptimizer(multivariate=False, embed_cat_var=False)
+    elif mode == "default":
+        optimizer = ETPEOptimizer()
+    else:
+        raise NotImplementedError
 
 fmin_result = fmin(
     objective_function, cs, optimizer,

@@ -11,12 +11,22 @@ import pylab as plt
 info = {
     "tpe": ("HyperOpt-TPE", "r",),
     "ultraopt_ETPE": ("UltraOpt-ETPE", "g",),
+    "ultraopt_ETPE_univar": ("UltraOpt-ETPE_univar", "k",),
+    "ultraopt_ETPE_univar_cat": ("UltraOpt-ETPE_univar_cat", "orange",),
+    "smac": ("SMAC", "pink",),
     "ultraopt_Random": ("Random", "b",),
 }
 plt.rcParams['font.family'] = 'YaHei Consolas Hybrid'
 plt.rcParams['figure.figsize'] = (12, 10)
 
-benchmarks = ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]
+benchmarks = [
+    "protein_structure",
+    "slice_localization",
+    "naval_propulsion",
+    "parkinsons_telemonitoring"
+]
+max_iter=250
+
 print("| benchmark | method name | final loss |")
 print("|-----------|-------------|------------|")
 for idx, benchmark in enumerate(benchmarks):
@@ -26,7 +36,7 @@ for idx, benchmark in enumerate(benchmarks):
         regret_tests = []
         for file in Path(f"{benchmark}-{fname}").iterdir():
             data = json.loads(file.read_text())
-            # regret_validation = data["regret_validation"]
+            # regret_test = data["regret_validation"]
             regret_test = data["regret_test"]
             for i in range(1, len(regret_test)):
                 regret_test[i] = min(regret_test[i - 1], regret_test[i])
@@ -34,7 +44,7 @@ for idx, benchmark in enumerate(benchmarks):
 
         df_m = pd.DataFrame(regret_tests).T
 
-        df_m = df_m.iloc[:200, :]
+        df_m = df_m.iloc[:max_iter, :]
         plt.grid()
         mean = df_m.mean(axis=1)
         print("|", benchmark, "|", name, "|", mean.to_list()[-1], "|")

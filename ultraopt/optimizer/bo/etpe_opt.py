@@ -18,20 +18,30 @@ from ultraopt.utils.config_transformer import ConfigTransformer
 class ETPEOptimizer(BaseOptimizer):
     def __init__(
             self,
-            # model related
+            # TPE model related
             gamma=None, min_points_in_kde=2,
             multivariate=True,
+            embed_cat_var=True,
             overlap_bagging_ratio=0,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            lambda1=0.98, lambda2=3, max_bw_factor=4, min_bw_factor=1, max_try=3,
+            # lambda1=0.96, lambda2=3, max_bw_factor=4, min_bw_factor=1, max_try=3,
+            # min_points_in_model=20, min_n_candidates=8,
+            # n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
+            # window_size=10, n_candidates_decay_ratio=0.95,
+            lambda1=0.96, lambda2=3,
+            max_bw_factor=4, min_bw_factor=1,
+            anneal_steps=0,
+            max_try=3,
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
-            window_size=10, n_candidates_decay_ratio=0.9,
+            window_size=10, n_candidates_decay_ratio=1,
+
             # Embedding Encoder
             embedding_encoder="default"
     ):
         super(ETPEOptimizer, self).__init__()
+        self.embed_cat_var = embed_cat_var
         self.n_candidates_decay_ratio = n_candidates_decay_ratio
         self.window_size = window_size
         assert isinstance(overlap_bagging_ratio, (int, float)) and 0 <= overlap_bagging_ratio <= 1
@@ -41,6 +51,12 @@ class ETPEOptimizer(BaseOptimizer):
         self.max_bw_factor = max_bw_factor
         self.embedding_encoder = embedding_encoder
         self.lambda1 = lambda1
+        # fixme: 推公式确认一下min_bw_factor
+        # assert anneal_steps >= 0
+        # if anneal_steps > 0:
+        #     self.lambda1 = np.exp((1 / anneal_steps) * np.log(1 / max_bw_factor))
+        # else:
+        #     self.lambda1 = 1
         self.min_n_candidates = min_n_candidates
         self.max_try = max_try
         self.lambda2 = lambda2
@@ -55,7 +71,9 @@ class ETPEOptimizer(BaseOptimizer):
             bw_method=bw_method,
             cv_times=cv_times,
             kde_sample_weight_scaler=kde_sample_weight_scaler,
-            overlap_bagging_ratio=overlap_bagging_ratio
+            overlap_bagging_ratio=overlap_bagging_ratio,
+            multivariate=multivariate,
+            embed_cat_var=embed_cat_var,
         )
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
@@ -123,7 +141,7 @@ class ETPEOptimizer(BaseOptimizer):
                 n_candidates=round(self.n_candidates),
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
-                bandwidth_factor=self._bw_factor + self.min_bw_factor
+                bandwidth_factor=self.min_bw_factor + self._bw_factor
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -132,8 +150,10 @@ class ETPEOptimizer(BaseOptimizer):
                 else:
                     add_configs_origin(sample, "ETPE sampling")
                     return sample, info_dict
+            # fixme: 更新放大策略
             old_db = self._bw_factor
             self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.lambda2 - self.min_bw_factor
+            # self._bw_factor = self.max_bw_factor
             self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
                                 f"Update bandwidth_factor from {old_db:.4f} to {self._bw_factor:.4f} by "
                                 f"multiply lambda2 ({self.lambda2}).")
@@ -159,6 +179,7 @@ class ETPEOptimizer(BaseOptimizer):
                 return self.pick_random_initial_config(budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
+        # self._bw_factor = max(self.lambda1 * self._bw_factor, self.min_bw_factor)
         self._bw_factor *= self.lambda1
         return self.process_config_info_pair(config, info_dict, budget)
 
