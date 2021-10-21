@@ -26,8 +26,8 @@ class ETPEOptimizer(BaseOptimizer):
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
             lambda1=1, lambda2=1,
-            max_bw_factor=1, min_bw_factor=1,
-            anneal_steps=0,
+            max_bw_factor=4, min_bw_factor=1.2,
+            anneal_steps=15,
             max_try=3,
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
@@ -53,18 +53,18 @@ class ETPEOptimizer(BaseOptimizer):
         self.min_bw_factor = min_bw_factor
         self.max_bw_factor = max_bw_factor
         self.embedding_encoder = embedding_encoder
-        self.lambda1 = lambda1
+        # self.lambda1 = lambda1
         # fixme: 推公式确认一下min_bw_factor
-        # assert anneal_steps >= 0
-        # if anneal_steps > 0:
-        #     self.lambda1 = np.exp((1 / anneal_steps) * np.log(1 / max_bw_factor))
-        # else:
-        #     self.lambda1 = 1
+        assert anneal_steps >= 0
+        if anneal_steps > 0:
+            self.lambda1 = np.exp((1 / anneal_steps) * np.log(min_bw_factor / max_bw_factor))
+        else:
+            self.lambda1 = 1
         self.min_n_candidates = min_n_candidates
         self.max_try = max_try
         self.lambda2 = lambda2
         self.min_points_in_model = min_points_in_model
-        self._bw_factor = max_bw_factor - min_bw_factor
+        self._bw_factor = max_bw_factor
         self.sort_by_EI = sort_by_EI
         self.n_candidates_factor = n_candidates_factor
         self.n_candidates = n_candidates
@@ -144,7 +144,8 @@ class ETPEOptimizer(BaseOptimizer):
                 n_candidates=round(self.n_candidates),
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
-                bandwidth_factor=self.min_bw_factor + self._bw_factor
+                # bandwidth_factor=self.min_bw_factor + self._bw_factor, # 相当于 2？
+                bandwidth_factor=self._bw_factor
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -155,8 +156,8 @@ class ETPEOptimizer(BaseOptimizer):
                     return sample, info_dict
             # fixme: 更新放大策略
             old_db = self._bw_factor
-            self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.lambda2 - self.min_bw_factor
-            # self._bw_factor = self.max_bw_factor
+            # self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.lambda2 - self.min_bw_factor
+            self._bw_factor = self.max_bw_factor
             self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
                                 f"Update bandwidth_factor from {old_db:.4f} to {self._bw_factor:.4f} by "
                                 f"multiply lambda2 ({self.lambda2}).")
@@ -182,8 +183,8 @@ class ETPEOptimizer(BaseOptimizer):
                 return self.pick_random_initial_config(budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
-        # self._bw_factor = max(self.lambda1 * self._bw_factor, self.min_bw_factor)
-        self._bw_factor *= self.lambda1
+        self._bw_factor = max(self.lambda1 * self._bw_factor, self.min_bw_factor)
+        # self._bw_factor *= self.lambda1
         return self.process_config_info_pair(config, info_dict, budget)
 
     def get_available_max_budget(self):
