@@ -12,8 +12,15 @@ info = {
     "tpe": ("HyperOpt-TPE", "r",),
     "ultraopt_ETPE": ("UltraOpt-ETPE", "g",),
     "ultraopt_ETPE_univar": ("UltraOpt-ETPE_univar", "k",),
-    "ultraopt_ETPE_univar_cat": ("UltraOpt-ETPE_univar_cat", "orange",),
-    "smac": ("SMAC", "pink",),
+    # "hpbandster": ("hpbandster", "k",),
+    # "ultraopt_ETPE_univar_cat": ("UltraOpt-ETPE_univar_cat", "orange",),
+    # "ultraopt_ETPE_2": ("UltraOpt-ETPE-2", "orange",),
+    # "ultraopt_ETPE_3": ("UltraOpt-ETPE-3", "k",),
+    "ultraopt_ETPE_7": ("UltraOpt-ETPE-7", "b",),
+    # "smac": ("SMAC-0.10", "orange",),
+    # "smac_0.12": ("SMAC-0.12", "purple",),
+    # "ultraopt_Forest": ("UltraOpt-SMAC", "k",),
+    "ultraopt_Forest_local_search": ("UltraOpt-SMAC-local_search", "brown",),
     "ultraopt_Random": ("Random", "b",),
 }
 plt.rcParams['font.family'] = 'YaHei Consolas Hybrid'
@@ -21,11 +28,11 @@ plt.rcParams['figure.figsize'] = (12, 10)
 
 benchmarks = [
     "protein_structure",
-    "slice_localization",
-    "naval_propulsion",
-    "parkinsons_telemonitoring"
+    # "slice_localization",
+    # "naval_propulsion",
+    # "parkinsons_telemonitoring"
 ]
-max_iter=250
+max_iter=500
 
 print("| benchmark | method name | final loss |")
 print("|-----------|-------------|------------|")

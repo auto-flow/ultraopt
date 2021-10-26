@@ -13,24 +13,13 @@ from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import KernelDensity
 from sklearn.utils import check_random_state
-from ultraopt.learning.kernel_density import estimate_bw, UnivariateCategoricalKernelDensity
-from ultraopt.learning.nn_projector import NN_projector
+from ultraopt.tpe import top15_gamma, estimate_bw, SampleDisign
+from ultraopt.tpe.kernel_density import UnivariateCategoricalKernelDensity
+from ultraopt.tpe.nn_projector import NN_projector
 from ultraopt.utils.config_space import add_configs_origin, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
 from ultraopt.utils.hash import get_hash_of_array
 from ultraopt.utils.logging_ import get_logger
-
-
-def top15_gamma(x: int) -> int:
-    return max(1, round(0.15 * x))
-
-
-def optuna_gamma(x: int) -> int:
-    return min(int(np.ceil(0.1 * x)), 25)
-
-
-def hyperopt_gamma(x: int) -> int:
-    return min(int(np.ceil(0.25 * np.sqrt(x))), 25)
 
 
 class TreeParzenEstimator(BaseEstimator):
@@ -262,38 +251,68 @@ class TreeParzenEstimator(BaseEstimator):
         assert 0 <= p <= 1
         return np.log(np.exp(overlap_multivariant_EI) * p + np.exp(group_multivariant_EI) * (1 - p))
 
-    def sample(self, n_candidates=20, sort_by_EI=False, random_state=None, bandwidth_factor=3) -> List[Configuration]:
-        # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity
-        groups = np.array(self.groups)
-        rng = check_random_state(random_state)
-        if self.good_kde_groups is None:
-            self.logger.warning("good_kde_groups is None, random sampling.")
+    def __sample(self, n_candidates, random_state=None, bandwidth_factor=3, is_random_sample=False):
+        if n_candidates <= 0: return []
+        if is_random_sample:
             return sample_configurations(self.config_transformer.config_space, n_candidates)
-        sampled_matrix = np.zeros([n_candidates, len(self.groups)])
-        for group, good_kde in enumerate(self.good_kde_groups):
-            nn_projector = self.nn_projectors[group]
-            group_mask = groups == group
-            if good_kde:
-                # KDE采样
-                bw = good_kde.bandwidth
-                prev_bw = bw
-                bw *= bandwidth_factor
-                good_kde.set_params(bandwidth=bw)
-                result = good_kde.sample(n_candidates, random_state=random_state)
-                # 从采样后的空间恢复到原来的空间中
-                result = nn_projector.inverse_transform(result)
-                good_kde.set_params(bandwidth=prev_bw)
+        else:
+            groups = np.array(self.groups)
+            rng = check_random_state(random_state)
+            if self.good_kde_groups is None:
+                self.logger.warning("good_kde_groups is None, random sampling.")
+                return sample_configurations(self.config_transformer.config_space, n_candidates)
+            sampled_matrix = np.zeros([n_candidates, len(self.groups)])
+            for group, good_kde in enumerate(self.good_kde_groups):
+                nn_projector = self.nn_projectors[group]
+                group_mask = groups == group
+                if good_kde:
+                    # KDE采样
+                    bw = good_kde.bandwidth
+                    prev_bw = bw
+                    bw *= bandwidth_factor
+                    good_kde.set_params(bandwidth=bw)
+                    result = good_kde.sample(n_candidates, random_state=random_state)
+                    # 从采样后的空间恢复到原来的空间中
+                    result = nn_projector.inverse_transform(result)
+                    good_kde.set_params(bandwidth=prev_bw)
+                else:
+                    # 随机采样(0-1)
+                    result = rng.rand(n_candidates, group_mask.sum())
+                sampled_matrix[:, group_mask] = result
+            candidates = []
+            candidates += self.config_transformer.inverse_transform(sampled_matrix)
+            n_fails = n_candidates - len(candidates)
+            add_configs_origin(candidates, "ETPE sampling")
+            if n_fails:
+                random_candidates = sample_configurations(self.config_transformer.config_space, n_fails)
+                add_configs_origin(random_candidates, "Random Search")
+                candidates.extend(random_candidates)
+            return candidates
+
+    def sample(self, n_candidates=20, sort_by_EI=False,
+               random_state=None, bandwidth_factor=3,
+               specific_sample_design=None) -> List[Configuration]:
+        # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity
+        if specific_sample_design is None:
+            specific_sample_design = [
+                SampleDisign(ratio=1, n_samples=0, is_random=False, bw_factor=bandwidth_factor)]
+        candidates = []
+        for design in specific_sample_design:
+            if n_candidates <= 0:
+                break
+            if design.n_samples != 0:
+                n_samples = design.n_samples
             else:
-                # 随机采样(0-1)
-                result = rng.rand(n_candidates, group_mask.sum())
-            sampled_matrix[:, group_mask] = result
-        candidates = self.config_transformer.inverse_transform(sampled_matrix)
-        n_fails = n_candidates - len(candidates)
-        add_configs_origin(candidates, "ETPE sampling")
-        if n_fails:
-            random_candidates = sample_configurations(self.config_transformer.config_space, n_fails)
-            add_configs_origin(random_candidates, "Random Search")
-            candidates.extend(random_candidates)
+                n_samples = round(design.ratio * n_candidates)
+                n_candidates -= n_samples
+            if design.is_random:
+                candidates += self.__sample(n_samples, random_state, is_random_sample=True)
+            else:
+                bw_factor = design.bw_factor
+                assert bw_factor is not None
+                candidates += self.__sample(n_samples, random_state, bandwidth_factor=bw_factor)
+        if n_candidates >= 0:
+            candidates += self.__sample(n_candidates, random_state, bandwidth_factor=bandwidth_factor)
         if sort_by_EI:
             # try:
             X = [candidate.get_array() for candidate in candidates]

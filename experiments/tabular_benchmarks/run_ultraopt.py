@@ -12,6 +12,7 @@ from tabular_benchmarks import FCNetProteinStructureBenchmark, FCNetSliceLocaliz
     FCNetNavalPropulsionBenchmark, FCNetParkinsonsTelemonitoringBenchmark
 from ultraopt import fmin
 from ultraopt.multi_fidelity import HyperBandIterGenerator
+from ultraopt.tpe import SampleDisign
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--run_id', default=0, type=int, nargs='?', help='unique number to identify this run')
@@ -36,7 +37,7 @@ elif args.benchmark == "parkinsons_telemonitoring":
 else:
     raise NotImplementedError
 
-output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}")
+output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}_7")
 
 
 def objective_function(config: dict, budget: int = 100):
@@ -57,23 +58,43 @@ elif args.optimizer == "HyperBand":
 else:
     optimizer = args.optimizer
     iter_generator = None
-from ultraopt.optimizer import ETPEOptimizer
+from ultraopt.optimizer import ETPEOptimizer, ForestOptimizer
 
 if mode != "default":
     output_path += f"_{mode}"
 
 os.makedirs(os.path.join(output_path), exist_ok=True)
 
-
 if optimizer == "ETPE":
     if mode == 'univar':
-        optimizer = ETPEOptimizer(multivariate=False)
+        optimizer = ETPEOptimizer(
+            multivariate=False,
+            # gamma=hyperopt_gamma,
+            random_sample_ratio=0.5,
+            # n_candidates=50
+        )
+        # optimizer = ETPEOptimizer()
+
     elif mode == 'univar_cat':
-        optimizer = ETPEOptimizer(multivariate=False, embed_cat_var=False)
+        optimizer = ETPEOptimizer(
+            multivariate=False,
+            embed_cat_var=False
+        )
     elif mode == "default":
-        optimizer = ETPEOptimizer()
+        optimizer = ETPEOptimizer(
+            n_candidates_factor=4,
+            specific_sample_design=[
+                SampleDisign(ratio=0.2, is_random=True),
+                SampleDisign(ratio=0.3, bw_factor=3),
+            ]
+        )
     else:
         raise NotImplementedError
+elif optimizer == "Forest":
+    if mode == "default":
+        optimizer = ForestOptimizer(min_points_in_model=20)
+    elif mode == "local_search":
+        optimizer = ForestOptimizer(min_points_in_model=20, use_local_search=True)
 
 fmin_result = fmin(
     objective_function, cs, optimizer,

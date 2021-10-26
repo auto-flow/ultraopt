@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from tabular_nn import EmbeddingEncoder
 from tabular_nn import EquidistanceEncoder
-from ultraopt.learning.tpe import TreeParzenEstimator
+from ultraopt.tpe.estimator import TreeParzenEstimator
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
@@ -32,6 +32,8 @@ class ETPEOptimizer(BaseOptimizer):
             min_points_in_model=20, min_n_candidates=8,
             n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
             window_size=10, n_candidates_decay_ratio=1,
+            random_sample_ratio=0,
+            specific_sample_design=None,
             # lambda1=0.96, lambda2=3,
             # max_bw_factor=4, min_bw_factor=1,
             # anneal_steps=0,
@@ -39,11 +41,12 @@ class ETPEOptimizer(BaseOptimizer):
             # min_points_in_model=20, min_n_candidates=8,
             # n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
             # window_size=10, n_candidates_decay_ratio=1,
-
             # Embedding Encoder
             embedding_encoder="default"
     ):
         super(ETPEOptimizer, self).__init__()
+        self.random_sample_ratio = random_sample_ratio
+        self.specific_sample_design = specific_sample_design
         self.embed_cat_var = embed_cat_var
         self.n_candidates_decay_ratio = n_candidates_decay_ratio
         self.window_size = window_size
@@ -145,7 +148,9 @@ class ETPEOptimizer(BaseOptimizer):
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
                 # bandwidth_factor=self.min_bw_factor + self._bw_factor, # 相当于 2？
-                bandwidth_factor=self._bw_factor
+                bandwidth_factor=self._bw_factor,
+                specific_sample_design=self.specific_sample_design
+                # random_sample_ratio=self.random_sample_ratio
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):

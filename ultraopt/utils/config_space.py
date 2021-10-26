@@ -133,6 +133,8 @@ def sample_configuration_except_default(cs: ConfigurationSpace, idx2val: dict, i
 
 
 def sample_configurations(config_space, n_configs=1):
+    if n_configs<=0:
+        return []
     if n_configs == 1:
         return [config_space.sample_configuration(1)]
     elif n_configs > 1:

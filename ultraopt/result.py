@@ -38,7 +38,7 @@ class Run(object):
 
 def extract_HBS_learning_curves(runs):
     """
-    function to get the hyperband learning curves
+    function to get the hyperband tpe curves
 
     This is an example function showing the interface to use the
     HB_result.get_learning_curves method.
@@ -52,10 +52,10 @@ def extract_HBS_learning_curves(runs):
     Returns
     -------
 
-    list of learning curves: list of lists of tuples
-        An individual learning curve is a list of (t, x_t) tuples.
+    list of tpe curves: list of lists of tuples
+        An individual tpe curve is a list of (t, x_t) tuples.
         This function must return a list of these. One could think
-        of cases where one could extract multiple learning curves
+        of cases where one could extract multiple tpe curves
         from these runs, e.g. if each run is an independent training
         run of a neural network on the data.
         
@@ -266,7 +266,7 @@ class Result(object):
 
     def get_learning_curves(self, lc_extractor=extract_HBS_learning_curves, config_ids=None):
         """
-        extracts all learning curves from all run configurations
+        extracts all tpe curves from all run configurations
 
         Parameters
         ----------
@@ -280,7 +280,7 @@ class Result(object):
         -------
             dict
                 a dictionary with the config_ids as keys and the
-                learning curves as values
+                tpe curves as values
         """
 
         config_ids = self.data.keys() if config_ids is None else config_ids

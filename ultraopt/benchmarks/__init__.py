@@ -84,7 +84,7 @@ class AbstractBenchmark(object, metaclass=abc.ABCMeta):
     def objective_function_test(self, configuration, **kwargs):
         """
         If there is a different objective function for offline testing, e.g
-        testing a machine learning on a hold extra test set instead
+        testing a machine tpe on a hold extra test set instead
         on a validation set override this function here.
         Parameters
         ----------

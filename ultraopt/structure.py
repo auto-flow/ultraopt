@@ -4,7 +4,6 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 import time
 
-
 class Datum(object):
     def __init__(self, config, config_info, results=None, timestamps=None, exceptions=None, status='QUEUED', budget=0):
         self.config = config
@@ -47,3 +46,7 @@ class Job(object):
             "result: " + str(self.result)+ "\n" +\
             "exception: "+ str(self.exception) + "\n"
         )
+
+
+
+
