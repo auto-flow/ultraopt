@@ -9,8 +9,9 @@ import numpy as np
 import pandas as pd
 from tabular_nn import EmbeddingEncoder
 from tabular_nn import EquidistanceEncoder
-from ultraopt.tpe.estimator import TreeParzenEstimator
 from ultraopt.optimizer.base_opt import BaseOptimizer
+from ultraopt.tpe import SampleDisign
+from ultraopt.tpe.estimator import TreeParzenEstimator
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
 from ultraopt.utils.config_transformer import ConfigTransformer
 
@@ -25,47 +26,34 @@ class ETPEOptimizer(BaseOptimizer):
             overlap_bagging_ratio=0,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
-            lambda1=1, lambda2=1,
             max_bw_factor=4, min_bw_factor=1.2,
             anneal_steps=15,
-            max_try=3,
             min_points_in_model=20, min_n_candidates=8,
-            n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
-            window_size=10, n_candidates_decay_ratio=1,
-            random_sample_ratio=0,
-            specific_sample_design=None,
-            # lambda1=0.96, lambda2=3,
-            # max_bw_factor=4, min_bw_factor=1,
-            # anneal_steps=0,
-            # max_try=3,
-            # min_points_in_model=20, min_n_candidates=8,
-            # n_candidates=None, n_candidates_factor=3, sort_by_EI=True,
-            # window_size=10, n_candidates_decay_ratio=1,
-            # Embedding Encoder
+            n_candidates=None, n_candidates_factor=4, sort_by_EI=True,
+            specific_sample_design=(
+                    SampleDisign(ratio=0.1, is_random=True),
+                    SampleDisign(ratio=0.2, bw_factor=3),
+            ),
             embedding_encoder="default"
     ):
         super(ETPEOptimizer, self).__init__()
-        self.random_sample_ratio = random_sample_ratio
         self.specific_sample_design = specific_sample_design
         self.embed_cat_var = embed_cat_var
-        self.n_candidates_decay_ratio = n_candidates_decay_ratio
-        self.window_size = window_size
         assert isinstance(overlap_bagging_ratio, (int, float)) and 0 <= overlap_bagging_ratio <= 1
         self.overlap_bagging_ratio = overlap_bagging_ratio
         self.multivariate = multivariate
         self.min_bw_factor = min_bw_factor
         self.max_bw_factor = max_bw_factor
         self.embedding_encoder = embedding_encoder
-        # self.lambda1 = lambda1
+        # self.lambda_ = lambda_
         # fixme: 推公式确认一下min_bw_factor
         assert anneal_steps >= 0
         if anneal_steps > 0:
-            self.lambda1 = np.exp((1 / anneal_steps) * np.log(min_bw_factor / max_bw_factor))
+            self.lambda_ = np.exp((1 / anneal_steps) * np.log(min_bw_factor / max_bw_factor))
         else:
-            self.lambda1 = 1
+            self.lambda_ = 1
         self.min_n_candidates = min_n_candidates
-        self.max_try = max_try
-        self.lambda2 = lambda2
+        self.MAX_TRY = 3
         self.min_points_in_model = min_points_in_model
         self._bw_factor = max_bw_factor
         self.sort_by_EI = sort_by_EI
@@ -132,25 +120,13 @@ class ETPEOptimizer(BaseOptimizer):
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
-        ratio = self.n_candidates_decay_ratio
-        if ratio != 1 and len(self.trajectory) % self.window_size == 0:
-            if self.trajectory[-1] == self.trajectory[-self.window_size]:
-                self.n_candidates = max(self.n_candidates * ratio, self.min_n_candidates)
-                # self._bw_factor /= ratio
-                # print('decrease',self.n_candidates)
-            else:
-                self.n_candidates /= (ratio)
-                # self._bw_factor *= ratio
-                # print('increase', self.n_candidates)
-        for try_id in range(self.max_try):
+        for try_id in range(self.MAX_TRY):
             samples = epm.sample(
                 n_candidates=round(self.n_candidates),
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
-                # bandwidth_factor=self.min_bw_factor + self._bw_factor, # 相当于 2？
                 bandwidth_factor=self._bw_factor,
                 specific_sample_design=self.specific_sample_design
-                # random_sample_ratio=self.random_sample_ratio
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -159,14 +135,8 @@ class ETPEOptimizer(BaseOptimizer):
                 else:
                     add_configs_origin(sample, "ETPE sampling")
                     return sample, info_dict
-            # fixme: 更新放大策略
-            old_db = self._bw_factor
-            # self._bw_factor = (self._bw_factor + self.min_bw_factor) * self.lambda2 - self.min_bw_factor
+            # fixme: 放大策略
             self._bw_factor = self.max_bw_factor
-            self.logger.warning(f"After {try_id + 1} times sampling, all samples exist in observations. "
-                                f"Update bandwidth_factor from {old_db:.4f} to {self._bw_factor:.4f} by "
-                                f"multiply lambda2 ({self.lambda2}).")
-
         sample = self.config_space.sample_configuration()
         add_configs_origin(sample, "Random Search")
         info_dict = {"model_based_pick": False}
@@ -188,8 +158,8 @@ class ETPEOptimizer(BaseOptimizer):
                 return self.pick_random_initial_config(budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
-        self._bw_factor = max(self.lambda1 * self._bw_factor, self.min_bw_factor)
-        # self._bw_factor *= self.lambda1
+        self._bw_factor = max(self.lambda_ * self._bw_factor, self.min_bw_factor)
+        # self._bw_factor *= self.lambda_
         return self.process_config_info_pair(config, info_dict, budget)
 
     def get_available_max_budget(self):
