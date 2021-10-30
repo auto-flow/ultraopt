@@ -18,8 +18,8 @@ from skopt.learning.forest import ExtraTreesRegressor
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.optimizer.bo.config_evaluator import ConfigEvaluator
 from ultraopt.utils.config_space import add_configs_origin
-from ultraopt.utils.config_transformer import ConfigTransformer
-from ultraopt.utils.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
+from ultraopt.transform.config_transformer import ConfigTransformer
+from ultraopt.transform.loss_transformer import LossTransformer, LogScaledLossTransformer, ScaledLossTransformer
 
 get_one_exchange_neighbourhood = partial(get_one_exchange_neighbourhood, stdev=0.05, num_neighbors=8)
 

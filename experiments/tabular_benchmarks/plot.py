@@ -11,12 +11,16 @@ import pylab as plt
 info = {
     "tpe": ("HyperOpt-TPE", "r",),
     "ultraopt_ETPE": ("UltraOpt-ETPE", "g",),
-    "ultraopt_ETPE_univar": ("UltraOpt-ETPE_univar", "k",),
+    # "ultraopt_ETPE_univar": ("UltraOpt-ETPE_univar", "k",),
     # "hpbandster": ("hpbandster", "k",),
     # "ultraopt_ETPE_univar_cat": ("UltraOpt-ETPE_univar_cat", "orange",),
     # "ultraopt_ETPE_2": ("UltraOpt-ETPE-2", "orange",),
     # "ultraopt_ETPE_3": ("UltraOpt-ETPE-3", "k",),
-    "ultraopt_ETPE_7": ("UltraOpt-ETPE-7", "b",),
+    # "ultraopt_ETPE_8": ("UltraOpt-ETPE-8", "b",),
+    "ultraopt_ETPE_12": ("UltraOpt-ETPE-12", "orange",),
+    "ultraopt_ETPE_16": ("UltraOpt-ETPE-16", "purple",),
+    "ultraopt_ETPE_17": ("UltraOpt-ETPE-17", "k",),
+    # "ultraopt_ETPE_13": ("UltraOpt-ETPE-13", "k",),
     # "smac": ("SMAC-0.10", "orange",),
     # "smac_0.12": ("SMAC-0.12", "purple",),
     # "ultraopt_Forest": ("UltraOpt-SMAC", "k",),
@@ -28,9 +32,9 @@ plt.rcParams['figure.figsize'] = (12, 10)
 
 benchmarks = [
     "protein_structure",
-    # "slice_localization",
-    # "naval_propulsion",
-    # "parkinsons_telemonitoring"
+    "slice_localization",
+    "naval_propulsion",
+    "parkinsons_telemonitoring"
 ]
 max_iter=500
 

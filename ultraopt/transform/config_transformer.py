@@ -3,7 +3,6 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-14
 # @Contact    : qichun.tang@bupt.edu.cn
-import warnings
 from copy import copy
 from typing import Optional, Union
 
@@ -14,6 +13,8 @@ from ConfigSpace.util import deactivate_inactive_hyperparameters
 from sklearn.preprocessing import LabelEncoder
 from tabular_nn.base_tnn import get_embed_dims
 from ultraopt.utils.config_space import deactivate
+
+_pow_scale = lambda x: np.float_power(x, 0.5)
 
 
 class ConfigTransformer():
@@ -78,7 +79,7 @@ class ConfigTransformer():
         group_encoder = LabelEncoder()
         groups = group_encoder.fit_transform(groups_str)
         if self.multivariate == False:
-            warnings.warn('ETPE consider every variable is independent, performance may be lost.')
+            # warnings.warn('ETPE consider every variable is independent, performance may be lost.')
             groups = np.arange(len(groups), dtype=int)
         self.is_child = is_child
         self.n_variables_embedded_list = n_variables_embedded_list
@@ -117,9 +118,14 @@ class ConfigTransformer():
             self.encoder.fit(df, losses)
 
     def transform(self, vectors: np.ndarray) -> np.ndarray:
-        # fixme: 做NN编码在这
+        # 1. 根据掩码删除常数项（保留变量项）
         vectors = np.array(vectors)
         vectors = vectors[:, self.mask]
+        # 2. 归一化ordinal变量
+        for idx, seq in self.sequence_mapper.items():
+            L = len(seq)
+            vectors[:, idx] = (vectors[:, idx] / (L - 1)) * (_pow_scale(L - 1))
+            # 3. 编码离散变量
         if self.encoder is not None:
             df = pd.DataFrame(vectors, columns=self.hp_names)
             vectors = self.encoder.transform(df)
@@ -132,18 +138,26 @@ class ConfigTransformer():
                 vectors[np.isnan(vectors)] = float(self.impute)
         return vectors
 
-    def inverse_transform(self, array: np.ndarray, return_vector=False) -> Union[np.ndarray, None, Configuration]:
-        # fixme: 做NN编码在这
+    def inverse_transform(self, array: np.ndarray, return_vector=False) -> \
+            Union[np.ndarray, None, Configuration]:
+        # 3.1 变量离散变量
         if self.encoder is not None:
             array = self.encoder.inverse_transform(array)
         array = np.array(array)
         for i, n_choices in enumerate(self.n_choices_list):
+            # 3.2 对于只有2个项的离散变量，需要做特殊处理
             if n_choices == 2:
                 array[:, i] = (array[:, i] > 0.5).astype("float64")
+            # 2 反归一化ordinal变量
             is_ordinal = self.is_ordinal_list[i]
             if is_ordinal:
-                sequence = self.sequence_mapper[i]
-                array[:, i] = np.clip(np.round(array[:, i]), 0, len(sequence) - 1)
+                seq = self.sequence_mapper[i]
+                L = len(seq)
+                array[:, i] = np.clip(
+                    # np.round((array[:, i]) * (L - 1)),
+                    np.round((array[:, i] / _pow_scale(L - 1)) * (L - 1)),
+                    # np.round(array[:, i]),
+                    0, len(seq) - 1)
         N, M = array.shape
         result = np.zeros([N, len(self.mask)])
         result[:, self.mask] = array

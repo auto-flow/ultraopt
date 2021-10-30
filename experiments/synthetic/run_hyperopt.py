@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
-from hpolib.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
-from hpolib.benchmarks.synthetic_functions.camelback import Camelback
-from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
-from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
-from hpolib.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
-from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
-from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
+from ultraopt.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
+from ultraopt.benchmarks.synthetic_functions.camelback import Camelback
+from ultraopt.benchmarks.synthetic_functions.hartmann3 import Hartmann3
+from ultraopt.benchmarks.synthetic_functions.hartmann6 import Hartmann6
+from ultraopt.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
+from ultraopt.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
+from ultraopt.benchmarks.synthetic_functions.sin_two import SinTwo
 
 from ultraopt.utils.config_space import CS2HyperoptSpace
 

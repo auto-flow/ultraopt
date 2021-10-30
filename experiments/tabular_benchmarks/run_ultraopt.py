@@ -3,6 +3,9 @@
 # @Author  : qichun tang
 # @Date    : 2021-01-08
 # @Contact    : qichun.tang@bupt.edu.cn
+'''
+--run_id=0 --benchmark=protein_structure --n_iters=100 --data_dir=/media/tqc/doc/Project/fcnet_tabular_benchmarks
+'''
 import argparse
 import json
 import os
@@ -16,7 +19,7 @@ from ultraopt.multi_fidelity import HyperBandIterGenerator
 parser = argparse.ArgumentParser()
 parser.add_argument('--run_id', default=0, type=int, nargs='?', help='unique number to identify this run')
 parser.add_argument('--optimizer', default="ETPE", type=str, nargs='?', help='Which optimizer to use')
-parser.add_argument('--mode', default="none", type=str, nargs='?', help='mode: {none, univar, univar_cat}')
+parser.add_argument('--mode', default="default", type=str, nargs='?', help='mode: {default, univar, univar_cat}')
 parser.add_argument('--benchmark', default="protein_structure", type=str, nargs='?', help='specifies the benchmark')
 parser.add_argument('--n_iters', default=100, type=int, nargs='?', help='number of iterations for optimization method')
 parser.add_argument('--output_path', default="./", type=str, nargs='?',
@@ -36,7 +39,7 @@ elif args.benchmark == "parkinsons_telemonitoring":
 else:
     raise NotImplementedError
 
-output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}")
+output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}_17")
 
 
 def objective_function(config: dict, budget: int = 100):
@@ -63,20 +66,28 @@ if mode != "default":
     output_path += f"_{mode}"
 
 os.makedirs(os.path.join(output_path), exist_ok=True)
+from ultraopt.tpe import SampleDisign
 
 if optimizer == "ETPE":
     if mode == 'univar':
         optimizer = ETPEOptimizer(
             multivariate=False,
+            specific_sample_design=[
+                SampleDisign(ratio=0.5, is_random=True)
+            ]
         )
-
     elif mode == 'univar_cat':
         optimizer = ETPEOptimizer(
             multivariate=False,
-            embed_cat_var=False
+            embed_cat_var=False,
+            specific_sample_design=[
+                SampleDisign(ratio=0.5, is_random=True)
+            ]
         )
     elif mode == "default":
-        optimizer = ETPEOptimizer()
+        optimizer = ETPEOptimizer(
+            # adaptive_multivariate=False
+        )
     else:
         raise NotImplementedError
 elif optimizer == "Forest":

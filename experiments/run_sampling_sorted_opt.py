@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
-from hpolib.benchmarks.synthetic_functions import Forrester, Bohachevsky, Camelback
+from ultraopt.benchmarks.synthetic_functions import Forrester, Bohachevsky, Camelback
 
 from ultraopt.optimizer.bo.sampling_sort_opt import SamplingSortOptimizer
 from ultraopt.structure import Job
 
-from hpolib.benchmarks.synthetic_functions.goldstein_price import GoldsteinPrice
-from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
-from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
-from hpolib.benchmarks.synthetic_functions.levy import Levy1D
-from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
-from hpolib.benchmarks.synthetic_functions.sin_one import SinOne
-from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
+from ultraopt.benchmarks.synthetic_functions.goldstein_price import GoldsteinPrice
+from ultraopt.benchmarks.synthetic_functions.hartmann3 import Hartmann3
+from ultraopt.benchmarks.synthetic_functions.hartmann6 import Hartmann6
+from ultraopt.benchmarks.synthetic_functions.levy import Levy1D
+from ultraopt.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
+from ultraopt.benchmarks.synthetic_functions.sin_one import SinOne
+from ultraopt.benchmarks.synthetic_functions.sin_two import SinTwo
 
 synthetic_functions = [
     Bohachevsky,

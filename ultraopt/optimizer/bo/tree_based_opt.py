@@ -7,7 +7,7 @@ from skopt.learning.forest import ExtraTreesRegressor, RandomForestRegressor
 from skopt.learning.gbrt import GradientBoostingQuantileRegressor
 
 from ultraopt.optimizer.bo.sampling_sort_opt import SamplingSortOptimizer
-from ultraopt.utils.config_transformer import ConfigTransformer
+from ultraopt.transform.config_transformer import ConfigTransformer
 
 
 class ForestOptimizer(SamplingSortOptimizer):

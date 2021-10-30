@@ -36,7 +36,8 @@ def estimate_bw(data, bw_method="scott", cv_times=100):
     ndata = data.shape[0]
     if bw_method == 'scott':
         bandwidth = ndata ** (-1 / 5) * np.std(data, ddof=1)
-        bandwidth = np.clip(bandwidth, 0.01, None)
+        bandwidth = np.clip(bandwidth, 0.03, None)
+        # min bandwidth according to BOHB paper
     elif bw_method == 'silverman':
         bandwidth = (ndata * 3 / 4) ** (-1 / 5) * np.std(data, ddof=1)
         bandwidth = np.clip(bandwidth, 0.01, None)

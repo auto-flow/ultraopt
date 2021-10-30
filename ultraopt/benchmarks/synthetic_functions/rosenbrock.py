@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author  : qichun tang
-# @Contact    : tqichun@gmail.com
 import ConfigSpace as CS
 
 from ultraopt.benchmarks import AbstractBenchmark
@@ -38,8 +34,7 @@ class Rosenbrock2D(AbstractBenchmark):
 
 
 # Build more Rosenbrocks
-dimensions = [5, 10, 20]
-for d in dimensions:
+for d in range(3, 21):
     benchmark_string = """
 class Rosenbrock%dD(Rosenbrock2D):
 

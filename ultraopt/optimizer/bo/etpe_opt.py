@@ -13,7 +13,7 @@ from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.tpe import SampleDisign
 from ultraopt.tpe.estimator import TreeParzenEstimator
 from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
-from ultraopt.utils.config_transformer import ConfigTransformer
+from ultraopt.transform.config_transformer import ConfigTransformer
 
 
 class ETPEOptimizer(BaseOptimizer):
@@ -23,6 +23,8 @@ class ETPEOptimizer(BaseOptimizer):
             gamma=None, min_points_in_kde=2,
             multivariate=True,
             embed_cat_var=True,
+            adaptive_multivariate=False,
+            corr_threshold=0.5,
             overlap_bagging_ratio=0,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
@@ -33,6 +35,7 @@ class ETPEOptimizer(BaseOptimizer):
             specific_sample_design=(
                     SampleDisign(ratio=0.1, is_random=True),
                     SampleDisign(ratio=0.2, bw_factor=3),
+                    # SampleDisign(ratio=0.3, bw_factor=4),
             ),
             embedding_encoder="default"
     ):
@@ -68,6 +71,7 @@ class ETPEOptimizer(BaseOptimizer):
             overlap_bagging_ratio=overlap_bagging_ratio,
             multivariate=multivariate,
             embed_cat_var=embed_cat_var,
+            adaptive_multivariate=adaptive_multivariate
         )
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
@@ -202,6 +206,7 @@ class ETPEOptimizer(BaseOptimizer):
         else:
             epm = self.budget2epm[budget]
         X_obvs = self.config_transformer.transform(vectors)
+        # TPE自适应分组联合概率的逻辑应该写在这
         self.budget2epm[budget] = epm.fit(X_obvs, losses)
 
     @property

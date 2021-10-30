@@ -13,13 +13,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration, ConfigurationSpace
-from hpolib.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
-from hpolib.benchmarks.synthetic_functions.camelback import Camelback
-from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
-from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
-from hpolib.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
-from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
-from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
+from ultraopt.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
+from ultraopt.benchmarks.synthetic_functions.camelback import Camelback
+from ultraopt.benchmarks.synthetic_functions.hartmann3 import Hartmann3
+from ultraopt.benchmarks.synthetic_functions.hartmann6 import Hartmann6
+from ultraopt.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
+from ultraopt.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
+from ultraopt.benchmarks.synthetic_functions.sin_two import SinTwo
 from smac.facade.smac_hpo_facade import SMAC4HPO
 from smac.scenario.scenario import Scenario
 

@@ -3,13 +3,13 @@
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
 import click
-from hpolib.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
-from hpolib.benchmarks.synthetic_functions.camelback import Camelback
-from hpolib.benchmarks.synthetic_functions.hartmann3 import Hartmann3
-from hpolib.benchmarks.synthetic_functions.hartmann6 import Hartmann6
-from hpolib.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
-from hpolib.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
-from hpolib.benchmarks.synthetic_functions.sin_two import SinTwo
+from ultraopt.benchmarks.synthetic_functions.bohachevsky import Bohachevsky
+from ultraopt.benchmarks.synthetic_functions.camelback import Camelback
+from ultraopt.benchmarks.synthetic_functions.hartmann3 import Hartmann3
+from ultraopt.benchmarks.synthetic_functions.hartmann6 import Hartmann6
+from ultraopt.benchmarks.synthetic_functions.levy import Levy3D, Levy6D, Levy9D
+from ultraopt.benchmarks.synthetic_functions.rosenbrock import Rosenbrock2D
+from ultraopt.benchmarks.synthetic_functions.sin_two import SinTwo
 
 from ultraopt import fmin
 
@@ -67,11 +67,14 @@ def main(optimizer):
 
         res = pd.DataFrame(columns=[f"trial-{i}" for i in range(repetitions)], index=range(max_iter))
         print(meta_info["name"])
+
         for trial in range(repetitions):
             random_state = base_random_state + trial * 10
             ret = fmin(
                 evaluation, config_space, optimizer=optimizer,
-                random_state=random_state, n_iterations=max_iter)
+                random_state=random_state, n_iterations=max_iter,
+
+            )
             print(ret)
             losses = ret["budget2obvs"][1]["losses"]
             print(ret["best_loss"])

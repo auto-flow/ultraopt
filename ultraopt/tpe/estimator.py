@@ -13,13 +13,17 @@ from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
 from sklearn.neighbors import KernelDensity
 from sklearn.utils import check_random_state
-from ultraopt.tpe import top15_gamma, estimate_bw, SampleDisign
+from ultraopt.tpe import top15_gamma, SampleDisign
 from ultraopt.tpe.kernel_density import UnivariateCategoricalKernelDensity
 from ultraopt.tpe.nn_projector import NN_projector
+from ultraopt.tpe.union_set import UnionSet
 from ultraopt.utils.config_space import add_configs_origin, sample_configurations
-from ultraopt.utils.config_transformer import ConfigTransformer
+from ultraopt.transform.config_transformer import ConfigTransformer
 from ultraopt.utils.hash import get_hash_of_array
 from ultraopt.utils.logging_ import get_logger
+
+import warnings
+warnings.filterwarnings('ignore')
 
 
 class TreeParzenEstimator(BaseEstimator):
@@ -30,9 +34,10 @@ class TreeParzenEstimator(BaseEstimator):
             multivariate=True,
             embed_cat_var=True,
             overlap_bagging_ratio=0.5,
-
+            adaptive_multivariate=True
             # fill_deactivated_value=False
     ):
+        self.adaptive_multivariate = adaptive_multivariate
         self.embed_cat_var = embed_cat_var
         self.multivariate = multivariate
         self.overlap_bagging_ratio = overlap_bagging_ratio
@@ -100,6 +105,7 @@ class TreeParzenEstimator(BaseEstimator):
         X_good = X_proj[idx[:n_good]]
         X_bad = X_proj[idx[n_good:]]
         y_good = -active_y[idx[:n_good]]
+        from ultraopt.tpe import estimate_bw
         sample_weight = None
         if self.kde_sample_weight_scaler is not None and y_good.std() != 0:
             if self.kde_sample_weight_scaler == "normalize":
@@ -113,25 +119,100 @@ class TreeParzenEstimator(BaseEstimator):
                 sample_weight = np.exp(scaled_y)
             else:
                 raise ValueError(f"Invalid kde_sample_weight_scaler '{self.kde_sample_weight_scaler}'")
-        bw_good = estimate_bw(X_good, self.bw_method, self.cv_times)
-        bw_bad = estimate_bw(X_bad, self.bw_method, self.cv_times)
         if uni_cat:
             klass = UnivariateCategoricalKernelDensity
         else:
             klass = KernelDensity
+            # klass = NormalizedKernelDensity
         return (
-            klass(bandwidth=bw_good).fit(X_good, sample_weight=sample_weight),
-            klass(bandwidth=bw_bad).fit(X_bad)
+            klass(bandwidth=estimate_bw(X_good)).fit(X_good, sample_weight=sample_weight),
+            klass(bandwidth=estimate_bw(X_bad)).fit(X_bad)
         )
 
     @property
     def can_overlap_multivariant_(self):
         return self.config_transformer.multivariate and self.n_groups != 1 and self.overlap_bagging_ratio > 0
 
+    def adaptive_multivariate_grouping(
+            self,
+            groups: np.ndarray, n_groups: int,
+            X: np.ndarray, y: np.ndarray
+    ) -> Tuple[np.ndarray, int, List[List]]:
+        groups = groups.copy()
+        hierarchical_groups = []
+        cur_group = 0
+        for _ in range(n_groups):
+            group_mask = groups == cur_group
+            cur_X = X[:, group_mask]
+            inactive_mask = np.isnan(cur_X[:, 0])
+            cur_X = cur_X[~inactive_mask, :]
+            M = cur_X.shape[1]
+            cur_y = y[~inactive_mask]
+            n_bins = min(len(set(cur_y)), 10)
+            union_set = UnionSet(M)
+
+            from sklearn.preprocessing import KBinsDiscretizer
+            bins = KBinsDiscretizer(n_bins=n_bins, strategy='quantile', encode='ordinal'). \
+                fit_transform(cur_y[:, np.newaxis]).flatten().astype('int32')
+            bins_set = np.unique(bins)
+            n_bins = len(bins)
+            # 数据不足， 返回原来的分组
+            if n_bins < 10:
+                hierarchical_groups.append([0] * n_groups)
+                continue
+
+            X_avg = np.zeros([n_bins, M])
+            for i, bin_id in enumerate(bins_set):
+                # np.count_nonzero(bins == bin_id)==0
+                X_avg[i, :] = np.mean(cur_X[bins == bin_id, :], axis=0)
+            spearman_corr = pd.DataFrame(X_avg).corr(method="spearman")
+            # 遍历上三角矩阵，如果相似度超过阈值，用并查集进行结点合并
+            import networkx as nx
+            import pylab as plt
+            import os
+            g = nx.Graph()
+            for i in range(M):
+                for j in range(i + 1, M):
+                    if abs(spearman_corr[i][j]) > 0.6:
+                        union_set.union(i, j)
+                        g.add_edge(i, j)
+            if os.getenv('DEBUG'):
+                nx.draw(g)
+                plt.show()
+            # 全合到一起了
+            if union_set.cnt == 1:
+                hierarchical_groups.append([0] * n_groups)
+                continue
+            # 部分合并的情况
+            nxt_group = cur_group + (union_set.cnt - 1)
+            groups[groups > cur_group] += (union_set.cnt - 1)
+            n_groups += (union_set.cnt - 1)
+            agg_groups_ = []
+            idx_ = 0
+            cluster2idx = {}
+
+            def get_idx(cluster):
+                nonlocal idx_
+                if cluster not in cluster2idx:
+                    cluster2idx[cluster] = idx_
+                    idx_ += 1
+                return cluster2idx[cluster]
+
+            for i in range(M):
+                agg_groups_.append(get_idx(union_set.find(i)))
+            agg_groups = np.array(agg_groups_)
+            groups[group_mask] += agg_groups
+            hierarchical_groups.append(agg_groups_)
+            cur_group = nxt_group
+        return groups, n_groups, hierarchical_groups
+
     def fit(self, X: np.ndarray, y: np.ndarray):
         if self.multivariate:
             # 当时设计的时候，构造config_transformer时算了分组， 现在fit也算了分组
             self.groups, self.n_groups = self.calc_groups(X)
+            if self.adaptive_multivariate:
+                self.groups, self.n_groups, hierarchical_groups = \
+                    self.adaptive_multivariate_grouping(self.groups, self.n_groups, X, y)
         else:
             self.groups, self.n_groups = self.config_transformer.groups, self.config_transformer.n_groups
         n_choices_list = self.config_transformer.n_choices_list
