@@ -2,24 +2,36 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
+import json
+import os
 import sys
 from importlib import import_module
+from pathlib import Path
 
 from ultraopt.optimizer import ETPEOptimizer
 from ultraopt.tpe import hyperopt_gamma
 
 benchmark = sys.argv[1]
+max_groups = int(sys.argv[2].lower())
+multivariate = sys.argv[3].lower() == 'true'
+optimize_each_varGroups = sys.argv[4].lower() == 'true'
+limit_max_groups = max_groups > 0
 assert benchmark in ['levy', 'rosenbrock']
+
+print(f'benchmark = {benchmark}')
+print(f'max_groups = {max_groups}')
+print(f'multivariate = {multivariate}')
+print(f'optimize_each_varGroups = {optimize_each_varGroups}')
 
 levy = {}
 levy_module = import_module(f'ultraopt.benchmarks.synthetic_functions.{benchmark}')
-for i in range(2, 11):
+# for i in range(2, 20):
+# for i in range(30, 1,-1):
+for i in range(2, 21):
     levy[i] = getattr(levy_module, f'Levy{i}D' if benchmark == 'levy' else f'Rosenbrock{i}D')
 
 from ultraopt import fmin
 from joblib import Parallel, delayed
-import json
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -33,8 +45,19 @@ def raw2min(df: pd.DataFrame):
     return df_m
 
 
+software = 'ultraopt'
+fname = f'{software}_{benchmark}'
+if limit_max_groups:
+    fname += f"_g{max_groups}"
+if multivariate:
+    fname += f"_multival"
+if optimize_each_varGroups:
+    fname += f"_optEachVar"
 final_result = {}
-repetitions = 20
+json_name = f"{fname}.json"
+# if os.path.exists(json_name):
+#     final_result = json.load(json_name)
+repetitions = 100
 base_random_state = 50
 base_max_iter = 200
 
@@ -78,12 +101,17 @@ def sampled_points_to_configurations(points, skopt_spaces, CS):
 def evaluate(trial, config_space, synthetic_function, max_iter):
     skopt_spaces = CS_to_skopt(config_space)
     lhs = Lhs()
-    points = lhs.generate(skopt_spaces, 20)
+    points = lhs.generate(skopt_spaces, 20, random_state=trial)
     initial_configs = sampled_points_to_configurations(points, skopt_spaces, config_space)
 
     optimizer = ETPEOptimizer(
-        # multivariate=False,
+        multivariate=multivariate,
+        limit_max_groups=limit_max_groups,
+        # limit_max_groups='auto',
+        max_groups=max_groups,
+        optimize_each_varGroups=optimize_each_varGroups,
         gamma=hyperopt_gamma, max_bw_factor=1, min_bw_factor=1, anneal_steps=0,
+        n_candidates=24,
         specific_sample_design=None,
     )
 
@@ -92,7 +120,7 @@ def evaluate(trial, config_space, synthetic_function, max_iter):
     ret = fmin(
         evaluator_part, config_space, optimizer=optimizer,
         random_state=random_state, n_iterations=max_iter,
-        # initial_points=initial_configs
+        initial_points=initial_configs
     )
     losses = ret["budget2obvs"][1]["losses"]
     return trial, losses
@@ -129,9 +157,8 @@ for dim, synthetic_function_cls in levy.items():
                           "q25": res.quantile(0.25, 1).tolist(),
                           "q10": res.quantile(0.1, 1).tolist(),
                           "q75": res.quantile(0.75, 1).tolist(), "q90": res.quantile(0.90, 1).tolist()}
-software = 'ultraopt'
-name = f'{software}_{benchmark}'
-Path(f"{name}.json").write_text(json.dumps(final_result))
+
+Path(json_name).write_text(json.dumps(final_result))
 from joblib import dump
 
-dump(name2df, f"{name}.pkl")
+dump(name2df, f"{fname}.pkl")

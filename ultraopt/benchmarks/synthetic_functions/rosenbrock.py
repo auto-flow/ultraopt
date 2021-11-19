@@ -34,7 +34,7 @@ class Rosenbrock2D(AbstractBenchmark):
 
 
 # Build more Rosenbrocks
-for d in range(3, 21):
+for d in range(3, 51):
     benchmark_string = """
 class Rosenbrock%dD(Rosenbrock2D):
 

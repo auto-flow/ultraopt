@@ -12,10 +12,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as sps
 from terminaltables import AsciiTable
-
 from ultraopt.facade.utils import get_wanted
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.utils.misc import pbudget, get_import_error
+from ultraopt.utils.misc import pbudget, get_import_error, dfMap_to_content
 from ultraopt.viz import plot_convergence
 
 
@@ -319,3 +318,13 @@ class FMinResult():
                          + f'$p = {ps[i][j - 1]:.4f}$\n$n = {len(loss_pairs[budgets[i]][budgets[j]])}$',
                          horizontalalignment='center', verticalalignment='center')
         return ax
+
+    def export_embedding_table(self, file_name=None):
+        from ultraopt.optimizer import ETPEOptimizer
+        assert isinstance(self.optimizer, ETPEOptimizer)
+        df_map = self.optimizer.config_transformer.embedding_encoder_history[-1][1]
+        content = dfMap_to_content(df_map)
+        if file_name is not None:
+            with open(file_name, 'w') as f:
+                f.write(content)
+        return df_map

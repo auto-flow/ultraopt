@@ -2,28 +2,32 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
-import sys
+import json
+import sys, os
 from importlib import import_module
+from pathlib import Path
+
+import optuna
+from optuna.samplers import TPESampler
 
 benchmark = sys.argv[1]
+multivariate = sys.argv[2].lower() == 'true'
 assert benchmark in ['levy', 'rosenbrock']
+
+print(f'benchmark = {benchmark}')
+print(f'multivariate = {multivariate}')
 
 levy = {}
 levy_module = import_module(f'ultraopt.benchmarks.synthetic_functions.{benchmark}')
 for i in range(2, 21):
+# for i in range(20, 1, -1):
     levy[i] = getattr(levy_module, f'Levy{i}D' if benchmark == 'levy' else f'Rosenbrock{i}D')
 
-from ultraopt import fmin
 from joblib import Parallel, delayed
-import json
-from pathlib import Path
-
+from optuna import Trial
 import numpy as np
 import pandas as pd
-from ConfigSpace import Configuration, ConfigurationSpace
-from functools import partial
-from ultraopt.utils.config_space import CS2HyperoptSpace
-from hyperopt import tpe, fmin, Trials
+from ConfigSpace import ConfigurationSpace, UniformFloatHyperparameter, Configuration
 
 
 def raw2min(df: pd.DataFrame):
@@ -33,38 +37,61 @@ def raw2min(df: pd.DataFrame):
     return df_m
 
 
-final_result = {}
 repetitions = 100
 base_random_state = 50
 base_max_iter = 200
 
 
 # 定义目标函数
-def evaluator(config: dict, config_space=None, synthetic_function=None):
-    config = Configuration(config_space, values=config)
-    return synthetic_function.objective_function(config)["function_value"] - \
-           synthetic_function.get_meta_information()["f_opt"]
+
+class Evaluator():
+    def __init__(self, config_space: ConfigurationSpace = None, synthetic_function=None):
+        self.synthetic_function = synthetic_function
+        self.config_space = config_space
+        self.losses = []
+
+    def __call__(self, trial: Trial, ):
+        config = {}
+        for hp in self.config_space.get_hyperparameters():
+            hp: UniformFloatHyperparameter
+            config[hp.name] = trial.suggest_uniform(hp.name, hp.lower, hp.upper)
+        config = Configuration(config_space, values=config)
+        loss = synthetic_function.objective_function(config)["function_value"] - \
+               synthetic_function.get_meta_information()["f_opt"]
+        self.losses.append(loss)
+        return loss
 
 
 def evaluate(trial, config_space, synthetic_function, max_iter):
-    space = CS2HyperoptSpace(config_space)
-    trials = Trials()
+    from ultraopt.tpe import hyperopt_gamma
     random_state = base_random_state + trial * 10
-    evaluator_part = partial(evaluator, config_space=config_space, synthetic_function=synthetic_function)
+    tpe = TPESampler(
+        n_startup_trials=20, multivariate=multivariate,
+        gamma=hyperopt_gamma,
+        seed=random_state)
+    evaluator = Evaluator(config_space, synthetic_function)
+    study = optuna.create_study(sampler=tpe, )
+    study.optimize(evaluator, n_trials=max_iter)
+    print(study)
+    return trial, evaluator.losses
 
-    best = fmin(
-        evaluator_part, space, algo=partial(tpe.suggest, n_startup_jobs=20), max_evals=max_iter,
-        rstate=np.random.RandomState(random_state), trials=trials,
-    )
-    losses = trials.losses()
-    return trial, losses
 
+software = 'optuna'
+fname = f'{software}_{benchmark}'
+if multivariate:
+    fname += f"_multival"
+
+json_name=f"{fname}.json"
+
+final_result = {}
+
+# if os.path.exists(json_name):
+#     final_result =
 
 # @click.command()
 # @click.option('--optimizer', '-o', default='ETPE')
 # def main(optimizer):
 name2df = {}
-
 for dim, synthetic_function_cls in levy.items():
     meta_info = synthetic_function_cls.get_meta_information()
     if "num_function_evals" in meta_info:
@@ -84,19 +111,16 @@ for dim, synthetic_function_cls in levy.items():
     ):
         df[f"trial-{trial}"] = np.log(np.array(losses))
     name2df[meta_info["name"]] = df
-
     res = raw2min(df)
     m = res.mean(1)
     s = res.std(1)
     name = synthetic_function.get_meta_information()["name"]
     final_result[name] = {"mean": m.tolist(), "std": s.tolist(),
-                          "q10": res.quantile(0.1, 1).tolist(),
                           "q25": res.quantile(0.25, 1).tolist(),
+                          "q10": res.quantile(0.1, 1).tolist(),
                           "q75": res.quantile(0.75, 1).tolist(), "q90": res.quantile(0.90, 1).tolist()}
-software = 'hyperopt'
-name = f'{software}_{benchmark}'
-Path(f"{name}.json").write_text(json.dumps(final_result))
+
+Path(json_name).write_text(json.dumps(final_result))
 from joblib import dump
 
-dump(name2df, f"{name}.pkl")
-
+dump(name2df, f"{fname}.pkl")

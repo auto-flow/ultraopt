@@ -6,8 +6,10 @@
 import os
 import shutil
 from fractions import Fraction
+from typing import Dict
 
 import numpy as np
+import pandas as pd
 from joblib import dump
 
 from ultraopt.constants import Configs
@@ -61,3 +63,37 @@ def dump_checkpoint(optimizer, checkpoint_file):
     if os.path.exists(checkpoint_file):
         shutil.move(checkpoint_file, checkpoint_file_bak)
     dump(optimizer, checkpoint_file)
+
+
+def dfMap_to_content(df_map: Dict[str, pd.DataFrame]):
+    content = ""
+    for key, df in df_map.items():
+        content += f'{PREFIX}{key}\n'
+        for name, row in df.iterrows():
+            content += f"{name}\t"
+            content += "\t".join([str(f) for f in row.tolist()])
+            content += "\n"
+    return content
+
+
+def content_to_dfMap(content: str):
+    cur_table = None
+    df_map = {}
+    for line in content.splitlines():
+        if line.startswith(PREFIX):
+            if cur_table is not None:
+                df_map[cur_table] = pd.DataFrame(
+                    df_map[cur_table]['data'], index=df_map[cur_table]['index'])
+            cur_table = line[len(PREFIX):]
+            df_map[cur_table] = {'index': [], 'data': []}
+        else:
+            words = line.split('\t')
+            df_map[cur_table]['index'].append(words[0])
+            df_map[cur_table]['data'].append([float(w) for w in words[1:]])
+    if cur_table is not None:
+        df_map[cur_table] = pd.DataFrame(
+            df_map[cur_table]['data'], index=df_map[cur_table]['index'])
+    return df_map
+
+
+PREFIX = 'table | '

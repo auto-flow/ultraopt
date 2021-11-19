@@ -4,13 +4,14 @@
 # @Date    : 2020-12-14
 # @Contact    : qichun.tang@bupt.edu.cn
 from copy import copy
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict
 
 import numpy as np
 import pandas as pd
 from ConfigSpace import ConfigurationSpace, Constant, CategoricalHyperparameter, Configuration, OrdinalHyperparameter
 from ConfigSpace.util import deactivate_inactive_hyperparameters
 from sklearn.preprocessing import LabelEncoder
+from tabular_nn import EmbeddingEncoder
 from tabular_nn.base_tnn import get_embed_dims
 from ultraopt.utils.config_space import deactivate
 
@@ -18,8 +19,8 @@ _pow_scale = lambda x: np.float_power(x, 0.5)
 
 
 class ConfigTransformer():
-    def __init__(self, impute: Optional[float] = -1, encoder=None, multivariate=True):
-        self.multivariate = multivariate
+    def __init__(self, impute: Optional[float] = -1, encoder=None, pretrained_emb=None):
+        self.pretrained_emb: Dict[str, pd.DataFrame] = pretrained_emb if pretrained_emb else {}
         self.impute = impute
         self.encoder = encoder
 
@@ -30,7 +31,10 @@ class ConfigTransformer():
         sequence_mapper = {}
         n_constants = 0
         n_variables = 0
-        n_variables_embedded = 0
+        n_categorical = 0
+        n_numerical = 0
+        n_ordinal = 0
+        n_variables_embedded = 0  # 用于统计Embedding后变量总数（离散转连续）
         n_top_levels = 0
         parents = []
         parent_values = []
@@ -38,6 +42,7 @@ class ConfigTransformer():
         n_variables_embedded_list = []
         # todo: 划分parents与groups
         for hp in config_space.get_hyperparameters():
+            hp_name = hp.name
             if isinstance(hp, Constant) or \
                     (isinstance(hp, CategoricalHyperparameter) and len(hp.choices) == 1) or \
                     (isinstance(hp, OrdinalHyperparameter) and len(hp.sequence) == 1):
@@ -51,18 +56,29 @@ class ConfigTransformer():
                 if isinstance(hp, CategoricalHyperparameter):
                     n_choices = len(hp.choices)
                     n_choices_list.append(n_choices)
-                    n_embeds = int(get_embed_dims(n_choices))  # avoid bug
+                    if hp_name in self.pretrained_emb:
+                        df: pd.DataFrame = self.pretrained_emb[hp_name]
+                        assert set(df.index) == set(hp.choices), ValueError
+                        n_embeds = df.shape[0]
+                        df = df.loc[pd.Series(hp.choices), :]
+                        self.pretrained_emb[hp_name] = df.values
+                    else:
+                        n_embeds = int(get_embed_dims(n_choices))  # avoid bug
                     n_variables_embedded += n_embeds
                     n_variables_embedded_list.append(n_embeds)
+                    n_categorical += 1
                 else:
                     n_choices_list.append(0)
                     n_variables_embedded += 1
                     n_variables_embedded_list.append(1)
                 if isinstance(hp, OrdinalHyperparameter):
+                    n_ordinal += 1
                     is_ordinal_list.append(True)
                     sequence_mapper[len(is_ordinal_list) - 1] = hp.sequence
                 else:
                     is_ordinal_list.append(False)
+                if not isinstance(hp, (CategoricalHyperparameter, OrdinalHyperparameter)):
+                    n_numerical += 1
                 cur_parents = config_space.get_parents_of(hp.name)
                 if len(cur_parents) == 0:
                     n_top_levels += 1
@@ -78,9 +94,9 @@ class ConfigTransformer():
         groups_str = [f"{parent}-{parent_value}" for parent, parent_value in zip(parents, parent_values)]
         group_encoder = LabelEncoder()
         groups = group_encoder.fit_transform(groups_str)
-        if self.multivariate == False:
-            # warnings.warn('ETPE consider every variable is independent, performance may be lost.')
-            groups = np.arange(len(groups), dtype=int)
+        self.n_categorical = n_categorical
+        self.n_numerical = n_numerical
+        self.n_ordinal = n_ordinal
         self.is_child = is_child
         self.n_variables_embedded_list = n_variables_embedded_list
         self.sequence_mapper = sequence_mapper
@@ -100,15 +116,19 @@ class ConfigTransformer():
         high_r_mask = np.array(self.n_choices_list) > 2
         self.high_r_cols = self.hp_names[high_r_mask].to_list()
         self.high_r_cats = []
-        for ix in np.arange(n_variables)[high_r_mask]:
+        for i,ix in enumerate(np.arange(n_variables)[high_r_mask]):
             n_choices = n_choices_list[ix]
             cat = list(range(n_choices))
-            if is_child[ix]:
+            if is_child[ix]: # 处理缺失值
                 cat.insert(0, -1)
             self.high_r_cats.append(cat)
+            if self.high_r_cols[i] in self.pretrained_emb:
+                continue
         if self.encoder is not None:
             self.encoder.cols = copy(self.high_r_cols)
             self.encoder.categories = copy(self.high_r_cats)
+            self.encoder.pretrained_emb=self.pretrained_emb
+        self.embedding_encoder_history = []
         return self
 
     def fit_encoder(self, vectors, losses=None):
@@ -116,6 +136,19 @@ class ConfigTransformer():
         df = pd.DataFrame(vectors, columns=self.hp_names)
         if self.encoder is not None:
             self.encoder.fit(df, losses)
+            if not isinstance(self.encoder, EmbeddingEncoder):
+                return
+            if not self.embedding_encoder_history or \
+                    self.encoder.stage != self.embedding_encoder_history[-1][0]:
+                df_map = {}
+                for hp_name, matrix in zip(self.encoder.cols, self.encoder.transform_matrix):
+                    choices = self.config_space.get_hyperparameter(hp_name).choices
+                    df = pd.DataFrame(matrix, index=choices)
+                    df_map[hp_name] = df
+                self.embedding_encoder_history.append([
+                    self.encoder.stage,
+                    df_map
+                ])
 
     def transform(self, vectors: np.ndarray) -> np.ndarray:
         # 1. 根据掩码删除常数项（保留变量项）
@@ -139,7 +172,7 @@ class ConfigTransformer():
         return vectors
 
     def inverse_transform(self, array: np.ndarray, return_vector=False) -> \
-            Union[np.ndarray, None, Configuration]:
+            Union[List[np.ndarray], List[Configuration]]:
         # 3.1 变量离散变量
         if self.encoder is not None:
             array = self.encoder.inverse_transform(array)
@@ -148,6 +181,8 @@ class ConfigTransformer():
             # 3.2 对于只有2个项的离散变量，需要做特殊处理
             if n_choices == 2:
                 array[:, i] = (array[:, i] > 0.5).astype("float64")
+            if n_choices == 0:
+                array[:, i] = np.clip(array[:, i], 0, 1)
             # 2 反归一化ordinal变量
             is_ordinal = self.is_ordinal_list[i]
             if is_ordinal:
@@ -162,7 +197,7 @@ class ConfigTransformer():
         result = np.zeros([N, len(self.mask)])
         result[:, self.mask] = array
         if return_vector:
-            return result
+            return [result[i, :] for i in range(result.shape[0])]
         configs = []
         for i in range(N):
             try:

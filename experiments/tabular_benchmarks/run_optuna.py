@@ -9,12 +9,10 @@
 import argparse
 import json
 import os
-import time
 
+from optuna.samplers import TPESampler
 from tabular_benchmarks import FCNetProteinStructureBenchmark, FCNetSliceLocalizationBenchmark, \
     FCNetNavalPropulsionBenchmark, FCNetParkinsonsTelemonitoringBenchmark
-from ultraopt import fmin
-from ultraopt.multi_fidelity import HyperBandIterGenerator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--run_id', default=0, type=int, nargs='?', help='unique number to identify this run')
@@ -40,7 +38,7 @@ elif args.benchmark == "parkinsons_telemonitoring":
 else:
     raise NotImplementedError
 
-output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}_18")
+output_path = os.path.join(args.output_path, f"{args.benchmark}-optuna")
 
 
 def objective_function(config: dict, budget: int = 100):
@@ -52,69 +50,38 @@ max_groups = args.max_groups
 limit_max_groups = max_groups > 0
 
 cs = b.get_configuration_space()
-HB = False
-if args.optimizer == "BOHB":
-    optimizer = "ETPE"
-    iter_generator = HyperBandIterGenerator(min_budget=3, max_budget=100, eta=3)
-    HB = True
-elif args.optimizer == "HyperBand":
-    optimizer = "Random"
-    iter_generator = HyperBandIterGenerator(min_budget=3, max_budget=100, eta=3)
-    HB = True
-else:
-    optimizer = args.optimizer
-    iter_generator = None
-from ultraopt.optimizer import ETPEOptimizer, ForestOptimizer
-
-if mode != "default":
-    output_path += f"_{mode}"
-
-if limit_max_groups:
-    output_path += f"_g{max_groups}"
 
 os.makedirs(os.path.join(output_path), exist_ok=True)
-from ultraopt.tpe import SampleDisign
 
-if optimizer == "ETPE":
-    if mode == 'univar':
-        optimizer = ETPEOptimizer(
-            multivariate=False,
-            specific_sample_design=[
-                SampleDisign(ratio=0.5, is_random=True)
-            ]
-        )
-    elif mode == 'univar_cat':
-        optimizer = ETPEOptimizer(
-            multivariate=False,
-            embed_catVar=False,
-            specific_sample_design=[
-                SampleDisign(ratio=0.5, is_random=True)
-            ]
-        )
-    elif mode == "default":
-        optimizer = ETPEOptimizer(
-            # limit_max_groups=limit_max_groups,
+from optuna import Trial
+from ConfigSpace import UniformFloatHyperparameter, OrdinalHyperparameter, CategoricalHyperparameter
 
-            limit_max_groups='auto',
-            max_groups=max_groups
-        )
-    else:
-        raise NotImplementedError
-elif optimizer == "Forest":
-    if mode == "default":
-        optimizer = ForestOptimizer(min_points_in_model=20)
-    elif mode == "local_search":
-        optimizer = ForestOptimizer(min_points_in_model=20, use_local_search=True)
 
-fmin_result = fmin(
-    objective_function, cs, optimizer,
-    n_iterations=args.n_iters, random_state=args.run_id,
-    multi_fidelity_iter_generator=iter_generator)
-print(fmin_result)
+class Evaluator():
+    def __init__(self, config_space):
+        self.config_space = config_space
+
+    def __call__(self, trial: Trial):
+        config = {}
+        for hp in self.config_space.get_hyperparameters():
+            if isinstance(hp, OrdinalHyperparameter):
+                config[hp.name] = trial.suggest_categorical(hp.name, hp.sequence)
+            elif isinstance(hp, CategoricalHyperparameter):
+                config[hp.name] = trial.suggest_categorical(hp.name, hp.choices)
+        loss = b.objective_function(config, 100)
+        return loss[0]
+
+
+evaluator = Evaluator(config_space=cs)
+import optuna
+
+tpe = TPESampler(
+    n_startup_trials=20, multivariate=True,
+    seed=args.run_id)
+study = optuna.create_study(sampler=tpe)
+study.optimize(evaluator, n_trials=args.n_iters)
 # dump(fmin_result, os.path.join(output_path, 'run_%d.pkl' % args.run_id))
 res = b.get_results()
 fh = open(os.path.join(output_path, 'run_%d.json' % args.run_id), 'w')
 json.dump(res, fh)
 fh.close()
-if HB:
-    time.sleep(5)

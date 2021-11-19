@@ -1,0 +1,97 @@
+---
+version: 1
+disable_existing_loggers: False
+formatters:
+  simple:
+    format: '[%(levelname)s] [%(name)s] %(message)s'
+  formal:
+    format: '[%(levelname)s] [%(asctime)s:%(name)s] %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: simple
+    stream: ext://sys.stdout
+
+  file_handler:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: formal
+    filename: autoflow.log
+
+# 如果设为DEBUG, sql也会下来
+root:
+  level: DEBUG
+  handlers: [console, file_handler]
+
+loggers:
+  hyperopt.tpe:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+
+  hdfs.client:
+    level: INFO
+    handlers: [file_handler]
+    propagate: false
+
+  dsmac.intensification.intensification.Intensifier:
+    level: DEBUG
+    handlers: [file_handler, console]
+    propagate: false
+
+  dsmac.optimizer.local_search.LocalSearch:
+    level: DEBUG
+    handlers: [file_handler, console]
+    propagate: false
+
+  matplotlib:
+    level: INFO
+    handlers: [file_handler, console]
+    propagate: false
+
+  dsmac.optimizer.smbo.SMBO:
+    level: DEBUG
+    handlers: [file_handler, console]
+    propagate: false
+
+  ResourceManager.close_all:
+    level: DEBUG
+    handlers: [file_handler]
+    propagate: false
+
+  peewee:
+    level: INFO
+    handlers: [file_handler]
+    propagate: false
+
+  numexpr.utils:
+    level: INFO
+    handlers: [file_handler]
+    propagate: false
+
+  gensim.models.hdpmodel:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+
+  gensim.models.ldamodel:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+
+  gensim.models.lsimodel:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+
+  gensim.models.rpmodel:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+
+  gensim.corpora.dictionary:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false

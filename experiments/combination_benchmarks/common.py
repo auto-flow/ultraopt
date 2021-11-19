@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from ConfigSpace import Configuration, CategoricalHyperparameter, ConfigurationSpace
 from hyperopt import hp
+from optuna import Trial
 from ultraopt.hdl import hdl2cs
 
 
@@ -35,6 +36,9 @@ class BaseEvaluator():
         self.losses = []
 
     def call(self, config: dict):
+        raise NotImplementedError
+
+    def run_optuna(self, trial: Trial):
         raise NotImplementedError
 
     def __call__(self, config: Union[Configuration, dict]):
@@ -65,6 +69,12 @@ if benchmark in ["GB1", "PhoQ"]:
         def call(self, config: dict):
             return df2.loc["".join([config.get(f"X{i}") for i in range(4)]), 'loss']
 
+        def run_optuna(self, trial: Trial):
+            loss = df2.loc["".join([trial.suggest_categorical(f"X{i}", choices) for i in range(4)]), 'loss']
+            self.losses.append(loss)
+            return loss
+
+
 elif benchmark == "RNA":
     import RNA
 
@@ -77,6 +87,12 @@ elif benchmark == "RNA":
     class Evaluator(BaseEvaluator):
         def call(self, config: dict):
             return RNA.fold("".join([config.get(f"X{i}") for i in range(30)]))[1]
+
+        def run_optuna(self, trial: Trial):
+            loss = RNA.fold("".join([trial.suggest_categorical(f"X{i}", choices) for i in range(30)]))[1]
+            self.losses.append(loss)
+            return loss
+
 elif benchmark == "arylation":
     csv = 'All_CH_arylation_Experiments_Jay_12052019.csv'
     df = pd.read_csv(csv)

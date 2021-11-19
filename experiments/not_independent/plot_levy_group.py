@@ -14,26 +14,21 @@ benchmark = 'rosenbrock'
 
 info = {
     f"hyperopt_{benchmark}": ("HyperOpt-TPE", "purple",),
-    f"ultraopt_{benchmark}_multival": ("UltraOpt-ETPE", "b"),
-    f"bohb_{benchmark}": ("BOHB-KDE", "orange"),
+    f"ultraopt_{benchmark}": ("UltraOpt-ETPE", "orange"),
     f"ultraopt_{benchmark}_3": ("UltraOpt-ETPE_3", "r",),
-    f"optuna_{benchmark}_multival": ("Optuna-TPE", "g",),
-    f"random_{benchmark}": ("Random", "brown",),
-    # f"ultraopt_{benchmark}_6": ("UltraOpt-ETPE_6", "b",),
-    # f"ultraopt_{benchmark}_8": ("UltraOpt-ETPE_8", "k",),
+    f"ultraopt_{benchmark}_4": ("UltraOpt-ETPE_4", "g",),
+    f"ultraopt_{benchmark}_5": ("UltraOpt-ETPE_5", "brown",),
+    f"ultraopt_{benchmark}_6": ("UltraOpt-ETPE_6", "b",),
+    f"ultraopt_{benchmark}_8": ("UltraOpt-ETPE_8", "k",),
 }
 
-cls=benchmark[0].upper()+benchmark[1:]
-benchs=[f"{cls}{x}D" for x in range(2,21)]
-
-# benchs = list(json.loads(Path(f"{info.copy().popitem()[0]}.json").read_text()).keys())  # [:9]
+benchs = list(json.loads(Path(f"{info.copy().popitem()[0]}.json").read_text()).keys())  # [:9]
 
 cols = int(np.sqrt(len(benchs)))
 rows = int(np.ceil(len(benchs) / cols))
 # 设置字体样式
 plt.rcParams['font.family'] = 'YaHei Consolas Hybrid'
 plt.rcParams['figure.figsize'] = (30, 25)
-
 
 for log_scale in [False]:
     plt.close()

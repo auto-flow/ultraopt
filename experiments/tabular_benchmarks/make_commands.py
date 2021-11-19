@@ -13,7 +13,8 @@ import click
 def main(data_dir, n_iters):
     cmds = []
     pairs = [
-        ["ultraopt", "ETPE"],
+        ["bohb_kde", ""],
+        ["optuna", ""],
         # ["ultraopt", "Random"],
         # ["tpe", ""],
     ]
@@ -25,7 +26,7 @@ def main(data_dir, n_iters):
                     cmd += f"--optimizer {opt}"
                 cmds.append(cmd)
     # Path(f"commands.sh").write_text("\n".join(cmds))
-    Path(f"commands_etpe.sh").write_text("\n".join(cmds))
+    Path(f"commands.sh").write_text("\n".join(cmds))
 
 
 if __name__ == '__main__':

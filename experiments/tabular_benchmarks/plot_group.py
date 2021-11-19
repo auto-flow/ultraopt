@@ -9,23 +9,12 @@ import pandas as pd
 import pylab as plt
 
 info = {
-    "tpe": ("HyperOpt-TPE", "r",),
-    "ultraopt_ETPE": ("UltraOpt-ETPE", "g",),
-    # "ultraopt_ETPE_univar": ("UltraOpt-ETPE_univar", "k",),
-    # "hpbandster": ("hpbandster", "k",),
-    # "ultraopt_ETPE_univar_cat": ("UltraOpt-ETPE_univar_cat", "orange",),
-    # "ultraopt_ETPE_2": ("UltraOpt-ETPE-2", "orange",),
-    # "ultraopt_ETPE_3": ("UltraOpt-ETPE-3", "k",),
-    # "ultraopt_ETPE_8": ("UltraOpt-ETPE-8", "b",),
-    "ultraopt_ETPE_12": ("UltraOpt-ETPE-12", "orange",),
-    "ultraopt_ETPE_16": ("UltraOpt-ETPE-16", "purple",),
-    "ultraopt_ETPE_18": ("UltraOpt-ETPE-18", "k",),
-    # "ultraopt_ETPE_13": ("UltraOpt-ETPE-13", "k",),
-    # "smac": ("SMAC-0.10", "orange",),
-    # "smac_0.12": ("SMAC-0.12", "purple",),
-    # "ultraopt_Forest": ("UltraOpt-SMAC", "k",),
-    "ultraopt_Forest_local_search": ("UltraOpt-SMAC-local_search", "brown",),
-    "ultraopt_Random": ("Random", "b",),
+    "tpe": ("hyperopt-TPE", "purple",),
+    "ultraopt_ETPE_18_g3": ("ultraopt_ETPE_18_g3", "r",),
+    "ultraopt_ETPE_18_g4": ("ultraopt_ETPE_18_g4", "g",),
+    "ultraopt_ETPE_18_g5": ("ultraopt_ETPE_18_g5", "brown",),
+    "ultraopt_ETPE_18_g6": ("ultraopt_ETPE_18_g6", "b",),
+    "ultraopt_ETPE_18_g8": ("ultraopt_ETPE_18_g8", "k",),
 }
 plt.rcParams['font.family'] = 'YaHei Consolas Hybrid'
 plt.rcParams['figure.figsize'] = (12, 10)

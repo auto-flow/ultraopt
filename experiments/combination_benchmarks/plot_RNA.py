@@ -12,6 +12,8 @@ import pylab as plt
 info = {
     "hyperopt-TPE": ("hyperopt-TPE", "r",),
     "ultraopt-ETPE": ("ultraopt-ETPE", "g",),
+    "ultraopt-ETPE-ada": ("ultraopt-ETPE-ada", "purple",),
+
     # "ultraopt-SMAC": ("ultraopt-SMAC", "k",),
     "SMAC": ("SMAC", "k",),
     # "optuna-TPE-multi": ("optuna-TPE-multi", "k",),

@@ -47,7 +47,7 @@ class Levy1D(AbstractBenchmark):
                 'f_opt': 0.0}
 
 
-dimensions = list(range(2, 21))
+dimensions = list(range(2, 51))
 for d in dimensions:
     benchmark_string = """class Levy%dD(Levy1D):
     

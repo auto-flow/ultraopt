@@ -4,6 +4,7 @@
 # @Date    : 2020-12-15
 # @Contact    : qichun.tang@bupt.edu.cn
 from copy import deepcopy
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -12,8 +13,9 @@ from tabular_nn import EquidistanceEncoder
 from ultraopt.optimizer.base_opt import BaseOptimizer
 from ultraopt.tpe import SampleDisign
 from ultraopt.tpe.estimator import TreeParzenEstimator
-from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
 from ultraopt.transform.config_transformer import ConfigTransformer
+from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
+from ultraopt.utils.misc import content_to_dfMap
 
 
 class ETPEOptimizer(BaseOptimizer):
@@ -22,9 +24,12 @@ class ETPEOptimizer(BaseOptimizer):
             # TPE model related
             gamma=None, min_points_in_kde=2,
             multivariate=True,
-            embed_cat_var=True,
-            adaptive_multivariate=False,
-            corr_threshold=0.5,
+            embed_catVar=True,
+            # if config space is all joint and dim > 10, and hyperparameter are Homogeneous, use it
+            limit_max_groups='auto',
+            max_groups=3,  # optimal meta-parameter by a lot of experiments
+            optimize_each_varGroups=False,
+            # fixme : 这个超参和 limit_max_groups 机制都值得深入探究
             overlap_bagging_ratio=0,
             bw_method="scott", cv_times=100, kde_sample_weight_scaler=None,
             # several hyper-parameters
@@ -35,13 +40,18 @@ class ETPEOptimizer(BaseOptimizer):
             specific_sample_design=(
                     SampleDisign(ratio=0.1, is_random=True),
                     SampleDisign(ratio=0.2, bw_factor=3),
-                    # SampleDisign(ratio=0.3, bw_factor=4),
             ),
-            embedding_encoder="default"
+            # embedding
+            embedding_encoder="default",
+            pretrained_emb=None,
+            pretrained_emb_expire_iter=-1
     ):
         super(ETPEOptimizer, self).__init__()
+        self.pretrained_emb_expire_iter = pretrained_emb_expire_iter
+        self.optimize_each_varGroups = optimize_each_varGroups
+        self.max_groups = max_groups
         self.specific_sample_design = specific_sample_design
-        self.embed_cat_var = embed_cat_var
+        self.embed_catVar = embed_catVar
         assert isinstance(overlap_bagging_ratio, (int, float)) and 0 <= overlap_bagging_ratio <= 1
         self.overlap_bagging_ratio = overlap_bagging_ratio
         self.multivariate = multivariate
@@ -55,13 +65,19 @@ class ETPEOptimizer(BaseOptimizer):
             self.lambda_ = np.exp((1 / anneal_steps) * np.log(min_bw_factor / max_bw_factor))
         else:
             self.lambda_ = 1
+        if pretrained_emb is not None:
+            if isinstance(pretrained_emb, str):
+                pretrained_emb = content_to_dfMap(Path(pretrained_emb).read_text())
+        self.pretrained_emb = pretrained_emb
         self.min_n_candidates = min_n_candidates
-        self.MAX_TRY = 3
+        self.MAX_TRY = 3  # fixme: 硬编码
         self.min_points_in_model = min_points_in_model
         self._bw_factor = max_bw_factor
         self.sort_by_EI = sort_by_EI
         self.n_candidates_factor = n_candidates_factor
         self.n_candidates = n_candidates
+        self.limit_max_groups = limit_max_groups
+        self.max_groups = max_groups
         self.tpe = TreeParzenEstimator(
             gamma=gamma,
             min_points_in_kde=min_points_in_kde,
@@ -70,8 +86,9 @@ class ETPEOptimizer(BaseOptimizer):
             kde_sample_weight_scaler=kde_sample_weight_scaler,
             overlap_bagging_ratio=overlap_bagging_ratio,
             multivariate=multivariate,
-            embed_cat_var=embed_cat_var,
-            adaptive_multivariate=adaptive_multivariate
+            embed_catVar=embed_catVar,
+            limit_max_groups=limit_max_groups,
+            max_groups=max_groups
         )
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
@@ -89,7 +106,10 @@ class ETPEOptimizer(BaseOptimizer):
             encoder = self.embedding_encoder
         # todo: 如果自动构建了Embedding encoder， 后续需要保证initial point覆盖所有的类别
         # todo: auto_enrich_initial_points
-        self.config_transformer = ConfigTransformer(impute=None, encoder=encoder, multivariate=self.multivariate)
+
+        self.config_transformer = ConfigTransformer(
+            impute=None, encoder=encoder, pretrained_emb=self.pretrained_emb
+        )
         self.config_transformer.fit(config_space)
         if len(self.config_transformer.high_r_cols) == 0:
             self.config_transformer.encoder = None
@@ -121,6 +141,26 @@ class ETPEOptimizer(BaseOptimizer):
             self.logger.debug(f"Update min_points_in_model from {self.min_points_in_model} "
                               f"to {updated_min_points_in_model}")
             self.min_points_in_model = updated_min_points_in_model
+        # process 'limit_max_groups'
+        assert isinstance(self.limit_max_groups, (str, int))
+        if isinstance(self.limit_max_groups, (str)): assert self.limit_max_groups == 'auto'
+        if self.limit_max_groups == 'auto':
+            ct = self.config_transformer
+            # is high-dimension?
+            self.limit_max_groups = True
+            if ct.n_variables_embedded < 10:
+                self.limit_max_groups = False
+            # is all joint?
+            if ct.n_top_levels != ct.n_variables:
+                self.limit_max_groups = False
+            # is Homogeneous
+            is_Homogeneous = (int(ct.n_ordinal > 0) + int(ct.n_categorical > 0) + int(ct.n_numerical > 0)) == 1
+            if not is_Homogeneous:
+                self.limit_max_groups = False
+            signal = 'enable' if self.limit_max_groups else 'disable'
+            self.logger.info(f'{signal} limit_max_groups.')
+            if self.limit_max_groups:
+                assert self.max_groups >= 3
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
@@ -130,7 +170,8 @@ class ETPEOptimizer(BaseOptimizer):
                 sort_by_EI=self.sort_by_EI,
                 random_state=self.rng,
                 bandwidth_factor=self._bw_factor,
-                specific_sample_design=self.specific_sample_design
+                specific_sample_design=self.specific_sample_design,
+                optimize_each_varGroups=self.optimize_each_varGroups
             )
             for i, sample in enumerate(samples):
                 if self.is_config_exist(budget, sample):
@@ -208,6 +249,11 @@ class ETPEOptimizer(BaseOptimizer):
         X_obvs = self.config_transformer.transform(vectors)
         # TPE自适应分组联合概率的逻辑应该写在这
         self.budget2epm[budget] = epm.fit(X_obvs, losses)
+        # 预训练Embedding过期
+        if self.pretrained_emb_expire_iter > 0:
+            if len(self.budget2obvs[1]['losses']) > self.pretrained_emb_expire_iter and \
+                    isinstance(self.config_transformer.encoder, EmbeddingEncoder):
+                self.config_transformer.encoder.pretrained_emb = {}
 
     @property
     def has_embedding_encoder(self):
