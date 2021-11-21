@@ -4,6 +4,8 @@ __pycache__
 *.csv
 *.bz2
 venv
+！titanic_train.csv
+catboost_info
 *.json
 *.pdf
 *.png
