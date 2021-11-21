@@ -39,6 +39,7 @@ info = {
     # "ultraopt-ETPE-g3-pretrain2-expIter300": ("ETPE($\max |g|=3$,300)",["purple", "x", 'dashed']),
     # "ultraopt-ETPE-g3-pretrain2-expIter400": ("ETPE($\max |g|=3$,400)",["b", "x", 'dashed']),
     "ultraopt-ETPE-g3-pretrain2-expIter500": ("ETPE($\max |g|=3$,pretrain)",["k", "x", 'dashed']),
+    "ultraopt-ETPE-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,robust)",["purple", "x", 'dashed']),
     # "ultraopt-ETPE-g3-pretrain": ("ETPE($\max |g|=3$,pretrain)",["orange", "x", 'dashed']),
     # "ultraopt-ETPE-g3-pretrain2": ("ETPE($\max |g|=3$,pretrain2)",["purple", "x", 'dashed']),
 }

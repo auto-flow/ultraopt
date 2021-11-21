@@ -8,7 +8,8 @@ from typing import Optional, Union, List, Dict
 
 import numpy as np
 import pandas as pd
-from ConfigSpace import ConfigurationSpace, Constant, CategoricalHyperparameter, Configuration, OrdinalHyperparameter
+from ConfigSpace import ConfigurationSpace, Constant, CategoricalHyperparameter, \
+    Configuration, OrdinalHyperparameter, UniformFloatHyperparameter, UniformIntegerHyperparameter
 from ConfigSpace.util import deactivate_inactive_hyperparameters
 from sklearn.preprocessing import LabelEncoder
 from tabular_nn import EmbeddingEncoder
@@ -40,6 +41,7 @@ class ConfigTransformer():
         parent_values = []
         is_child = []
         n_variables_embedded_list = []
+        bounds_list = []  # 用于对边界效应纠偏
         # todo: 划分parents与groups
         for hp in config_space.get_hyperparameters():
             hp_name = hp.name
@@ -56,14 +58,24 @@ class ConfigTransformer():
                 if isinstance(hp, CategoricalHyperparameter):
                     n_choices = len(hp.choices)
                     n_choices_list.append(n_choices)
-                    if hp_name in self.pretrained_emb:
-                        df: pd.DataFrame = self.pretrained_emb[hp_name]
-                        assert set(df.index) == set(hp.choices), ValueError
-                        n_embeds = df.shape[0]
-                        df = df.loc[pd.Series(hp.choices), :]
-                        self.pretrained_emb[hp_name] = df.values
+                    # 确定n_embeds
+                    # 对于预训练的dfmap，顺便将其转化为array
+                    # 根据对类别变量的处理方式，处理bounds_list
+                    if n_choices == 2:
+                        n_embeds = 2
+                        bounds_list.append([-0.5, 1.5])  # 留出-q/2的缓冲
                     else:
-                        n_embeds = int(get_embed_dims(n_choices))  # avoid bug
+                        if hp_name in self.pretrained_emb:
+                            df: pd.DataFrame = self.pretrained_emb[hp_name]
+                            assert set(df.index) == set(hp.choices), ValueError
+                            n_embeds = df.shape[1]
+                            df = df.loc[pd.Series(hp.choices), :]
+                            self.pretrained_emb[hp_name] = df.values
+                        else:
+                            n_embeds = int(get_embed_dims(n_choices))
+                        # 离散转连续空间后，无法确定其边界，故不设置
+                        for i in range(n_embeds):
+                            bounds_list.append(None)
                     n_variables_embedded += n_embeds
                     n_variables_embedded_list.append(n_embeds)
                     n_categorical += 1
@@ -75,10 +87,26 @@ class ConfigTransformer():
                     n_ordinal += 1
                     is_ordinal_list.append(True)
                     sequence_mapper[len(is_ordinal_list) - 1] = hp.sequence
+                    # todo: 用神经网络来学习边距
+                    bounds_list.append(None)
                 else:
                     is_ordinal_list.append(False)
                 if not isinstance(hp, (CategoricalHyperparameter, OrdinalHyperparameter)):
                     n_numerical += 1
+                # fixme: 对log的q进行测试
+                if isinstance(hp, UniformFloatHyperparameter):
+                    q = hp.q
+                    if q is None:
+                        bounds_list.append([0, 1])
+                    else:
+                        q = 1 / ((hp.upper - hp.lower) / q)
+                        bounds_list.append([-q / 2, 1 + q / 2])
+                if isinstance(hp, UniformIntegerHyperparameter):
+                    q = hp.q
+                    if q is None:
+                        q = 1
+                    q = 1 / ((hp.upper - hp.lower) / q)
+                    bounds_list.append([-q / 2, 1 + q / 2])
                 cur_parents = config_space.get_parents_of(hp.name)
                 if len(cur_parents) == 0:
                     n_top_levels += 1
@@ -91,6 +119,7 @@ class ConfigTransformer():
                     parent_conditions = config_space.get_parent_conditions_of(hp.name)
                     parent_condition = parent_conditions[0]
                     parent_values.append(parent_condition.value)
+        # assert len(bounds_list)==n_variables_embedded
         groups_str = [f"{parent}-{parent_value}" for parent, parent_value in zip(parents, parent_values)]
         group_encoder = LabelEncoder()
         groups = group_encoder.fit_transform(groups_str)
@@ -111,15 +140,16 @@ class ConfigTransformer():
         self.n_constants = n_constants
         self.n_variables = n_variables
         self.n_variables_embedded = n_variables_embedded
+        self.bounds_list = bounds_list
         self.n_top_levels = n_top_levels
         self.hp_names = pd.Series([hp.name for hp in config_space.get_hyperparameters()])[self.mask]
         high_r_mask = np.array(self.n_choices_list) > 2
         self.high_r_cols = self.hp_names[high_r_mask].to_list()
         self.high_r_cats = []
-        for i,ix in enumerate(np.arange(n_variables)[high_r_mask]):
+        for i, ix in enumerate(np.arange(n_variables)[high_r_mask]):
             n_choices = n_choices_list[ix]
             cat = list(range(n_choices))
-            if is_child[ix]: # 处理缺失值
+            if is_child[ix]:  # 处理缺失值
                 cat.insert(0, -1)
             self.high_r_cats.append(cat)
             if self.high_r_cols[i] in self.pretrained_emb:
@@ -127,7 +157,7 @@ class ConfigTransformer():
         if self.encoder is not None:
             self.encoder.cols = copy(self.high_r_cols)
             self.encoder.categories = copy(self.high_r_cats)
-            self.encoder.pretrained_emb=self.pretrained_emb
+            self.encoder.pretrained_emb = self.pretrained_emb
         self.embedding_encoder_history = []
         return self
 

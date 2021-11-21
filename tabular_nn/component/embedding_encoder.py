@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 from pandas.core.dtypes.common import is_numeric_dtype
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.impute import SimpleImputer
 from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import StandardScaler
@@ -32,7 +33,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def __init__(
             self,
             cols=None,
-            # return_df=True,
             lr=1e-2,
             max_epoch=25,
             A=10,
@@ -49,8 +49,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             copy=True,
             budget=10,
             early_stopping_rounds=10,
-            # warm_start=False,
-            # accepted_samples=30,
             update_epoch=5,
             update_accepted_samples=10,
             update_used_samples=100,
@@ -161,17 +159,21 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
 
     def _fit(self, X: pd.DataFrame, y: np.ndarray):
         # fixme: 借助其他变量，不仅仅是cat
+        all_cols = X.columns
+        cont_cols = np.setdiff1d(all_cols, self.cols)
         X_cat = X[self.cols]
-        X_impute = self.imputer.fit_transform(X_cat)
-        X_ordinal = self.ordinal_encoder.transform(X_impute)
+        X_cont = X[cont_cols]
+        X_cat_imputed = self.imputer.fit_transform(X_cat)
+        X_cat_proc = self.ordinal_encoder.transform(X_cat_imputed)
         if self.n_uniques is None:
             self.n_uniques = np.array([len(categories) for categories in self.ordinal_encoder.categories_])
         if self.normalize:
             y = self.scaler.transform(y[:, None]).flatten()
         # 2. train_entity_embedding_nn
+        self.model=EntityEmbeddingNN(self.n_uniques,X_cont.shape[1])
         self.model = self.trainer.train(
-            self.model, EntityEmbeddingNN, X_ordinal, y, None, None,
-            self.callback, n_uniques=self.n_uniques
+            self.model, np.hstack([X_cat_proc, X_cont]), y, None, None,
+            self.callback
         )
 
     def fit(self, X, y=None, **kwargs):
@@ -242,10 +244,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         X_embeds, _ = self.model(X_ordinal)
         X_embeds = [X_embed.detach().numpy() for X_embed in X_embeds]
         for i, n_unique in enumerate(self.n_uniques):
-            col=self.cols[i]
+            col = self.cols[i]
             X_embeds[i] = X_embeds[i][:n_unique, :]
             if col in self.pretrained_emb:
-                X_embeds[i]=self.pretrained_emb[col]
+                X_embeds[i] = self.pretrained_emb[col]
         return X_embeds
 
     def get_origin_transform_matrix(self, transform_matrix: List[np.ndarray]):
@@ -322,9 +324,9 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         X_embeds_mapper = {}
         for i, column in enumerate(self.cols):
             if column in self.pretrained_emb:
-                emb_table=np.array(self.pretrained_emb[column])
-                emb=emb_table[X_ordinal[:,i],:]
-                X_embeds_mapper[column] =emb
+                emb_table = np.array(self.pretrained_emb[column])
+                emb = emb_table[X_ordinal[:, i], :]
+                X_embeds_mapper[column] = emb
             else:
                 X_embeds_mapper[column] = X_embeds[i]
         isna_mapper = {column: isna[:, i] for i, column in enumerate(subtracted_cols)}

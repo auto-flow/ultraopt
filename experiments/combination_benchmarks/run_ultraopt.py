@@ -72,7 +72,7 @@ fname = f'results/ultraopt-ETPE'
 if limit_max_groups:
     fname += f"-g{max_groups}"
 if use_pretrain:
-    fname += f"-pretrain2"
+    fname += f"-pretrain3"
 else:
     fname += f"-noPretrain"
 fname += f"-expIter{pretrained_emb_expire_iter}"

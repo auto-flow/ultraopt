@@ -39,29 +39,22 @@ class Trainer():
 
     def train(
             self,
-            init_model, nn_cls,
+            init_model,
             X: np.ndarray,
             y: np.ndarray,
             X_valid: Optional[np.ndarray] = None,
             y_valid: Optional[np.ndarray] = None,
             callback: Optional[Callable[[int, nn.Module, np.ndarray, np.ndarray, np.ndarray, np.ndarray], bool]] = None,
-            **kwargs
     ):
         torch.manual_seed(self.rng.randint(0, 10000))
         torch.set_num_threads(self.n_jobs)
-        self.parsing_kwargs(X, y, kwargs)
         if self.n_class is None:
             if type_of_target(y.astype("float")) == "continuous":
                 self.n_class = 1
             else:
                 self.n_class = np.unique(y).size
 
-        nn_params = dict(self.nn_params)
-        if init_model is None:
-            tnn: nn.Module = self.instancing_nn(
-                nn_cls, nn_params, self.n_class)
-        else:
-            tnn = init_model
+        tnn = init_model
         if self.optimizer == "adam":
             nn_optimizer = torch.optim.Adam(tnn.parameters(), lr=self.lr)
         elif self.optimizer == "sgd":
@@ -115,11 +108,6 @@ class Trainer():
         tnn.eval()
         return tnn
 
-    def instancing_nn(self, nn_cls, nn_params, n_class):
-        return nn_cls(n_class=n_class, **nn_params)
-
-    def parsing_kwargs(self, X, y, kwargs):
-        pass
 
     def get_output(self, model, array):
         return model(array)

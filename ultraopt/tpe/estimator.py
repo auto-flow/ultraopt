@@ -13,12 +13,12 @@ import pandas as pd
 from ConfigSpace import Configuration
 from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
-from sklearn.neighbors import KernelDensity
 from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.utils import check_random_state
 from ultraopt.tpe import top15_gamma, SampleDisign
+# from ultraopt.tpe.kernel_density import MultivariateKernelDensity
+from ultraopt.tpe.kernel_density import NormalizedKernelDensity
 from ultraopt.tpe.kernel_density import UnivariateCategoricalKernelDensity
-from ultraopt.tpe.nn_projector import NN_projector
 from ultraopt.transform.config_transformer import ConfigTransformer
 from ultraopt.utils.config_space import add_configs_origin, sample_configurations
 from ultraopt.utils.hash import get_hash_of_array
@@ -101,50 +101,35 @@ class TreeParzenEstimator(BaseEstimator):
         overlap_key2idxs = {k: np.array(v) for k, v in key2idxs.items()}
         return overlap_key2idxs
 
-    def estimate_group_kde(self, active_X, active_y, nn_projector=None, uni_cat=0) -> Tuple[object, object]:
+    def estimate_group_kde(self, active_X, active_y, bounds, uni_cat=0) \
+            -> Tuple[object, object]:
         if active_X.shape[0] < 4:  # at least have 4 samples
             return None, None
-        N, M = active_X.shape
+        N, D = active_X.shape
         # Each KDE contains at least 2 samples
         n_good = self.gamma(N)
         if n_good < self.min_points_in_kde or \
                 N - n_good < self.min_points_in_kde:
             # Too few observation samples
             return None, None
-        if nn_projector is not None and \
-                active_X.shape[1] > 3 and active_X.shape[0] > nn_projector.n_bins_in_y:
-            # 通过线性变换映射到一个新空间中
-            X_proj = nn_projector.fit_transform(active_X, active_y)
-        else:
-            X_proj = active_X
+        X_proj = active_X
         idx = np.argsort(active_y)
         X_good = X_proj[idx[:n_good]]
         X_bad = X_proj[idx[n_good:]]
         y_good = -active_y[idx[:n_good]]
-        from ultraopt.tpe import estimate_bw
-        sample_weight = None
-        if self.kde_sample_weight_scaler is not None and y_good.std() != 0:
-            if self.kde_sample_weight_scaler == "normalize":
-                scaled_y = (y_good - y_good.mean()) / y_good.std()
-                scaled_y -= np.min(scaled_y)
-                scaled_y /= np.max(scaled_y)
-                scaled_y += 0.5
-                sample_weight = scaled_y
-            elif self.kde_sample_weight_scaler == "std-exp":
-                scaled_y = (y_good - y_good.mean()) / y_good.std()
-                sample_weight = np.exp(scaled_y)
-            else:
-                raise ValueError(f"Invalid kde_sample_weight_scaler '{self.kde_sample_weight_scaler}'")
         if uni_cat:
             klass = UnivariateCategoricalKernelDensity
         else:
-            klass = KernelDensity
-            # klass = NormalizedKernelDensity
+            # klass = MultivariateKernelDensity
+            klass = NormalizedKernelDensity
+        # todo: sample weight
+        good_kde, bad_kde = klass(), klass()
+        if hasattr(good_kde, 'set_bounds'): good_kde.set_bounds(bounds)
+        if hasattr(bad_kde, 'set_bounds'): bad_kde.set_bounds(bounds)
         return (
-            klass(bandwidth=estimate_bw(X_good)).fit(X_good, sample_weight=sample_weight),
-            klass(bandwidth=estimate_bw(X_bad)).fit(X_bad)
+            good_kde.fit(X_good),
+            bad_kde.fit(X_bad)
         )
-
 
     def cluster_algo_1(self, cur_X, spearman_corr):
         M = cur_X.shape[1]
@@ -330,6 +315,7 @@ class TreeParzenEstimator(BaseEstimator):
             self.groups, self.n_groups = np.array(groups), n_groups
 
     def fit(self, X: np.ndarray, y: np.ndarray):
+        N, D = X.shape
         if self.n_groups is None:
             self.calc_variable_groups(X, y)
         elif self.group_step % 10 == 0:
@@ -342,41 +328,20 @@ class TreeParzenEstimator(BaseEstimator):
         self.good_kde_groups = [None] * self.n_groups
         self.bad_kde_groups = self.good_kde_groups[:]
         # todo: 不每次都拟合一个NN
-        self.nn_projectors = [NN_projector() for _ in range(self.n_groups)]
-
-        # for debug
-        '''
-        def topk_avg_dist(k):
-            from scipy.spatial.distance import euclidean
-            N, M = X.shape
-            # n_good = round(N*gamma)
-            n_good = k
-            idx = np.argsort(y)
-            X_good = X[idx[:n_good]]
-            X_bad = X[idx[n_good:]]
-            # 计算X_good见点与点的平均距离
-            d = 0
-            for i in range(n_good):
-                for j in range(i + 1, n_good):
-                    d += euclidean(X_good[i, :], X_good[j, :])
-            d /= (n_good * (n_good - 1) / 2)
-            return d
-
-        print(5, topk_avg_dist(5))
-        print(4, topk_avg_dist(4))
-        print(3, topk_avg_dist(3))
-        print()
-        '''
         # end for debug
+        bounds_list = self.config_transformer.bounds_list
+        assert len(bounds_list) == D
         for group in range(self.n_groups):
             group_mask = self.groups == group
             grouped_X = X[:, group_mask]
+            grouped_bounds = [bounds_list[i] for i in range(D) if self.groups[i] == group]
             inactive_mask = np.isnan(grouped_X[:, 0])
             active_X = grouped_X[~inactive_mask, :]
             active_y = y[~inactive_mask]
             self.good_kde_groups[group], self.bad_kde_groups[group] = \
                 self.estimate_group_kde(
                     active_X, active_y,
+                    grouped_bounds,
                     uni_cat=n_choices_list[group] if not self.embed_catVar else 0
                     # self.nn_projectors[group]
                 )
@@ -392,8 +357,8 @@ class TreeParzenEstimator(BaseEstimator):
         good_log_pdf = np.zeros([X.shape[0], n_groups], dtype="float64")
         bad_log_pdf = deepcopy(good_log_pdf)
         groups = self.groups
-        for group, (good_kde, bad_kde, nn_projector) in \
-                enumerate(zip(self.good_kde_groups, self.bad_kde_groups, self.nn_projectors)):
+        for group, (good_kde, bad_kde) in \
+                enumerate(zip(self.good_kde_groups, self.bad_kde_groups)):
             if (good_kde, bad_kde) == (None, None):
                 continue
             group_mask = groups == group
@@ -406,7 +371,7 @@ class TreeParzenEstimator(BaseEstimator):
             if np.any(pd.isna(active_X)):
                 self.logger.warning("ETPE contains nan, mean impute.")
                 active_X = SimpleImputer(strategy="mean").fit_transform(active_X)
-            X_proj = nn_projector.transform(active_X)
+            X_proj = active_X
             good_log_pdf[~inactive_mask, group] = self.good_kde_groups[group].score_samples(X_proj)
             bad_log_pdf[~inactive_mask, group] = self.bad_kde_groups[group].score_samples(X_proj)
             # if N_deactivated > 0 and self.fill_deactivated_value:
@@ -423,49 +388,12 @@ class TreeParzenEstimator(BaseEstimator):
             return good_log_pdf - bad_log_pdf
         return good_log_pdf.sum(axis=1) - bad_log_pdf.sum(axis=1)
 
-    def predict_overlap_multivariant(self, X: np.ndarray):
-        overlap_key2idxs = self.calc_overlap(X)
-        N = X.shape[0]
-        prediction = np.array([np.nan] * N)
-        for mask_tuple, idx in overlap_key2idxs.items():
-            if self.maskTuple_to_overlapKdePairs.get(mask_tuple, (None, None)) == (None, None):
-                continue
-            good_kde, bad_kde = self.maskTuple_to_overlapKdePairs[mask_tuple]
-            active_X = X[idx, :][:, np.array(mask_tuple).astype(bool)]
-            prediction[idx] = good_kde.score_samples(active_X) - bad_kde.score_samples(active_X)
-        return prediction
-
     def predict(self, X: np.ndarray):
-        # 不能重叠多变量估计，直接返回 分组联合概率估计
-        if not self.can_overlap_multivariant_:
-            return self.predict_group_multivariant(X)
-        group_multivariant_EI = self.predict_group_multivariant(X)
-        # print(group_multivariant_EI)
-        overlap_multivariant_EI = self.predict_overlap_multivariant(X)
-        overlap_variant_occur = (np.count_nonzero(pd.isna(overlap_multivariant_EI)) < X.shape[0])
-        occur_mask = (~pd.isna(overlap_multivariant_EI))
-        # if overlap_variant_occur:
-        # group_occur_EI = group_multivariant_EI[occur_mask]
-        # overlap_occur_EI = overlap_multivariant_EI[occur_mask]
-        # group_mean, group_std = np.mean(group_occur_EI), np.std(group_occur_EI)
-        # group_min, group_max = np.min(group_occur_EI), np.max(group_occur_EI)
-        # overlap_mean, overlap_std = np.mean(overlap_occur_EI), np.std(overlap_occur_EI)
-        # overlap_min, overlap_max = np.min(overlap_occur_EI), np.max(overlap_occur_EI)
-        # # overlap_multivariant_EI[occur_mask] -= overlap_mean
-        # # overlap_multivariant_EI[occur_mask] /= overlap_std
-        # # overlap_multivariant_EI[occur_mask] *= group_std
-        # # overlap_multivariant_EI[occur_mask] += group_mean
-        # overlap_multivariant_EI[occur_mask] -= overlap_min
-        # overlap_multivariant_EI[occur_mask] /= (overlap_max - overlap_min)
-        # overlap_multivariant_EI[occur_mask] *= (group_max - group_min)
-        # overlap_multivariant_EI[occur_mask] += group_min
-        overlap_multivariant_EI[~occur_mask] = group_multivariant_EI[~occur_mask]
-        p = self.overlap_bagging_ratio
-        assert 0 <= p <= 1
-        return np.log(np.exp(overlap_multivariant_EI) * p + np.exp(group_multivariant_EI) * (1 - p))
+        return self.predict_group_multivariant(X)
 
     def __sample(self, n_candidates, random_state, bandwidth_factor,
                  is_random_sample, optimize_each_varGroups):
+        # todo: 用CMA-ES采样
         # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html#sklearn.neighbors.KernelDensity
         if n_candidates <= 0: return []
         if is_random_sample:
@@ -481,17 +409,15 @@ class TreeParzenEstimator(BaseEstimator):
                 return sample_configurations(self.config_transformer.config_space, n_candidates)
             sampled_matrix = np.zeros([n_candidates, len(self.groups)])
             for group, good_kde in enumerate(self.good_kde_groups):
-                nn_projector = self.nn_projectors[group]
                 group_mask = groups == group
                 if good_kde:
                     # KDE采样
                     bw = good_kde.bandwidth
-                    prev_bw = bw
+                    prev_bw = deepcopy(bw)
                     bw *= bandwidth_factor
                     good_kde.set_params(bandwidth=bw)
                     result = good_kde.sample(n_candidates, random_state=random_state)
                     # 从采样后的空间恢复到原来的空间中
-                    result = nn_projector.inverse_transform(result)
                     good_kde.set_params(bandwidth=prev_bw)
                 else:
                     # 随机采样(0-1)
