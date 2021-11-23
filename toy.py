@@ -3,6 +3,8 @@
 # @Author  : qichun tang
 # @Date    : 2021-11-12
 # @Contact    : qichun.tang@bupt.edu.cn
+import logging
+
 import numpy as np
 import pandas as pd
 from catboost import CatBoostClassifier
@@ -16,8 +18,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler, StandardScaler
 from sklearn.svm import LinearSVC
+from tabular_nn import EmbeddingEncoder
+from ultraopt.utils.logging_ import setup_logger
 from xgboost import XGBClassifier
 
+setup_logger()
+logging.basicConfig(level=logging.INFO)
 MLPClassifier()
 
 from wrap_lightgbm import LGBMClassifier
@@ -100,25 +106,17 @@ def softmax(df):
 
 HDL = {
     "model(choice)": {
-        # "LR-std-l1-liblinear": {"C": C},
-        # "LR-std-l2-lbfgs": {"C": C},
-        # "LR-std-l2-liblinear": {"C": C},
-        # "LR-std-l2-saga": {"C": C},
-        # "LR-std-l2": {"C": C},
-        # "LR-minmax-l2-lbfgs": {"C": C},
-        # "LR-minmax-l2-liblinear": {"C": C},
-        # "LR-minmax-l2-saga": {"C": C},
-        # "LR-minmax-l2": {"C": C},
-        "LR-minmax-l1": {"C": C},
+        "LR-std-l2": {"C": C},
         "LR-std-l1": {"C": C},
-        # "LSVM-std-l1": {"C": C},
-        # "LSVM-std-l2": {"C": C},
-        # "LR-minmax-l2": {"C": C},
-        # "LSVM-minmax-l1": {"C": C},
-        # "LSVM-minmax-l2": {"C": C},
+        "LR-minmax-l1": {"C": C},
+        "LR-minmax-l2": {"C": C},
+        "LSVM-std-l1": {"C": C},
+        "LSVM-std-l2": {"C": C},
+        "LSVM-minmax-l1": {"C": C},
+        "LSVM-minmax-l2": {"C": C},
         # "MLP-adam": dict(**mlp_kwargs),
         # "MLP-sgd": dict(**mlp_kwargs),
-        # "KNN-l1": {"n_neighbors": {"_type": "int_quniform", "_value": [3, 7, 1]}},
+        "KNN-l1": {"n_neighbors": {"_type": "int_quniform", "_value": [3, 7, 1]}},
         "KNN-l2": {"n_neighbors": {"_type": "int_quniform", "_value": [3, 7, 1]}},
         "LGBM-gbdt": dict(**lgbm_kwargs),
         "LGBM-dart": dict(**lgbm_kwargs),
@@ -147,6 +145,7 @@ class Evaluator():
         scaler = None
         linear_model = False
         model_name = None
+        model_type=0
         if AS.startswith('LR') or AS.startswith('LSVM'):
             # model_name, scale_name, reg_method, solver = AS.split('-')
             # HP['solver'] = solver
@@ -164,14 +163,7 @@ class Evaluator():
                     dual=False,
                 ))
             linear_model = True
-        elif AS.startswith('MLP'):
-            # active_func = AS.split('-')[-1]
-            cls = MLPClassifier
-            scaler = StandardScaler()
-            linear_model = True
-            HP['hidden_layer_sizes'] = (HP.pop('hidden_layer_size'),)
-            HP['solver'] = AS.split('-')[-1]
-            HP['max_iter'] = 100
+            model_type=0
         elif AS.startswith("KNN"):
             p = AS.split('-')[-1]
             cls = KNeighborsClassifier
@@ -179,15 +171,19 @@ class Evaluator():
             linear_model = True
             HP.pop('random_state')
             HP['p'] = int(p[-1])
+            model_type = 3
         elif AS.startswith('LGBM'):
             boosting_type = AS.split('-')[-1]
             HP.update(boosting_type=boosting_type, n_estimators=100)
             cls = LGBMClassifier
+            model_type = 1
         elif AS == "XGBoost":
             cls = XGBClassifier
             HP.update(n_estimators=100)
+            model_type = 1
         elif AS == "CatBoost":
             cls = CatBoostClassifier
+            model_type = 1
         elif AS.startswith('RF') or AS.startswith('ET'):
             model_name, bag_type = AS.split('-')
             cls = RandomForestClassifier if model_name == "RF" else ExtraTreesClassifier
@@ -196,6 +192,7 @@ class Evaluator():
             else:
                 HP['bootstrap'] = False
             HP['n_estimators'] = 100
+            model_type = 2
         else:
             raise NotImplementedError
         model = cls(**HP)
@@ -220,7 +217,12 @@ class Evaluator():
         log_loss_score = log_loss(y_test, y_prob)
         y_pred = np.argmax(y_prob, axis=1)
         f1 = f1_score(y_test, y_pred)
-        return 1 - f1
+        return {
+            'loss':1 - f1,
+            'nn_info':{
+                'model_type':model_type
+            }
+        }
 
 
 evaluator = Evaluator()
@@ -229,18 +231,22 @@ from ultraopt.optimizer import ETPEOptimizer
 import os
 
 os.environ['MAX_DIM'] = '3'
-opt = ETPEOptimizer(min_points_in_model=20)
+ee_encoder = EmbeddingEncoder(
+    max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=2,
+)
+opt = ETPEOptimizer(min_points_in_model=200, embedding_encoder=ee_encoder)
 
-ret = fmin(evaluator, HDL, opt, n_iterations=100)
+ret = fmin(evaluator, HDL, opt, n_iterations=200,auto_identify_serial_strategy=True)
 df_pair = ret.optimizer.config_transformer.embedding_encoder_history[-1][1]
-df_emb = df_pair[0]
+df_emb = df_pair['model:__choice__']
 names = list(df_emb.index)
-from sklearn.manifold import TSNE
 import pylab as plt
+
 plt.rcParams['figure.figsize'] = (8, 6)
 from sklearn.decomposition import PCA
+
 if df_emb.shape[1] > 2:
-    X_emb = PCA(n_components=2,random_state=0,whiten=True).fit_transform(df_emb)
+    X_emb = PCA(n_components=2, random_state=0, whiten=True).fit_transform(df_emb)
 
     # X_emb = TSNE().fit_transform(df_emb)
 else:
@@ -249,9 +255,10 @@ for i, name in enumerate(names):
     x, y = X_emb[i, :]
     plt.scatter(x, y)
     plt.annotate(name, (x, y))
-plt.xlim(-2.5,3)
-plt.ylim(-2.5,3)
+plt.xlim(-2.5, 3)
+plt.ylim(-2.5, 3)
 plt.show()
 df_emb.to_csv('emb_ans.csv')
-# plt.legend()
+print(ret.optimizer.embedding_encoder.model.cont_scaler.weight)
+print(ret.optimizer.embedding_encoder.model.cont_scaler.running_mean)
 print(ret)

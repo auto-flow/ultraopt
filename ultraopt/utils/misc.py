@@ -64,6 +64,25 @@ def dump_checkpoint(optimizer, checkpoint_file):
         shutil.move(checkpoint_file, checkpoint_file_bak)
     dump(optimizer, checkpoint_file)
 
+def parse_eval_func_info(loss_info):
+    if isinstance(loss_info, float):
+        loss = loss_info
+        nn_info = {}
+    elif isinstance(loss_info, dict):
+        loss = loss_info['loss']
+        nn_info = loss_info.get('nn_info', {})
+    elif loss_info is None:
+        loss = 65535
+        nn_info = {}
+    else:
+        raise NotImplementedError
+    result = {
+        "loss": loss,
+        'nn_info': nn_info
+    }
+    return result
+
+PREFIX = 'table | '
 
 def dfMap_to_content(df_map: Dict[str, pd.DataFrame]):
     content = ""
@@ -96,4 +115,3 @@ def content_to_dfMap(content: str):
     return df_map
 
 
-PREFIX = 'table | '

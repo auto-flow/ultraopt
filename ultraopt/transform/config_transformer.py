@@ -161,11 +161,11 @@ class ConfigTransformer():
         self.embedding_encoder_history = []
         return self
 
-    def fit_encoder(self, vectors, losses=None):
+    def fit_encoder(self, vectors, label=None):
         vectors = vectors[:, self.mask]
         df = pd.DataFrame(vectors, columns=self.hp_names)
         if self.encoder is not None:
-            self.encoder.fit(df, losses)
+            self.encoder.fit(df, label)
             if not isinstance(self.encoder, EmbeddingEncoder):
                 return
             if not self.embedding_encoder_history or \

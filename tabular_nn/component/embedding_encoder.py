@@ -13,11 +13,9 @@ import numpy as np
 import pandas as pd
 from pandas.core.dtypes.common import is_numeric_dtype
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.impute import SimpleImputer
 from sklearn.metrics import r2_score, accuracy_score
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import StandardScaler
-from sklearn.utils import check_array
 from sklearn.utils._random import check_random_state
 from sklearn.utils.multiclass import type_of_target
 from tabular_nn.component.equidistance import EquidistanceEncoder
@@ -45,11 +43,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             class_weight=None,
             batch_size=1024,
             optimizer="adam",
-            normalize=True,
+            # normalize=True,
             copy=True,
-            budget=10,
             early_stopping_rounds=10,
-            update_epoch=5,
+            update_epoch=10,
             update_accepted_samples=10,
             update_used_samples=100,
     ):
@@ -59,8 +56,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         # self.accepted_samples = accepted_samples
         # self.warm_start = warm_start
         self.early_stopping_rounds = early_stopping_rounds
-        self.budget = budget
-        self.normalize = normalize
         self.copy = copy
         self.optimizer = optimizer
         self.batch_size = batch_size
@@ -91,7 +86,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.trainer = TrainEntityEmbeddingNN(
             lr=self.lr,
             max_epoch=self.max_epoch,
-            n_class=None,
             nn_params=self.nn_params,
             random_state=self.rng,
             batch_size=batch_size,
@@ -99,12 +93,11 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             n_jobs=self.n_jobs,
             class_weight=class_weight
         )
-        self.scaler = StandardScaler(copy=True)
+        self.label_scaler = StandardScaler(copy=True)
         self.keep_going = False
         self.iter = 0
         self.is_classification = None
         self.samples_db = [pd.DataFrame(), np.array([])]
-        self.final_observations = self.get_initial_final_observations()
         self.n_uniques = None
         self.transform_matrix = None
         self.stage = ""
@@ -122,7 +115,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.pretrained_emb = {}
 
     def get_initial_final_observations(self):
-        return [pd.DataFrame(), np.array([])]
+        return [pd.DataFrame(), np.zeros([0, self.n_labels])]
 
     def init_variables(self):
         self.learning_curve = [
@@ -149,13 +142,21 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         # 1. use sklearn's OrdinalEncoder convert categories to int
         X_cat = X[self.cols]
         X_impute = self.imputer.fit_transform(X_cat)
+        self.n_labels = y.shape[1]
+        self.label_reg_mask = []
+        self.clf_n_classes = []
+        for i in range(self.n_labels):
+            if (type_of_target(y[:, i]) == "continuous"):
+                self.label_reg_mask.append(True)
+            else:
+                self.clf_n_classes.append(int(y[:, i].max() + 1))
+                self.label_reg_mask.append(False)
+        self.label_reg_mask = np.array(self.label_reg_mask)
         self.ordinal_encoder.fit(X_impute)  # fixme
         self.is_classification = (type_of_target(y) != "continuous")
-        if self.normalize and self.is_classification:
-            self.normalize = False
-        if self.normalize:
-            self.scaler.fit(y[:, None])
+        self.label_scaler.fit(y[:, self.label_reg_mask])
         self.fitted = True
+        self.model = None
 
     def _fit(self, X: pd.DataFrame, y: np.ndarray):
         # fixme: 借助其他变量，不仅仅是cat
@@ -163,24 +164,31 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         cont_cols = np.setdiff1d(all_cols, self.cols)
         X_cat = X[self.cols]
         X_cont = X[cont_cols]
+        self.n_cont_variables = X_cont.shape[1]
         X_cat_imputed = self.imputer.fit_transform(X_cat)
         X_cat_proc = self.ordinal_encoder.transform(X_cat_imputed)
         if self.n_uniques is None:
             self.n_uniques = np.array([len(categories) for categories in self.ordinal_encoder.categories_])
-        if self.normalize:
-            y = self.scaler.transform(y[:, None]).flatten()
+        y[:, self.label_reg_mask] = self.label_scaler.transform(y[:, self.label_reg_mask])
         # 2. train_entity_embedding_nn
-        self.model=EntityEmbeddingNN(self.n_uniques,X_cont.shape[1])
+        if self.model is None:
+            self.model = EntityEmbeddingNN(
+                self.n_uniques, X_cont.shape[1],
+                n_class=int(np.sum(self.label_reg_mask) + np.sum(self.clf_n_classes)))
         self.model = self.trainer.train(
             self.model, np.hstack([X_cat_proc, X_cont]), y, None, None,
-            self.callback
+            label_reg_mask=self.label_reg_mask,
+            clf_n_classes=self.clf_n_classes
         )
 
-    def fit(self, X, y=None, **kwargs):
+    def fit(self, X, y: np.ndarray = None, **kwargs):
         self.init_variables()
         # first check the type
         X = util.convert_input(X)
-        y = check_array(y, ensure_2d=False)
+        if not isinstance(y, np.ndarray):
+            y = np.array(y)
+        if y.ndim == 1:
+            y = y[:, np.newaxis]
         # fixme : 默认是warm start的
         self._dim = X.shape[1]
         if len(self.cols) == 0:
@@ -195,22 +203,24 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         if self.is_initial_fit:
             self.trainer.max_epoch = self.max_epoch
             self._fit(X, y)
-            self.samples_db[0] = pd.concat([self.samples_db[0], X], axis=0).reset_index(drop=True)
-            self.samples_db[1] = np.hstack([self.samples_db[1], y])
+            self.samples_db[0] = X
+            self.samples_db[1] = y
             self.transform_matrix = self.get_transform_matrix()
             self.transform_matrix_status = "Updated"
             self.stage = "Initial fitting"
             self.is_initial_fit = False
-            # todo early_stopping choose best model
+            self.final_observations = self.get_initial_final_observations()
+
+            # todo : early_stopping choose best model
         else:
             self.model.max_epoch = 0
             self.trainer.max_epoch = self.update_epoch
             # update final_observations
             self.final_observations[0] = pd.concat([self.final_observations[0], X], axis=0).reset_index(drop=True)
-            self.final_observations[1] = np.hstack([self.final_observations[1], y])
+            self.final_observations[1] = np.vstack([self.final_observations[1], y])
             observations = self.final_observations[0].shape[0]
             if observations < self.update_accepted_samples:
-                self.logger.info(f"only have {observations} observations, didnt training model.")
+                self.logger.debug(f"only have {observations} observations, didnt training model.")
                 self.transform_matrix_status = "No Updated"
                 # stage and transform_matrix dont update
             else:
@@ -218,13 +228,13 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 indexes = self.rng.choice(np.arange(self.samples_db[0].shape[0]), n_used_samples, False)
                 # origin samples_db + final_observations -> X, y
                 X_ = pd.concat([self.samples_db[0].loc[indexes, :], self.final_observations[0]]).reset_index(drop=True)
-                y_ = np.hstack([self.samples_db[1][indexes], self.final_observations[1]])
+                y_ = np.vstack([self.samples_db[1][indexes], self.final_observations[1]])
                 # fitting (using previous model)
                 self._fit(X_, y_)
                 # update samples_db by final_observations
                 self.samples_db[0] = pd.concat([self.samples_db[0], self.final_observations[0]], axis=0). \
                     reset_index(drop=True)
-                self.samples_db[1] = np.hstack([self.samples_db[1], self.final_observations[1]])
+                self.samples_db[1] = np.vstack([self.samples_db[1], self.final_observations[1]])
                 # clear final_observations
                 self.final_observations = self.get_initial_final_observations()
                 self.refit_times += 1
@@ -234,6 +244,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
 
         return self
 
+    def fake_input(self, X_cat_proc):
+        N = X_cat_proc.shape[0]
+        return np.hstack([X_cat_proc, np.zeros([N, self.n_cont_variables])])
+
     def get_transform_matrix(self) -> List[np.ndarray]:
         # todo: 测试多个离散变量字段的情况
         N = self.n_uniques.max()
@@ -241,7 +255,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         X_ordinal = np.zeros([N, M])
         for i, n_unique in enumerate(self.n_uniques):
             X_ordinal[:, i][:n_unique] = np.arange(n_unique)
-        X_embeds, _ = self.model(X_ordinal)
+        X_embeds, _ = self.model(self.fake_input(X_ordinal))
         X_embeds = [X_embed.detach().numpy() for X_embed in X_embeds]
         for i, n_unique in enumerate(self.n_uniques):
             col = self.cols[i]
@@ -315,7 +329,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             is_known_categories.append(is_known_category)
         X_ordinal = self.ordinal_encoder.transform(X_impute)
         # 2. embedding by nn, and handle unknown categories by fill 0
-        X_embeds, _ = self.model(X_ordinal)
+        X_embeds, _ = self.model(self.fake_input(X_ordinal))
         X_embeds = [X_embed.detach().numpy() for X_embed in X_embeds]
         for i, is_known_category in enumerate(is_known_categories):
             if not np.all(is_known_category):
@@ -422,12 +436,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         msg = f"epoch_index = {epoch_index}, " \
             f"TrainSet {score_func_name} = {train_score:.3f}"
         if should_print:
-            self.logger.info(msg)
+            # self.logger.info(msg)
+            print(msg)
         else:
             self.logger.debug(msg)
-        if time() - self.start_time > self.budget:
-            self.logger.info(f"Exceeded budget time({self.budget}), {self.__class__.__name__} is early stopping ...")
-            return True
         if np.any(train_score > self.performance_history):
             index = epoch_index % self.early_stopping_rounds
             self.best_estimators[index] = deepcopy(model)

@@ -250,9 +250,9 @@ class Master(object):
                     self.logger.warning(f"cost_time = {cost_time:.2f}, "
                                         f"exceed time_left_for_this_task = {self.time_left_for_this_task}")
                     break
-                if self.should_es:
-                    self.logger.warning("The early stop condition is triggered, exit.")
-                    break
+                # if self.should_es:
+                #     self.logger.warning("The early stop condition is triggered, exit.")
+                #     break
                 self._queue_wait()
                 next_run = None
                 # find a new run to schedule

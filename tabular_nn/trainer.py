@@ -10,18 +10,16 @@ import numpy as np
 import torch
 from frozendict import frozendict
 from sklearn.utils import check_random_state
-from sklearn.utils.multiclass import type_of_target
-from torch import nn
-from torch.nn.functional import cross_entropy, mse_loss
-
 from tabular_nn.utils.data import check_n_jobs
 from tabular_nn.utils.logging_ import get_logger
+from torch import nn
+from torch.nn.functional import cross_entropy, mse_loss
 
 
 class Trainer():
     def __init__(
             self,
-            lr=1e-2, max_epoch=25, n_class=None, nn_params=frozendict(),
+            lr=1e-2, max_epoch=25, nn_params=frozendict(),
             random_state=1000, batch_size=1024, optimizer="adam", n_jobs=-1,
             class_weight=None
     ):
@@ -31,7 +29,6 @@ class Trainer():
         self.batch_size = batch_size
         self.random_state = random_state
         self.nn_params = nn_params
-        self.n_class = n_class
         self.max_epoch = max_epoch
         self.lr = lr
         self.rng = check_random_state(random_state)
@@ -42,18 +39,15 @@ class Trainer():
             init_model,
             X: np.ndarray,
             y: np.ndarray,
-            X_valid: Optional[np.ndarray] = None,
+            X_valid: Optional[np.ndarray] = None, # todo: 有机会搞这个？ 或者交叉验证放在这个模块里面搞？
             y_valid: Optional[np.ndarray] = None,
-            callback: Optional[Callable[[int, nn.Module, np.ndarray, np.ndarray, np.ndarray, np.ndarray], bool]] = None,
+            label_reg_mask=None,
+            clf_n_classes=(0,)
     ):
+        if y.ndim == 1:
+            y = y[:, np.newaxis]
         torch.manual_seed(self.rng.randint(0, 10000))
         torch.set_num_threads(self.n_jobs)
-        if self.n_class is None:
-            if type_of_target(y.astype("float")) == "continuous":
-                self.n_class = 1
-            else:
-                self.n_class = np.unique(y).size
-
         tnn = init_model
         if self.optimizer == "adam":
             nn_optimizer = torch.optim.Adam(tnn.parameters(), lr=self.lr)
@@ -62,11 +56,19 @@ class Trainer():
         else:
             raise ValueError(f"Unknown optimizer {self.optimizer}")
         start_time = time()
-        if self.n_class >= 2:
-            y_tensor = torch.from_numpy(y).long()
+        reg_label = y[:, label_reg_mask]
+        clf_label = y[:, ~label_reg_mask]
+        n_reg_label = reg_label.shape[1]
+        n_clf_label = clf_label.shape[1]
+        if reg_label.shape[0] == 0:
+            reg_label = None
         else:
-            y_tensor = torch.from_numpy(y).double()
-        if self.n_class >= 2 and self.class_weight == "balanced":
+            reg_label = torch.from_numpy(reg_label).float()
+        if clf_label.shape[0] == 0:
+            clf_label = None
+        else:
+            clf_label = torch.from_numpy(clf_label).long()
+        if n_clf_label and self.class_weight == "balanced":
             # fixme: am I right?
             unique, counts = np.unique(y, return_counts=True)
             counts = counts / np.min(counts)
@@ -90,24 +92,25 @@ class Trainer():
                 batch_ixs.append(batch_ix)
             for batch_ix in batch_ixs:
                 nn_optimizer.zero_grad()
-                outputs = self.get_output(tnn, X[batch_ix, :])
-                if self.n_class >= 2:
-                    loss = cross_entropy(outputs.double(), y_tensor[batch_ix], weight=weight)
-                elif self.n_class == 1:
-                    loss = mse_loss(outputs.flatten().double(), y_tensor[batch_ix])
-                else:
-                    raise ValueError
+                outputs = self.get_output(tnn, X[batch_ix, :]).float()
+                loss = torch.tensor(0).float()
+                label_ix = 0
+                for k in range(n_clf_label):
+                    output_slice=outputs[:, label_ix : label_ix+clf_n_classes[k]]
+                    loss += cross_entropy(
+                        output_slice,
+                        clf_label[batch_ix, k],
+                        weight=weight)
+                    label_ix += clf_n_classes[k]
+                for k in range(n_reg_label):
+                    loss += mse_loss(outputs[:, label_ix].flatten(), reg_label[batch_ix, k])
                 loss.backward()
                 nn_optimizer.step()
             tnn.max_epoch = epoch_index + 1
-            if callback is not None:
-                if callback(epoch_index, tnn, X, y, X_valid, y_valid) == True:
-                    break
         end = time()
         self.logger.info(f"{tnn.__class__.__name__} training time = {end - start_time:.2f}s")
         tnn.eval()
         return tnn
-
 
     def get_output(self, model, array):
         return model(array)

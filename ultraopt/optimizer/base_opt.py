@@ -22,7 +22,7 @@ def runId_info():
 
 
 def get_obvs():
-    return {"losses": [], "configs": [], "vectors": [], "locks": []}
+    return {"losses": [], "configs": [], "vectors": [], "locks": [], "nn_info": defaultdict(list)}
 
 
 class BaseOptimizer():
@@ -56,7 +56,8 @@ class BaseOptimizer():
     def get_initial_budget2obvs(cls, budgets):
         return {budget: get_obvs() for budget in budgets}
 
-    def tell(self, config: Union[dict, Configuration], loss: float, budget: float = 1, update_model=True):
+    def tell(self, config: Union[dict, Configuration], loss_info: Union[float, dict], budget: float = 1,
+             update_model=True):
         config = get_dict_from_config(config)
         job = Job(get_hash_of_config(config))
         job.kwargs = {
@@ -64,8 +65,17 @@ class BaseOptimizer():
             "config": config,
             "config_info": {}
         }
+        if isinstance(loss_info, float):
+            loss = loss_info
+            nn_info = {}
+        elif isinstance(loss_info, dict):
+            loss = loss_info['loss']
+            nn_info = loss_info.get('nn_info', {})
+        else:
+            raise NotImplementedError
         job.result = {
-            "loss": loss
+            "loss": loss,
+            'nn_info': nn_info
         }
         self.new_result(job, update_model=update_model)
         self.trajectory = np.append(self.trajectory, min(loss, self.trajectory[-1]))
@@ -83,12 +93,18 @@ class BaseOptimizer():
             # same for non numeric losses.
             # Note that this means losses of minus infinity will count as bad!
             loss = job.result["loss"] if np.isfinite(job.result["loss"]) else np.inf
+
         budget = job.kwargs["budget"]
         config_dict = job.kwargs["config"]
         configId = get_hash_of_config(config_dict)
         runId = (configId, budget)
         self.runId2info[runId]["end_time"] = time()
         self.runId2info[runId]["loss"] = loss
+        if 'nn_info' in job.result:
+            nn_info = job.result['nn_info']
+            for k, v in nn_info.items():
+                self.budget2obvs[budget]['nn_info'][k].append(v)
+
         # if runId in self.runId2info:
         # else:
         #     self.logger.error(f"runId {runId} not in runId2info, it's impossible!!!")

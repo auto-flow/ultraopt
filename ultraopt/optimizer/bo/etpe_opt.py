@@ -228,15 +228,19 @@ class ETPEOptimizer(BaseOptimizer):
             return
         vectors = self.budget2obvs[budget]["vectors"]
         losses = np.array(self.budget2obvs[budget]["losses"])
+        nn_info = self.budget2obvs[budget]["nn_info"]
+        y_ = np.hstack([losses[:, None]] + [np.array(v)[:, None] for k, v in nn_info.items()])
+        if y_.ndim == 1:
+            y_ = y_[:, np.newaxis]
         # fit embedding encoder
         if self.has_embedding_encoder:
             if self.config_transformer.encoder.fitted:
                 X = np.array([vectors[-1]])
-                y = np.array([losses[-1]])
+                y = y_[y_.shape[0] - 1, :][np.newaxis, :]
                 self.config_transformer.fit_encoder(X, y)
             else:
                 X = np.array(vectors)
-                y = np.array(losses)
+                y = y_
                 self.config_transformer.fit_encoder(X, y)
             # todo: plot
         # fit epm

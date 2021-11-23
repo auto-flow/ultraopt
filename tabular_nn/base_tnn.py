@@ -60,6 +60,6 @@ class BaseTNN(nn.Module):
             if isinstance(m, nn.Linear):
                 m.weight.data.normal_(0, 0.02)
                 m.bias.data.zero_()
-            elif isinstance(m, (nn.BatchNorm2d, nn.GroupNorm)):
+            elif isinstance(m, (nn.BatchNorm2d, nn.BatchNorm1d, nn.GroupNorm)):
                 nn.init.constant_(m.weight, 1)
                 m.bias.data.zero_()

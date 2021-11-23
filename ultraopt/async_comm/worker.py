@@ -11,11 +11,10 @@ import time
 from uuid import uuid4
 
 import Pyro4
-
 # from autoflow.utils.sys_ import get_trance_back_msg
 import pynisher
-
 from ultraopt.utils.logging_ import get_logger
+from ultraopt.utils.misc import parse_eval_func_info
 
 
 class Worker(object):
@@ -232,24 +231,20 @@ class Worker(object):
                          'wall_time_in_s': self.time_limit,
                          'mem_in_mb': self.memory_limit}
             obj = pynisher.enforce_limits(**arguments)(self.eval_func)
-            loss = obj(config, **kwargs)
+            loss_info = obj(config, **kwargs)
             # 处理几种失败的情况
             if obj.exit_status is pynisher.TimeoutException:
                 self.logger.warning(f"TimeoutException!\nconfig = \n{config}")
             elif obj.exit_status is pynisher.MemorylimitException:
                 self.logger.warning(f"MemorylimitException!\nconfig = \n{config}")
-            elif obj.exit_status == 0 and loss is not None:
+            elif obj.exit_status == 0 and loss_info is not None:
                 pass
             else:
                 self.logger.warning(f"status = StatusType.CRASHED\nconfig = \n{config}")
-            # 失败了，就取一个损失的最大值
-            if loss is None:
-                loss=65535
         else:
-            loss = self.eval_func(config, **kwargs) # todo: 支持返回更多信息
-        return {
-            "loss": loss
-        }
+            loss_info=self.eval_func(config, **kwargs)
+        result = parse_eval_func_info(loss_info)
+        return result
 
     @Pyro4.expose
     @Pyro4.oneway
