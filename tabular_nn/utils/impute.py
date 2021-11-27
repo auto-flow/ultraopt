@@ -8,9 +8,9 @@ from collections import Counter
 import category_encoders.utils as util
 import numpy as np
 import pandas as pd
+from pandas.core.common import SettingWithCopyWarning
 from pandas.core.dtypes.common import is_numeric_dtype
 from sklearn.base import BaseEstimator, TransformerMixin
-from pandas.core.common import SettingWithCopyWarning
 from sklearn.utils._testing import ignore_warnings
 
 
@@ -24,9 +24,13 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
         self.numeric_fill_value = numeric_fill_value
         self.strategy = strategy
         self.fill_value = fill_value
+        self.keep_going = False
         assert strategy in ("most_frequent", "constant"), ValueError(f"Invalid strategy {strategy}")
 
     def fit(self, X, y=None):
+        if X.shape[1] == 0:
+            self.keep_going = True
+            return self
         X = util.convert_input(X)
         self.columns = X.columns
         self.statistics_ = np.array([self.fill_value] * len(self.columns), dtype='object')
@@ -42,6 +46,8 @@ class CategoricalImputer(BaseEstimator, TransformerMixin):
 
     @ignore_warnings(category=SettingWithCopyWarning)
     def transform(self, X):
+        if self.keep_going:
+            return X
         # note: change inplace
         for i, (column, dtype) in enumerate(zip(X.columns, X.dtypes)):
             value = self.statistics_[i]

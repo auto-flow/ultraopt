@@ -23,12 +23,12 @@ def main(data_dir, n_iters):
     for benchmark in ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]:
         for i in range(20):
             for algo, opt, mode in pairs:
-                for g in [3,4,5,6,8]:
-                    cmd = f"python run_{algo}.py --data_dir={data_dir}  --run_id={i} --n_iters={n_iters} --benchmark {benchmark} --mode {mode} "
-                    if opt:
-                        cmd += f"--optimizer {opt}"
-                    cmd+= f" --max_groups {g} "
-                    cmds.append(cmd)
+            # for g in [3,4,5,6,8]:
+                cmd = f"python run_{algo}.py --data_dir={data_dir}  --run_id={i} --n_iters={n_iters} --benchmark {benchmark} --mode {mode} "
+                if opt:
+                    cmd += f"--optimizer {opt}"
+                # cmd+= f" --max_groups {g} "
+                cmds.append(cmd)
     # Path(f"commands.sh").write_text("\n".join(cmds))
     Path(f"commands_etpe.sh").write_text("\n".join(cmds))
 

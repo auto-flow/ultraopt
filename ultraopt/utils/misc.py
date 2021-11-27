@@ -3,6 +3,7 @@
 # @Author  : qichun tang
 # @Date    : 2020-12-14
 # @Contact    : qichun.tang@bupt.edu.cn
+import io
 import os
 import shutil
 from fractions import Fraction
@@ -11,7 +12,6 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 from joblib import dump
-
 from ultraopt.constants import Configs
 from ultraopt.utils.logging_ import get_logger
 
@@ -64,6 +64,7 @@ def dump_checkpoint(optimizer, checkpoint_file):
         shutil.move(checkpoint_file, checkpoint_file_bak)
     dump(optimizer, checkpoint_file)
 
+
 def parse_eval_func_info(loss_info):
     if isinstance(loss_info, float):
         loss = loss_info
@@ -82,16 +83,15 @@ def parse_eval_func_info(loss_info):
     }
     return result
 
+
 PREFIX = 'table | '
+
 
 def dfMap_to_content(df_map: Dict[str, pd.DataFrame]):
     content = ""
     for key, df in df_map.items():
         content += f'{PREFIX}{key}\n'
-        for name, row in df.iterrows():
-            content += f"{name}\t"
-            content += "\t".join([str(f) for f in row.tolist()])
-            content += "\n"
+        content += df.to_csv()
     return content
 
 
@@ -100,18 +100,44 @@ def content_to_dfMap(content: str):
     df_map = {}
     for line in content.splitlines():
         if line.startswith(PREFIX):
-            if cur_table is not None:
-                df_map[cur_table] = pd.DataFrame(
-                    df_map[cur_table]['data'], index=df_map[cur_table]['index'])
             cur_table = line[len(PREFIX):]
-            df_map[cur_table] = {'index': [], 'data': []}
+            df_map[cur_table] = []
         else:
-            words = line.split('\t')
-            df_map[cur_table]['index'].append(words[0])
-            df_map[cur_table]['data'].append([float(w) for w in words[1:]])
-    if cur_table is not None:
-        df_map[cur_table] = pd.DataFrame(
-            df_map[cur_table]['data'], index=df_map[cur_table]['index'])
+            df_map[cur_table].append(line)
+    for name, lines in df_map.items():
+        df = pd.read_csv(io.StringIO("\n".join(lines)), index_col=0)
+        df_map[name] = df
     return df_map
+
+if __name__ == '__main__':
+    df1=pd.DataFrame(
+        [
+            [1,2,3],
+            [1,2,3],
+            [1,2,3],
+            [1,2,3],
+        ],
+        columns=[1,2,3],
+        index=['a','b','c','d']
+    )
+    df2=pd.DataFrame(
+        [
+            [7,2,3],
+            [8,2,3],
+            [6,2,3],
+            [5,2,3],
+        ],
+        columns=['col1','col2','col3'],
+        index=['a', 'b', 'c', 'd']
+
+    )
+    df_map={
+        'k1':df1,
+        'k2':df2,
+    }
+    content=dfMap_to_content(df_map)
+    df_map_get=content_to_dfMap(content)
+    print(df_map_get)
+
 
 

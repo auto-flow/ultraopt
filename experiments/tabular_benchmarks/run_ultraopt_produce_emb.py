@@ -40,7 +40,7 @@ elif args.benchmark == "parkinsons_telemonitoring":
 else:
     raise NotImplementedError
 
-output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}_scale3")
+output_path = os.path.join(args.output_path, f"{args.benchmark}-ultraopt_{args.optimizer}_align")
 
 
 def objective_function(config: dict, budget: int = 100):
@@ -76,11 +76,10 @@ os.makedirs(os.path.join(output_path), exist_ok=True)
 from ultraopt.tpe import SampleDisign
 
 min_points_in_model = int(os.getenv('min_points_in_model', '20'))
+print(f'min_points_in_model={min_points_in_model}')
 et_file = f'{args.benchmark}.txt'
 pretrain = os.getenv('pretrain') == 'true'
 scale = os.getenv('scale') == 'true'
-# pretrain=False
-# scale = False
 print(f'pretrain = {pretrain}')
 print(f'scale = {scale}')
 if optimizer == "ETPE":
@@ -103,15 +102,18 @@ if optimizer == "ETPE":
     elif mode == "default":
         from tabular_nn import EmbeddingEncoder
 
-        encoder = EmbeddingEncoder(max_epoch=300, n_jobs=1, verbose=1)
+        encoder = EmbeddingEncoder(
+            max_epoch=150, n_jobs=1, verbose=1, weight_decay=2e-4,
+            update_used_samples=500, update_epoch=20
+        )
         optimizer = ETPEOptimizer(
             # limit_max_groups=limit_max_groups,
             min_points_in_model=min_points_in_model,
             limit_max_groups='auto',
             max_groups=max_groups,
             pretrained_emb=et_file if pretrain else None,
-            scale_cont_var=scale
-            # embedding_encoder=encoder,
+            scale_cont_var=scale,
+            embedding_encoder=encoder,
         )
     else:
         raise NotImplementedError
@@ -125,6 +127,8 @@ ret = fmin(
     objective_function, cs, optimizer,
     n_iterations=args.n_iters, random_state=args.run_id,
     multi_fidelity_iter_generator=iter_generator)
+
+ret.export_embedding_table(et_file)
 
 print(ret)
 if os.getenv('DEBUG') == 'true':

@@ -30,13 +30,15 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def __init__(
             self,
-            cols=None,
+            cat_cols=tuple(),
+            cont_cols=tuple(),
             lr=1e-2,
             max_epoch=25,
             A=10,
             B=5,
             dropout1=0.1,
             dropout2=0.1,
+            weight_decay=5e-4,
             random_state=1000,
             verbose=1,
             n_jobs=-1,
@@ -50,6 +52,8 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             update_accepted_samples=10,
             update_used_samples=100,
     ):
+        self.weight_decay = weight_decay
+        self.cont_cols = cont_cols
         self.update_used_samples = update_used_samples
         self.update_epoch = update_epoch
         self.update_accepted_samples = update_accepted_samples
@@ -71,10 +75,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.max_epoch = max_epoch
         # self.return_df = return_df
         self.drop_cols = []
-        self.cols = cols
+        self.cat_cols = cat_cols
         self._dim = None
         self.feature_names = None
-        self.model = None
+        self.model: Optional[EntityEmbeddingNN] = None
         self.logger = get_logger(self)
         self.nn_params = {
             "A": self.A,
@@ -91,7 +95,9 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             batch_size=batch_size,
             optimizer=optimizer,
             n_jobs=self.n_jobs,
-            class_weight=class_weight
+            class_weight=class_weight,
+            verbose=self.verbose,
+            weight_decay=self.weight_decay
         )
         self.label_scaler = StandardScaler(copy=True)
         self.keep_going = False
@@ -114,6 +120,24 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.categories = "auto"
         self.pretrained_emb = {}
 
+    @property
+    def continuous_variables_weight(self):
+        if 'continuous_scaler' in self.pretrained_emb:
+            cont_table = self.pretrained_emb['continuous_scaler']
+            return np.array(cont_table.loc[self.cont_cols, 'weight'])
+        if self.n_cont_variables == 0:
+            return []
+        return self.model.cont_scaler.weight.detach().numpy()
+
+    @property
+    def continuous_variables_mean(self):
+        if 'continuous_scaler' in self.pretrained_emb:
+            cont_table = self.pretrained_emb['continuous_scaler']
+            return np.array(cont_table.loc[self.cont_cols, 'mean'])
+        if self.n_cont_variables == 0:
+            return []
+        return self.model.cont_scaler.running_mean.detach().numpy()
+
     def get_initial_final_observations(self):
         return [pd.DataFrame(), np.zeros([0, self.n_labels])]
 
@@ -132,16 +156,15 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def initial_fit(self, X: pd.DataFrame, y: np.ndarray):
         self.n_columns = X.shape[1]
         self.original_columns = X.columns
-        self.col_idxs = np.arange(self.n_columns)[X.columns.isin(self.cols)]
+        self.col_idxs = np.arange(self.n_columns)[X.columns.isin(self.cat_cols)]
         # if columns aren't passed, just use every string column
-        if self.cols is None:
-            self.cols = util.get_obj_cols(X)
+        if self.cat_cols is None:
+            self.cat_cols = util.get_obj_cols(X)
         else:
-            self.cols = util.convert_cols_to_list(self.cols)
+            self.cat_cols = util.convert_cols_to_list(self.cat_cols)
         self.ordinal_encoder = OrdinalEncoder(dtype=np.int, categories=self.categories)
         # 1. use sklearn's OrdinalEncoder convert categories to int
-        X_cat = X[self.cols]
-        X_impute = self.imputer.fit_transform(X_cat)
+
         self.n_labels = y.shape[1]
         self.label_reg_mask = []
         self.clf_n_classes = []
@@ -152,19 +175,22 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 self.clf_n_classes.append(int(y[:, i].max() + 1))
                 self.label_reg_mask.append(False)
         self.label_reg_mask = np.array(self.label_reg_mask)
+        # if self.cat_cols:
+        X_cat = X[self.cat_cols]
+        X_impute = self.imputer.fit_transform(X_cat)
         self.ordinal_encoder.fit(X_impute)  # fixme
-        self.is_classification = (type_of_target(y) != "continuous")
         self.label_scaler.fit(y[:, self.label_reg_mask])
         self.fitted = True
         self.model = None
 
+    @property
+    def n_cont_variables(self):
+        return len(self.cont_cols)
+
     def _fit(self, X: pd.DataFrame, y: np.ndarray):
         # fixme: 借助其他变量，不仅仅是cat
-        all_cols = X.columns
-        cont_cols = np.setdiff1d(all_cols, self.cols)
-        X_cat = X[self.cols]
-        X_cont = X[cont_cols]
-        self.n_cont_variables = X_cont.shape[1]
+        X_cat = X[self.cat_cols]
+        X_cont = X[self.cont_cols]
         X_cat_imputed = self.imputer.fit_transform(X_cat)
         X_cat_proc = self.ordinal_encoder.transform(X_cat_imputed)
         if self.n_uniques is None:
@@ -178,7 +204,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.model = self.trainer.train(
             self.model, np.hstack([X_cat_proc, X_cont]), y, None, None,
             label_reg_mask=self.label_reg_mask,
-            clf_n_classes=self.clf_n_classes
+            clf_n_classes=self.clf_n_classes,
         )
 
     def fit(self, X, y: np.ndarray = None, **kwargs):
@@ -191,9 +217,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             y = y[:, np.newaxis]
         # fixme : 默认是warm start的
         self._dim = X.shape[1]
-        if len(self.cols) == 0:
-            self.keep_going = True
-            return self
         # todo add logging_level, verbose
         if self.is_initial_fit:
             self.logger.info('Initial fitting')
@@ -250,6 +273,8 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
 
     def get_transform_matrix(self) -> List[np.ndarray]:
         # todo: 测试多个离散变量字段的情况
+        if not self.n_uniques:
+            return []
         N = self.n_uniques.max()
         M = self.n_uniques.size
         X_ordinal = np.zeros([N, M])
@@ -258,7 +283,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         X_embeds, _ = self.model(self.fake_input(X_ordinal))
         X_embeds = [X_embed.detach().numpy() for X_embed in X_embeds]
         for i, n_unique in enumerate(self.n_uniques):
-            col = self.cols[i]
+            col = self.cat_cols[i]
             X_embeds[i] = X_embeds[i][:n_unique, :]
             if col in self.pretrained_emb:
                 X_embeds[i] = self.pretrained_emb[col]
@@ -279,8 +304,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def transform(self, X, return_df=True, current_cols=None):
         if current_cols is not None:
             self.current_cols = current_cols
-        if self.keep_going:
-            return X
         if self._dim is None:
             raise ValueError('Must train encoder before it can be used to transform data.')
         # first check the type
@@ -289,39 +312,39 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             X = copy(X)
         index = X.index
         X.index = range(X.shape[0])
-        if self.cols is not None:
-            self.cols = list(self.cols)
+        if self.cat_cols is not None:
+            self.cat_cols = list(self.cat_cols)
         # check current_cols
         if self.current_cols is None:
-            self.current_cols = copy(self.cols)
+            self.current_cols = copy(self.cat_cols)
             additive = np.array([])
             subtractive = np.array([])
-            subtracted_cols = copy(self.cols)
+            subtracted_cols = copy(self.cat_cols)
         else:
-            additive = np.setdiff1d(self.current_cols, self.cols)
-            subtractive = np.setdiff1d(self.cols, self.current_cols)
-            subtracted_cols = np.setdiff1d(self.cols, subtractive)
+            additive = np.setdiff1d(self.current_cols, self.cat_cols)
+            subtractive = np.setdiff1d(self.cat_cols, self.current_cols)
+            subtracted_cols = np.setdiff1d(self.cat_cols, subtractive)
         # isna
         isna = pd.isna(X[subtracted_cols]).values
         # return directly
-        # if not self.cols:
+        # if not self.cat_cols:
         #     return X if return_df else X.values
         # 1. convert X to X_ordinal, and handle unknown categories
         if subtractive.size:
             X_cat_list = []
-            for i, col in enumerate(self.cols):
+            for i, col in enumerate(self.cat_cols):
                 if col in subtractive:
                     s = pd.Series([self.ordinal_encoder.categories_[i][0]] * X.shape[0])
                     X_cat_list.append(s)
                 else:
                     X_cat_list.append(X[col])
             X_cat = pd.concat(X_cat_list, axis=1)
-            X_cat.columns = self.cols
+            X_cat.columns = self.cat_cols
         else:
-            X_cat = X[self.cols]
+            X_cat = X[self.cat_cols]
         X_impute = self.imputer.fit_transform(X_cat)
         is_known_categories = []
-        for i, col in enumerate(self.cols):
+        for i, col in enumerate(self.cat_cols):
             categories = self.ordinal_encoder.categories_[i]
             is_known_category = X_impute[col].isin(categories).values
             if not np.all(is_known_category):
@@ -336,7 +359,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 X_embeds[i][~is_known_category, :] = 0
         # using map[column, value] instead of list[value]
         X_embeds_mapper = {}
-        for i, column in enumerate(self.cols):
+        for i, column in enumerate(self.cat_cols):
             if column in self.pretrained_emb:
                 emb_table = np.array(self.pretrained_emb[column])
                 emb = emb_table[X_ordinal[:, i], :]
@@ -348,7 +371,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             isna_mapper[col] = np.zeros([X.shape[0]], dtype="bool")
         # 3. replace origin
         get_valid_col_name = functools.partial(self.get_valid_col_name, df=X)
-        # col2idx = dict(zip(self.cols, range(len(self.cols))))
+        # col2idx = dict(zip(self.cat_cols, range(len(self.cat_cols))))
         result_df_list = []
         cur_columns = []
         for column in X.columns:
@@ -374,7 +397,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         X = pd.concat(result_df_list, axis=1)
         # if additive exists, encode additive by
         if additive.size:
-            self.equidistance_encoder = EquidistanceEncoder(cols=additive.tolist())
+            self.equidistance_encoder = EquidistanceEncoder(cat_cols=additive.tolist())
             X = self.equidistance_encoder.fit_transform(X)
         X.index = index
         if return_df:
@@ -393,7 +416,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         transform_matrix, categories = self.get_origin_transform_matrix(self.transform_matrix)
         results = np.zeros([X.shape[0], 0], dtype="float")
         cur_cnt = 0
-        col_idx2idx = dict(zip(self.col_idxs, range(len(self.cols))))
+        col_idx2idx = dict(zip(self.col_idxs, range(len(self.cat_cols))))
         for origin_col_idx in range(self.n_columns):
             if origin_col_idx in self.col_idxs:
                 idx = col_idx2idx[origin_col_idx]

@@ -43,20 +43,20 @@ class NormalizedKernelDensity(KernelDensity):
 
     def fit(self, X, y=None, sample_weight=None):
         from sklearn.preprocessing import StandardScaler,MinMaxScaler, RobustScaler, QuantileTransformer
-        self.normalizer_ = DiyTransformer()
-        X = self.normalizer_.fit_transform(X)
+        # self.normalizer_ = DiyTransformer()
+        # X = self.normalizer_.fit_transform(X)
         self.bandwidth = estimate_bw(X)
         return super(NormalizedKernelDensity, self).fit(X, y, sample_weight)
 
     def score_samples(self, X):
         '''score = return np.sum(self.score_samples(X))'''
-        X = self.normalizer_.transform(X)
+        # X = self.normalizer_.transform(X)
         return super(NormalizedKernelDensity, self).score_samples(X)
 
     def sample(self, n_samples=1, random_state=None):
         samples = super(NormalizedKernelDensity, self).sample(n_samples, random_state)
-        # return samples
-        return self.normalizer_.inverse_transform(samples)
+        return samples
+        # return self.normalizer_.inverse_transform(samples)
 
 
 EPS = 1e-12

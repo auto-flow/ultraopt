@@ -21,12 +21,15 @@ class LearnableScaler(nn.Module):
         self.insize = input
         self.weight = nn.Parameter(torch.ones(self.insize))
         self.running_mean = torch.zeros(self.insize)
+        self.init = True
 
     def forward(self, input):
         if self.training:
             mean = torch.mean(input, dim=0)
-            # update running mean and var
-            self.running_mean = self.momentum * self.running_mean + (1.0 - self.momentum) * mean
+            if self.init:
+                self.running_mean = mean
+            else:
+                self.running_mean = self.momentum * self.running_mean + (1.0 - self.momentum) * mean
             # get output
         else:
             mean = self.running_mean
@@ -90,13 +93,10 @@ class EntityEmbeddingNN(BaseTNN):
         # todo: 初始化  embedding_blocks
 
     def forward(self, X: np.ndarray):
+        hybrid_embeds_list = []
+
         n_cat_variables = len(self.n_uniques)
         X_cat = X[:, :n_cat_variables]
-        X_cont = X[:, n_cat_variables:]
-        cont_nan_mask = torch.from_numpy(np.isnan(X_cont).astype('bool'))
-        X_cont = SimpleImputer().fit_transform(X_cont)
-        X_cont_bn_out = self.cont_scaler(torch.from_numpy(X_cont.astype('float32')))
-        X_cont_bn_out[cont_nan_mask] = 0
 
         embeds = []
         if self.embedding_blocks is not None:
@@ -106,9 +106,18 @@ class EntityEmbeddingNN(BaseTNN):
                 embeds.append(
                     self.embedding_blocks[i](torch.from_numpy(col_vec.astype("int64")))
                 )
+        if embeds:
+            hybrid_embeds_list.append(torch.cat(embeds, dim=1))
 
-        cat_embeds = torch.cat(embeds, dim=1)
-        hybrid_embeds = torch.cat([cat_embeds, X_cont_bn_out], dim=1)
+        if self.n_cont_variables:
+            X_cont = X[:, n_cat_variables:n_cat_variables + self.n_cont_variables]
+            cont_nan_mask = torch.from_numpy(np.isnan(X_cont).astype('bool'))
+            X_cont = SimpleImputer().fit_transform(X_cont)
+            X_cont_bn_out = self.cont_scaler(torch.from_numpy(X_cont.astype('float32')))
+            X_cont_bn_out[cont_nan_mask] = 0
+            hybrid_embeds_list.append(X_cont_bn_out)
+
+        hybrid_embeds = torch.cat(hybrid_embeds_list, dim=1)
         outputs = self.deep_net(hybrid_embeds) + self.wide_net(hybrid_embeds)
         activated = self.output_layer(outputs)
         return embeds, activated

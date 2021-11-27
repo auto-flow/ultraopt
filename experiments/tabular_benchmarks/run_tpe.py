@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--run_id', default=0, type=int, nargs='?', help='unique number to identify this run')
 parser.add_argument('--benchmark', default="protein_structure", type=str, nargs='?', help='specifies the benchmark')
 parser.add_argument('--n_iters', default=100, type=int, nargs='?', help='number of iterations for optimization method')
-parser.add_argument('--output_path', default="./", type=str, nargs='?',
+parser.add_argument('--output_path', default="./results", type=str, nargs='?',
                     help='specifies the path where the results will be saved')
 parser.add_argument('--data_dir', default="./", type=str, nargs='?', help='specifies the path to the tabular data')
 

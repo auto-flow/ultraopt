@@ -43,7 +43,8 @@ info = {
     "optuna": ("Optuna-TPE", ["g", '^', 'solid']),
     "bohb-kde": ("BOHB-KDE", ["olive", 's', 'solid']),
     "ultraopt_ETPE_18": ("ETPE", ["b", 's', 'dashed']),
-    "ultraopt_ETPE_univar": ("ETPE (univar)", ["brown", "x", 'dashed']),
+    # "ultraopt_ETPE_univar": ("ETPE (univar)", ["brown", "x", 'dashed']),
+    "ultraopt_ETPE_scale3": ("ETPE (scale)", ["brown", "x", 'dashed']),
 }
 dir_name = 'tubular_benchmark_figures'
 os.system(f'mkdir -p {dir_name}')
@@ -70,7 +71,7 @@ for idx, benchmark in enumerate(benchmarks):
 
     for fname, (name, color,) in info.items():
         regret_tests = []
-        for file in Path(f"{benchmark}-{fname}").iterdir():
+        for file in Path(f"results/{benchmark}-{fname}").iterdir():
             data = json.loads(file.read_text())
             # regret_test = data["regret_validation"]
             regret_test = data["regret_test"]

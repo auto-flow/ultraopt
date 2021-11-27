@@ -20,10 +20,15 @@ _pow_scale = lambda x: np.float_power(x, 0.5)
 
 
 class ConfigTransformer():
-    def __init__(self, impute: Optional[float] = -1, encoder=None, pretrained_emb=None):
+    def __init__(
+            self, impute: Optional[float] = -1, encoder=None, pretrained_emb=None,
+            consider_ord_as_cont=True, scale_cont_var=True
+    ):
+        self.scale_cont_var = scale_cont_var
+        self.consider_ord_as_cont = consider_ord_as_cont
         self.pretrained_emb: Dict[str, pd.DataFrame] = pretrained_emb if pretrained_emb else {}
         self.impute = impute
-        self.encoder = encoder
+        self.encoder: Union[EmbeddingEncoder, None] = encoder
 
     def fit(self, config_space: ConfigurationSpace):
         mask = []
@@ -42,6 +47,9 @@ class ConfigTransformer():
         is_child = []
         n_variables_embedded_list = []
         bounds_list = []  # 用于对边界效应纠偏
+        cont_cols = []
+        ord_cols = []
+        low_r_cols = []
         # todo: 划分parents与groups
         for hp in config_space.get_hyperparameters():
             hp_name = hp.name
@@ -64,6 +72,8 @@ class ConfigTransformer():
                     if n_choices == 2:
                         n_embeds = 2
                         bounds_list.append([-0.5, 1.5])  # 留出-q/2的缓冲
+                        cont_cols.append(hp.name)
+                        low_r_cols.append(hp.name)
                     else:
                         if hp_name in self.pretrained_emb:
                             df: pd.DataFrame = self.pretrained_emb[hp_name]
@@ -84,17 +94,24 @@ class ConfigTransformer():
                     n_variables_embedded += 1
                     n_variables_embedded_list.append(1)
                 if isinstance(hp, OrdinalHyperparameter):
-                    n_ordinal += 1
-                    is_ordinal_list.append(True)
-                    sequence_mapper[len(is_ordinal_list) - 1] = hp.sequence
-                    # todo: 用神经网络来学习边距
-                    bounds_list.append(None)
+                    if len(hp.sequence) == 2:
+                        bounds_list.append([-0.5, 1.5])
+                        cont_cols.append(hp.name)
+                        low_r_cols.append(hp.name)
+                    else:
+                        n_ordinal += 1
+                        is_ordinal_list.append(True)
+                        sequence_mapper[len(is_ordinal_list) - 1] = hp.sequence
+                        # todo: 用神经网络来学习边距
+                        bounds_list.append(None)
+                        ord_cols.append(hp.name)
                 else:
                     is_ordinal_list.append(False)
                 if not isinstance(hp, (CategoricalHyperparameter, OrdinalHyperparameter)):
                     n_numerical += 1
                 # fixme: 对log的q进行测试
                 if isinstance(hp, UniformFloatHyperparameter):
+                    cont_cols.append(hp.name)
                     q = hp.q
                     if q is None:
                         bounds_list.append([0, 1])
@@ -102,6 +119,7 @@ class ConfigTransformer():
                         q = 1 / ((hp.upper - hp.lower) / q)
                         bounds_list.append([-q / 2, 1 + q / 2])
                 if isinstance(hp, UniformIntegerHyperparameter):
+                    cont_cols.append(hp.name)
                     q = hp.q
                     if q is None:
                         q = 1
@@ -119,6 +137,9 @@ class ConfigTransformer():
                     parent_conditions = config_space.get_parent_conditions_of(hp.name)
                     parent_condition = parent_conditions[0]
                     parent_values.append(parent_condition.value)
+        if self.consider_ord_as_cont:
+            cont_cols += ord_cols
+            ord_cols = []
         # assert len(bounds_list)==n_variables_embedded
         groups_str = [f"{parent}-{parent_value}" for parent, parent_value in zip(parents, parent_values)]
         group_encoder = LabelEncoder()
@@ -142,7 +163,11 @@ class ConfigTransformer():
         self.n_variables_embedded = n_variables_embedded
         self.bounds_list = bounds_list
         self.n_top_levels = n_top_levels
+        self.ord_cols = ord_cols
+        self.cont_cols = cont_cols
+        self.low_r_cols = low_r_cols
         self.hp_names = pd.Series([hp.name for hp in config_space.get_hyperparameters()])[self.mask]
+        self.cont_mask = self.hp_names.isin(self.cont_cols)
         high_r_mask = np.array(self.n_choices_list) > 2
         self.high_r_cols = self.hp_names[high_r_mask].to_list()
         self.high_r_cats = []
@@ -154,8 +179,15 @@ class ConfigTransformer():
             self.high_r_cats.append(cat)
             if self.high_r_cols[i] in self.pretrained_emb:
                 continue
+        # fixme: 可能用不到NN
+        if len(self.high_r_cols) == 0 and (not self.scale_cont_var):
+            self.encoder = None
+
+        # fixme: 这里开始设置encoder的信息
         if self.encoder is not None:
-            self.encoder.cols = copy(self.high_r_cols)
+            self.encoder: EmbeddingEncoder
+            self.encoder.cat_cols = copy(self.high_r_cols)
+            self.encoder.cont_cols = copy(self.cont_cols)
             self.encoder.categories = copy(self.high_r_cats)
             self.encoder.pretrained_emb = self.pretrained_emb
         self.embedding_encoder_history = []
@@ -170,25 +202,33 @@ class ConfigTransformer():
                 return
             if not self.embedding_encoder_history or \
                     self.encoder.stage != self.embedding_encoder_history[-1][0]:
-                df_map = {}
-                for hp_name, matrix in zip(self.encoder.cols, self.encoder.transform_matrix):
-                    choices = self.config_space.get_hyperparameter(hp_name).choices
-                    df = pd.DataFrame(matrix, index=choices)
-                    df_map[hp_name] = df
-                self.embedding_encoder_history.append([
-                    self.encoder.stage,
-                    df_map
-                ])
+                if self.encoder.transform_matrix is not None:
+                    df_map = {}
+                    for hp_name, matrix in zip(self.encoder.cat_cols, self.encoder.transform_matrix):
+                        choices = self.config_space.get_hyperparameter(hp_name).choices
+                        df = pd.DataFrame(matrix, index=choices)
+                        df_map[hp_name] = df
+                    self.embedding_encoder_history.append([
+                        self.encoder.stage,
+                        df_map
+                    ])
 
     def transform(self, vectors: np.ndarray) -> np.ndarray:
         # 1. 根据掩码删除常数项（保留变量项）
         vectors = np.array(vectors)
         vectors = vectors[:, self.mask]
         # 2. 归一化ordinal变量
-        for idx, seq in self.sequence_mapper.items():
-            L = len(seq)
-            vectors[:, idx] = (vectors[:, idx] / (L - 1)) * (_pow_scale(L - 1))
-            # 3. 编码离散变量
+        # for idx, seq in self.sequence_mapper.items():
+        #     L = len(seq)
+        #     vectors[:, idx] = (vectors[:, idx] / (L - 1)) * (_pow_scale(L - 1))
+        if self.encoder is not None and self.scale_cont_var:
+            mean = self.encoder.continuous_variables_mean
+            weight = self.encoder.continuous_variables_weight
+            N = vectors.shape[0]
+            mean = np.tile(mean[np.newaxis, :], [N, 1])
+            weight = np.tile(weight[np.newaxis, :], [N, 1])
+            vectors[:, self.cont_mask] = (vectors[:, self.cont_mask] - mean) * weight
+        # 3. 编码离散变量
         if self.encoder is not None:
             df = pd.DataFrame(vectors, columns=self.hp_names)
             vectors = self.encoder.transform(df)
@@ -203,27 +243,37 @@ class ConfigTransformer():
 
     def inverse_transform(self, array: np.ndarray, return_vector=False) -> \
             Union[List[np.ndarray], List[Configuration]]:
-        # 3.1 变量离散变量
+        # 3.1 处理离散变量
         if self.encoder is not None:
             array = self.encoder.inverse_transform(array)
         array = np.array(array)
-        for i, n_choices in enumerate(self.n_choices_list):
+
+        N, M = array.shape
+
+        if self.encoder is not None and self.scale_cont_var:
+            mean = self.encoder.continuous_variables_mean
+            weight = self.encoder.continuous_variables_weight
+            mean = np.tile(mean[np.newaxis, :], [N, 1])
+            weight = np.tile(weight[np.newaxis, :], [N, 1])
+            array[:, self.cont_mask] = (array[:, self.cont_mask] / weight) + mean
+
+        for i, hp_name in enumerate(self.hp_names):
             # 3.2 对于只有2个项的离散变量，需要做特殊处理
-            if n_choices == 2:
+            if hp_name in self.low_r_cols:
                 array[:, i] = (array[:, i] > 0.5).astype("float64")
-            if n_choices == 0:
-                array[:, i] = np.clip(array[:, i], 0, 1)
-            # 2 反归一化ordinal变量
             is_ordinal = self.is_ordinal_list[i]
-            if is_ordinal:
+            if hp_name in self.cont_cols and (not is_ordinal):
+                array[:, i] = np.clip(array[:, i], 0, 1)
+            # # 2 反归一化ordinal变量
+            if is_ordinal and self.consider_ord_as_cont:
                 seq = self.sequence_mapper[i]
                 L = len(seq)
                 array[:, i] = np.clip(
                     # np.round((array[:, i]) * (L - 1)),
-                    np.round((array[:, i] / _pow_scale(L - 1)) * (L - 1)),
+                    np.round(array[:, i]),
                     # np.round(array[:, i]),
-                    0, len(seq) - 1)
-        N, M = array.shape
+                    0, L - 1)
+
         result = np.zeros([N, len(self.mask)])
         result[:, self.mask] = array
         if return_vector:

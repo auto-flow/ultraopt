@@ -232,11 +232,11 @@ import os
 
 os.environ['MAX_DIM'] = '3'
 ee_encoder = EmbeddingEncoder(
-    max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=2,
+    max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=1,
 )
-opt = ETPEOptimizer(min_points_in_model=200, embedding_encoder=ee_encoder)
+opt = ETPEOptimizer(min_points_in_model=20, embedding_encoder=ee_encoder, pretrained_emb='titanic_emb_table.txt')
 
-ret = fmin(evaluator, HDL, opt, n_iterations=200,auto_identify_serial_strategy=True)
+ret = fmin(evaluator, HDL, opt, n_iterations=40,auto_identify_serial_strategy=True)
 df_pair = ret.optimizer.config_transformer.embedding_encoder_history[-1][1]
 df_emb = df_pair['model:__choice__']
 names = list(df_emb.index)
@@ -261,4 +261,5 @@ plt.show()
 df_emb.to_csv('emb_ans.csv')
 print(ret.optimizer.embedding_encoder.model.cont_scaler.weight)
 print(ret.optimizer.embedding_encoder.model.cont_scaler.running_mean)
+ret.export_embedding_table('titanic_emb_table.txt')
 print(ret)

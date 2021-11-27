@@ -4,15 +4,15 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 from math import ceil
 from time import time
-from typing import Optional, Callable
+from typing import Optional
 
 import numpy as np
 import torch
 from frozendict import frozendict
+from sklearn.metrics import accuracy_score, r2_score
 from sklearn.utils import check_random_state
 from tabular_nn.utils.data import check_n_jobs
 from tabular_nn.utils.logging_ import get_logger
-from torch import nn
 from torch.nn.functional import cross_entropy, mse_loss
 
 
@@ -21,8 +21,10 @@ class Trainer():
             self,
             lr=1e-2, max_epoch=25, nn_params=frozendict(),
             random_state=1000, batch_size=1024, optimizer="adam", n_jobs=-1,
-            class_weight=None
+            class_weight=None, verbose=0.,weight_decay=5e-4
     ):
+        self.weight_decay = weight_decay
+        self.verbose = verbose
         self.class_weight = class_weight
         self.n_jobs = check_n_jobs(n_jobs)
         self.optimizer = optimizer
@@ -39,10 +41,10 @@ class Trainer():
             init_model,
             X: np.ndarray,
             y: np.ndarray,
-            X_valid: Optional[np.ndarray] = None, # todo: 有机会搞这个？ 或者交叉验证放在这个模块里面搞？
+            X_valid: Optional[np.ndarray] = None,  # todo: 有机会搞这个？ 或者交叉验证放在这个模块里面搞？
             y_valid: Optional[np.ndarray] = None,
             label_reg_mask=None,
-            clf_n_classes=(0,)
+            clf_n_classes=(0,),
     ):
         if y.ndim == 1:
             y = y[:, np.newaxis]
@@ -50,9 +52,9 @@ class Trainer():
         torch.set_num_threads(self.n_jobs)
         tnn = init_model
         if self.optimizer == "adam":
-            nn_optimizer = torch.optim.Adam(tnn.parameters(), lr=self.lr)
+            nn_optimizer = torch.optim.Adam(tnn.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         elif self.optimizer == "sgd":
-            nn_optimizer = torch.optim.SGD(tnn.parameters(), lr=self.lr)
+            nn_optimizer = torch.optim.SGD(tnn.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         else:
             raise ValueError(f"Unknown optimizer {self.optimizer}")
         start_time = time()
@@ -76,8 +78,8 @@ class Trainer():
         else:
             weight = None
         init_epoch = getattr(tnn, "max_epoch", 0)
+        tnn.train(True)
         for epoch_index in range(init_epoch, self.max_epoch):
-            tnn.train(True)
             # batch
             permutation = self.rng.permutation(len(y))
             batch_ixs = []
@@ -96,7 +98,7 @@ class Trainer():
                 loss = torch.tensor(0).float()
                 label_ix = 0
                 for k in range(n_clf_label):
-                    output_slice=outputs[:, label_ix : label_ix+clf_n_classes[k]]
+                    output_slice = outputs[:, label_ix: label_ix + clf_n_classes[k]]
                     loss += cross_entropy(
                         output_slice,
                         clf_label[batch_ix, k],
@@ -107,6 +109,36 @@ class Trainer():
                 loss.backward()
                 nn_optimizer.step()
             tnn.max_epoch = epoch_index + 1
+            # ------------------------------------------------------------------------------------
+            tnn.eval()
+            outputs = self.get_output(tnn, X).float()
+            outputs = outputs.detach().numpy()
+            label_ix = 0
+            acc_scores = []
+            r2_scores = []
+            msg = f"epoch_index = {epoch_index:02d}, acc = ["
+            for k in range(n_clf_label):
+                output_slice = outputs[:, label_ix: label_ix + clf_n_classes[k]]
+                y_pred = np.argmax(output_slice, axis=1)
+                y_true = clf_label[:, k].detach().numpy()
+                score = accuracy_score(y_true, y_pred)
+                label_ix += clf_n_classes[k]
+                acc_scores.append(score)
+                msg += f"{score:.3f} "
+            msg += "], r2 = ["
+            for k in range(n_reg_label):
+                y_pred = outputs[:, label_ix]
+                y_true = reg_label[:, k].detach().numpy()
+                score = r2_score(y_true, y_pred)
+                label_ix += 1
+                r2_scores.append(score)
+                msg += f"{score:.3f} "
+            msg += "]"
+            should_print = self.verbose > 0 and epoch_index % self.verbose == 0
+            if should_print:
+                # self.logger.info(msg)
+                print(msg)
+
         end = time()
         self.logger.info(f"{tnn.__class__.__name__} training time = {end - start_time:.2f}s")
         tnn.eval()

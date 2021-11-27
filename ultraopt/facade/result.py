@@ -10,6 +10,7 @@ from functools import lru_cache
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import scipy.stats as sps
 from terminaltables import AsciiTable
 from ultraopt.facade.utils import get_wanted
@@ -323,6 +324,11 @@ class FMinResult():
         from ultraopt.optimizer import ETPEOptimizer
         assert isinstance(self.optimizer, ETPEOptimizer)
         df_map = self.optimizer.config_transformer.embedding_encoder_history[-1][1]
+        cont_cols = self.optimizer.config_transformer.encoder.cont_cols
+        mean = self.optimizer.config_transformer.encoder.continuous_variables_mean
+        weight = self.optimizer.config_transformer.encoder.continuous_variables_weight
+        df_cont = pd.DataFrame([[m, w] for m, w in zip(mean, weight)], index=cont_cols, columns=['mean','weight'])
+        df_map['continuous_scaler']=df_cont
         content = dfMap_to_content(df_map)
         if file_name is not None:
             with open(file_name, 'w') as f:

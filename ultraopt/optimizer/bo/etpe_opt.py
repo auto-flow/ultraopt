@@ -44,9 +44,13 @@ class ETPEOptimizer(BaseOptimizer):
             # embedding
             embedding_encoder="default",
             pretrained_emb=None,
-            pretrained_emb_expire_iter=-1
+            pretrained_emb_expire_iter=-1,
+            consider_ord_as_cont=True,
+            scale_cont_var=True
     ):
         super(ETPEOptimizer, self).__init__()
+        self.scale_cont_var = scale_cont_var
+        self.consider_ord_as_cont = consider_ord_as_cont
         self.pretrained_emb_expire_iter = pretrained_emb_expire_iter
         self.optimize_each_varGroups = optimize_each_varGroups
         self.max_groups = max_groups
@@ -99,7 +103,7 @@ class ETPEOptimizer(BaseOptimizer):
         elif isinstance(self.embedding_encoder, str):
             if self.embedding_encoder == "default":
                 encoder = EmbeddingEncoder(
-                    max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=0)
+                    max_epoch=100, n_jobs=1, verbose=0)
             else:
                 raise ValueError(f"Invalid Indicate string '{self.embedding_encoder}' for embedding_encoder'")
         else:
@@ -108,11 +112,11 @@ class ETPEOptimizer(BaseOptimizer):
         # todo: auto_enrich_initial_points
 
         self.config_transformer = ConfigTransformer(
-            impute=None, encoder=encoder, pretrained_emb=self.pretrained_emb
+            impute=None, encoder=encoder, pretrained_emb=self.pretrained_emb,
+            consider_ord_as_cont=self.consider_ord_as_cont,
+            scale_cont_var=self.scale_cont_var
         )
         self.config_transformer.fit(config_space)
-        if len(self.config_transformer.high_r_cols) == 0:
-            self.config_transformer.encoder = None
         encoder = self.config_transformer.encoder
         # fixme: 对于EmbeddingEncoder 需要这么做吗
         if isinstance(encoder, EquidistanceEncoder):
@@ -161,6 +165,8 @@ class ETPEOptimizer(BaseOptimizer):
             self.logger.info(f'{signal} limit_max_groups.')
             if self.limit_max_groups:
                 assert self.max_groups >= 3
+        self.tpe.limit_max_groups = self.limit_max_groups
+        self.tpe.max_groups = self.max_groups
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
@@ -261,5 +267,4 @@ class ETPEOptimizer(BaseOptimizer):
 
     @property
     def has_embedding_encoder(self):
-        return isinstance(self.config_transformer.encoder, EmbeddingEncoder) and \
-               len(self.config_transformer.high_r_cols) > 0
+        return isinstance(self.config_transformer.encoder, EmbeddingEncoder)
