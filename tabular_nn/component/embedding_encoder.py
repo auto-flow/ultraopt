@@ -14,7 +14,6 @@ import pandas as pd
 from pandas.core.dtypes.common import is_numeric_dtype
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.metrics import r2_score, accuracy_score
-from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils._random import check_random_state
 from sklearn.utils.multiclass import type_of_target
@@ -32,6 +31,9 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             self,
             cat_cols=tuple(),
             cont_cols=tuple(),
+            ord_cols=tuple(),
+            n_choices_list=tuple(),
+            n_sequences_list=tuple(),
             lr=1e-2,
             max_epoch=25,
             A=10,
@@ -52,6 +54,9 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             update_accepted_samples=10,
             update_used_samples=100,
     ):
+        self.n_sequences_list = n_sequences_list
+        self.n_choices_list = n_choices_list
+        self.ord_cols = ord_cols
         self.weight_decay = weight_decay
         self.cont_cols = cont_cols
         self.update_used_samples = update_used_samples
@@ -117,7 +122,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.equidistance_encoder: Optional[EquidistanceEncoder] = None
         self.is_initial_fit = True
         self.fitted = False
-        self.categories = "auto"
         self.pretrained_emb = {}
 
     @property
@@ -156,15 +160,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def initial_fit(self, X: pd.DataFrame, y: np.ndarray):
         self.n_columns = X.shape[1]
         self.original_columns = X.columns
-        self.col_idxs = np.arange(self.n_columns)[X.columns.isin(self.cat_cols)]
-        # if columns aren't passed, just use every string column
-        if self.cat_cols is None:
-            self.cat_cols = util.get_obj_cols(X)
-        else:
-            self.cat_cols = util.convert_cols_to_list(self.cat_cols)
-        self.ordinal_encoder = OrdinalEncoder(dtype=np.int, categories=self.categories)
-        # 1. use sklearn's OrdinalEncoder convert categories to int
-
+        self.cat_col_idxs = np.arange(self.n_columns)[X.columns.isin(self.cat_cols)]
         self.n_labels = y.shape[1]
         self.label_reg_mask = []
         self.clf_n_classes = []
@@ -176,9 +172,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 self.label_reg_mask.append(False)
         self.label_reg_mask = np.array(self.label_reg_mask)
         # if self.cat_cols:
-        X_cat = X[self.cat_cols]
-        X_impute = self.imputer.fit_transform(X_cat)
-        self.ordinal_encoder.fit(X_impute)  # fixme
         self.label_scaler.fit(y[:, self.label_reg_mask])
         self.fitted = True
         self.model = None
@@ -191,10 +184,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         # fixme: 借助其他变量，不仅仅是cat
         X_cat = X[self.cat_cols]
         X_cont = X[self.cont_cols]
-        X_cat_imputed = self.imputer.fit_transform(X_cat)
-        X_cat_proc = self.ordinal_encoder.transform(X_cat_imputed)
-        if self.n_uniques is None:
-            self.n_uniques = np.array([len(categories) for categories in self.ordinal_encoder.categories_])
+        X_ord = X[self.ord_cols]
         y[:, self.label_reg_mask] = self.label_scaler.transform(y[:, self.label_reg_mask])
         # 2. train_entity_embedding_nn
         if self.model is None:
@@ -202,7 +192,7 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 self.n_uniques, X_cont.shape[1],
                 n_class=int(np.sum(self.label_reg_mask) + np.sum(self.clf_n_classes)))
         self.model = self.trainer.train(
-            self.model, np.hstack([X_cat_proc, X_cont]), y, None, None,
+            self.model, np.hstack([X_cat, X_cont, X_ord]), y, None, None,
             label_reg_mask=self.label_reg_mask,
             clf_n_classes=self.clf_n_classes,
         )
@@ -412,15 +402,15 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             return X
         # X: np.ndarray = check_array(X)
         X = np.array(X)
-        assert self.n_columns == X.shape[1] - (np.sum(self.model.embed_dims) - len(self.n_uniques))
+        assert self.n_columns == X.shape[1] - (np.sum(self.model.cat_embed_dims) - len(self.n_uniques))
         transform_matrix, categories = self.get_origin_transform_matrix(self.transform_matrix)
         results = np.zeros([X.shape[0], 0], dtype="float")
         cur_cnt = 0
-        col_idx2idx = dict(zip(self.col_idxs, range(len(self.cat_cols))))
+        col_idx2idx = dict(zip(self.cat_col_idxs, range(len(self.cat_cols))))
         for origin_col_idx in range(self.n_columns):
-            if origin_col_idx in self.col_idxs:
+            if origin_col_idx in self.cat_col_idxs:
                 idx = col_idx2idx[origin_col_idx]
-                next_cnt = cur_cnt + self.model.embed_dims[idx]
+                next_cnt = cur_cnt + self.model.cat_embed_dims[idx]
                 embed = X[:, cur_cnt:next_cnt]
                 distance = pairwise_distance(embed, transform_matrix[idx])
                 le_output = distance.argmin(axis=1)
