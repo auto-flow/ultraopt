@@ -124,7 +124,7 @@ def run_contain_nan():
     df2['af_hidden'][pd.isna(df2['af_hidden'])] = 'leaky_relu'
     print(X_inv)
     assert np.all(df2 == X_inv)
-    # np.all(X_inv == df)
+    # np.all(X_inv == df_emb)
 
 
 def run_current_cols(exp=1):

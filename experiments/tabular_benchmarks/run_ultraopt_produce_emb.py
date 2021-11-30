@@ -103,16 +103,17 @@ if optimizer == "ETPE":
         from tabular_nn import EmbeddingEncoder
 
         encoder = EmbeddingEncoder(
-            max_epoch=150, n_jobs=1, verbose=1, weight_decay=2e-4,
-            update_used_samples=500, update_epoch=20
+            max_epoch=50, n_jobs=1, verbose=1, weight_decay=2e-4,
+            update_used_samples=500, update_epoch=50,update_accepted_samples=20
         )
         optimizer = ETPEOptimizer(
             # limit_max_groups=limit_max_groups,
             min_points_in_model=min_points_in_model,
             limit_max_groups='auto',
             max_groups=max_groups,
-            pretrained_emb=et_file if pretrain else None,
-            scale_cont_var=scale,
+            # pretrained_emb=et_file if pretrain else None,
+            consider_ord_as_cont=False,
+            scale_cont_var=False,
             embedding_encoder=encoder,
         )
     else:
@@ -128,7 +129,34 @@ ret = fmin(
     n_iterations=args.n_iters, random_state=args.run_id,
     multi_fidelity_iter_generator=iter_generator)
 
-ret.export_embedding_table(et_file)
+import pylab as plt
+from sklearn.decomposition import PCA
+
+ORD_EMB_REG = os.getenv('ORD_EMB_REG')
+print(f'ORD_EMB_REG = {ORD_EMB_REG}')
+target_dir = f'ord_emb/{args.benchmark}'
+if ORD_EMB_REG:
+    target_dir += f"_{ORD_EMB_REG}"
+os.system(f'mkdir -p {target_dir}')
+
+df_map = ret.export_embedding_table(et_file)
+for title, df_emb in df_map.items():
+    if title == 'continuous_scaler':
+        continue
+    if df_emb.shape[1] > 2:
+        X_emb = PCA(n_components=2, random_state=0, whiten=True).fit_transform(df_emb)
+    else:
+        X_emb = df_emb.values
+    for entity, row in df_emb.iterrows():
+        if len(row)==1:
+            x = row.tolist()[0]
+            y=0
+        else:
+            x,y = row.tolist()
+        plt.scatter(x, y)
+        plt.annotate(entity, (x, y))
+    plt.savefig(f'{target_dir}/{title}.png')
+    plt.cla()
 
 print(ret)
 if os.getenv('DEBUG') == 'true':

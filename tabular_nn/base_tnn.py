@@ -7,6 +7,7 @@ import os
 
 import numpy as np
 from torch import nn
+import torch
 
 
 def get_embed_dims(n_uniques):
@@ -15,6 +16,8 @@ def get_embed_dims(n_uniques):
     max_dim = int(os.getenv('MAX_DIM', '100'))
     return np.clip(ans, None, max_dim)
 
+def get_ord_embed_dims(n_uniques):
+    return np.ones(n_uniques.shape,dtype='int')
 
 class BaseTNN(nn.Module):
     def __init__(self):
@@ -25,6 +28,9 @@ class BaseTNN(nn.Module):
             nn.Embedding(int(n_unique), int(embed_dim))
             for n_unique, embed_dim in zip(n_uniques, embed_dims)
         ])
+
+    def get_reg_loss(self,loss):
+        return loss
 
     def get_activate_function(self, af_name: str):
         af_name = af_name.lower()

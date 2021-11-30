@@ -11,6 +11,7 @@ import torch
 from frozendict import frozendict
 from sklearn.metrics import accuracy_score, r2_score
 from sklearn.utils import check_random_state
+from tabular_nn.base_tnn import BaseTNN
 from tabular_nn.utils.data import check_n_jobs
 from tabular_nn.utils.logging_ import get_logger
 from torch.nn.functional import cross_entropy, mse_loss
@@ -21,7 +22,7 @@ class Trainer():
             self,
             lr=1e-2, max_epoch=25, nn_params=frozendict(),
             random_state=1000, batch_size=1024, optimizer="adam", n_jobs=-1,
-            class_weight=None, verbose=0.,weight_decay=5e-4
+            class_weight=None, verbose=0., weight_decay=5e-4
     ):
         self.weight_decay = weight_decay
         self.verbose = verbose
@@ -50,7 +51,7 @@ class Trainer():
             y = y[:, np.newaxis]
         torch.manual_seed(self.rng.randint(0, 10000))
         torch.set_num_threads(self.n_jobs)
-        tnn = init_model
+        tnn: BaseTNN = init_model
         if self.optimizer == "adam":
             nn_optimizer = torch.optim.Adam(tnn.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         elif self.optimizer == "sgd":
@@ -106,6 +107,7 @@ class Trainer():
                     label_ix += clf_n_classes[k]
                 for k in range(n_reg_label):
                     loss += mse_loss(outputs[:, label_ix].flatten(), reg_label[batch_ix, k])
+                tnn.get_reg_loss(loss)
                 loss.backward()
                 nn_optimizer.step()
             tnn.max_epoch = epoch_index + 1

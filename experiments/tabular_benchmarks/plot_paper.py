@@ -44,7 +44,7 @@ info = {
     "bohb-kde": ("BOHB-KDE", ["olive", 's', 'solid']),
     "ultraopt_ETPE_18": ("ETPE", ["b", 's', 'dashed']),
     # "ultraopt_ETPE_univar": ("ETPE (univar)", ["brown", "x", 'dashed']),
-    "ultraopt_ETPE_scale3": ("ETPE (scale)", ["brown", "x", 'dashed']),
+    "ultraopt_ETPE_ord": ("ETPE (ord)", ["brown", "x", 'dashed']),
 }
 dir_name = 'tubular_benchmark_figures'
 os.system(f'mkdir -p {dir_name}')

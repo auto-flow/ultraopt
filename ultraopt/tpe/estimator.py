@@ -101,7 +101,7 @@ class TreeParzenEstimator(BaseEstimator):
         overlap_key2idxs = {k: np.array(v) for k, v in key2idxs.items()}
         return overlap_key2idxs
 
-    def estimate_group_kde(self, active_X, active_y, bounds, uni_cat=0) \
+    def estimate_group_kde(self, active_X, active_y,  uni_cat=0) \
             -> Tuple[object, object]:
         if active_X.shape[0] < 4:  # at least have 4 samples
             return None, None
@@ -124,8 +124,6 @@ class TreeParzenEstimator(BaseEstimator):
             klass = NormalizedKernelDensity
         # todo: sample weight
         good_kde, bad_kde = klass(), klass()
-        if hasattr(good_kde, 'set_bounds'): good_kde.set_bounds(bounds)
-        if hasattr(bad_kde, 'set_bounds'): bad_kde.set_bounds(bounds)
         return (
             good_kde.fit(X_good),
             bad_kde.fit(X_bad)
@@ -329,19 +327,15 @@ class TreeParzenEstimator(BaseEstimator):
         self.bad_kde_groups = self.good_kde_groups[:]
         # todo: 不每次都拟合一个NN
         # end for debug
-        bounds_list = self.config_transformer.bounds_list
-        assert len(bounds_list) == D
         for group in range(self.n_groups):
             group_mask = self.groups == group
             grouped_X = X[:, group_mask]
-            grouped_bounds = [bounds_list[i] for i in range(D) if self.groups[i] == group]
             inactive_mask = np.isnan(grouped_X[:, 0])
             active_X = grouped_X[~inactive_mask, :]
             active_y = y[~inactive_mask]
             self.good_kde_groups[group], self.bad_kde_groups[group] = \
                 self.estimate_group_kde(
                     active_X, active_y,
-                    grouped_bounds,
                     uni_cat=n_choices_list[group] if not self.embed_catVar else 0
                     # self.nn_projectors[group]
                 )

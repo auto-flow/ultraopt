@@ -5,7 +5,7 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 import itertools
 from collections import defaultdict
-from copy import deepcopy
+from copy import deepcopy,copy
 from functools import lru_cache
 
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ from ultraopt.viz import plot_convergence
 class FMinResult():
     def __init__(self, optimizer: BaseOptimizer = None):
         if optimizer is None: return
-        self.optimizer = deepcopy(optimizer)
+        self.optimizer = copy(optimizer)
         self.configs_table = []
         self.hyperparameters = [hp.name for hp in optimizer.config_space.get_hyperparameters()]
         self.is_multi_fidelity = len(optimizer.budgets) > 1

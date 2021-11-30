@@ -8,7 +8,7 @@ from pathlib import Path
 import click
 
 @click.command()
-@click.option("--data_dir", "-d", default="/media/tqc/doc/Project/fcnet_tabular_benchmarks")
+@click.option("--data_dir", "-d", default="/home/tqc/fcnet_tabular_benchmarks")
 @click.option("--n_iters", "-n", default=500)
 def main(data_dir, n_iters):
     cmds = []
@@ -20,7 +20,9 @@ def main(data_dir, n_iters):
         # ["ultraopt", "Random"],
         # ["tpe", ""],
     ]
-    for benchmark in ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]:
+    for benchmark in ["protein_structure",
+                      # "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"
+                      ]:
         for i in range(20):
             for algo, opt, mode in pairs:
             # for g in [3,4,5,6,8]:
