@@ -42,7 +42,6 @@ elif args.benchmark == "parkinsons_telemonitoring":
     b = FCNetParkinsonsTelemonitoringBenchmark(data_dir=args.data_dir)
 
 output_path = os.path.join(args.output_path, f"{args.benchmark}-tpe")
-os.makedirs(os.path.join(output_path), exist_ok=True)
 
 cs = b.get_configuration_space()
 
@@ -77,13 +76,29 @@ def objective(x):
         'status': STATUS_OK}
 
 
+init_pts = int(os.getenv('INIT_PTS', '0'))
+init_bench = os.getenv('INIT_BENCH')
+print(f'init_pts={init_pts}')
+print(f'init_bench={init_bench}')
+initial_points = None
+if init_pts:
+    from joblib import load
+
+    data = load(f'store/{init_bench}/{args.run_id}.pkl')
+    initial_points = [x[1].get_dictionary() for x in data[:init_pts]]
+    output_path += f'_init_pts({init_bench},{init_pts})'
+
 trials = Trials()
 best = fmin(objective,
             space=space,
             algo=tpe.suggest,
             max_evals=args.n_iters,
             rstate=np.random.RandomState(args.run_id),
-            trials=trials)
+            trials=trials,
+            points_to_evaluate=initial_points
+            )
+
+os.makedirs(os.path.join(output_path), exist_ok=True)
 
 if args.benchmark == "nas_cifar10a" or args.benchmark == "nas_cifar10b" or args.benchmark == "nas_cifar10c":
     res = b.get_results(ignore_invalid_configs=True)

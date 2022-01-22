@@ -165,7 +165,10 @@ class ConfigTransformer():
             self.encoder.ord_cols = copy(self.ord_cols)
             self.encoder.cont_cols = copy(self.cont_cols)
             self.encoder.n_choices_list = [x for x in self.n_choices_list if x > 2]
-            self.encoder.n_sequences_list = [x for x in self.n_sequences_list if x > 2]
+            if self.consider_ord_as_cont:
+                self.encoder.n_sequences_list=[]
+            else:
+                self.encoder.n_sequences_list = [x for x in self.n_sequences_list if x > 2]
             self.encoder.pretrained_emb = self.pretrained_emb
         self.embedding_encoder_history = []
         return self

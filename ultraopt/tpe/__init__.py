@@ -4,11 +4,12 @@
 # @Date    : 2020-12-15
 # @Contact    : qichun.tang@bupt.edu.cn
 
-from collections import namedtuple
-
 import numpy as np
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.neighbors import KernelDensity
+
+from .similarity import BaseSimilarity, SpearmanSimilarity, MutualInfomationSimilarity, \
+    ConditionalMutualInfomationSimilarity
 
 
 class SampleDisign():

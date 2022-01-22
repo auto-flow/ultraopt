@@ -13,10 +13,10 @@ import click
 def main(data_dir, n_iters):
     cmds = []
     pairs = [
-        ["bohb_kde", ""],
-        ["optuna", ""],
+        # ["bohb_kde", ""],
+        # ["optuna", ""],
         # ["ultraopt", "Random"],
-        # ["tpe", ""],
+        ["tpe", ""],
     ]
     for benchmark in ["protein_structure", "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"]:
         for i in range(20):

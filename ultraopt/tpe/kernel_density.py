@@ -41,11 +41,13 @@ class DiyTransformer(StandardScaler):
 
 class NormalizedKernelDensity(KernelDensity):
 
-    def fit(self, X, y=None, sample_weight=None):
+    def fit(self, X, y=None, sample_weight=None, bw_factor=None, **kwargs):
         from sklearn.preprocessing import StandardScaler,MinMaxScaler, RobustScaler, QuantileTransformer
         # self.normalizer_ = DiyTransformer()
         # X = self.normalizer_.fit_transform(X)
         self.bandwidth = estimate_bw(X)
+        if bw_factor is not None:
+            self.bandwidth *= bw_factor
         return super(NormalizedKernelDensity, self).fit(X, y, sample_weight)
 
     def score_samples(self, X):
@@ -138,7 +140,7 @@ class UnivariateCategoricalKernelDensity(BaseKernelDensity):
         self.freq = []
         self.sum_freq = 0
 
-    def fit(self, X: np.ndarray, y=None, sample_weight=None):
+    def fit(self, X: np.ndarray, y=None, sample_weight=None, **kwargs):
         assert X.shape[1] == 1
         max_ = int(np.max(X)) + 1
         if not self.freq:

@@ -35,13 +35,13 @@ info = {
     "ultraopt-ETPE": ("ETPE", ["b", 's', 'dashed']),
     # "ultraopt-ETPE-g3-noPretrain": ("ETPE($\max |g|=3$,ind)",["black", "x", 'dashed']),
     "ultraopt-ETPE-g3-noPretrain-expIter1000": ("ETPE($\max |g|=3$)",["brown", "x", 'dashed']),
-    # "ultraopt-ETPE-g3-pretrain2-expIter200": ("ETPE($\max |g|=3$,200)",["r", "x", 'dashed']),
-    # "ultraopt-ETPE-g3-pretrain2-expIter300": ("ETPE($\max |g|=3$,300)",["purple", "x", 'dashed']),
-    # "ultraopt-ETPE-g3-pretrain2-expIter400": ("ETPE($\max |g|=3$,400)",["b", "x", 'dashed']),
-    "ultraopt-ETPE-g3-pretrain2-expIter500": ("ETPE($\max |g|=3$,pretrain)",["k", "x", 'dashed']),
-    "ultraopt-ETPE-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,robust)",["purple", "x", 'dashed']),
-    # "ultraopt-ETPE-g3-pretrain": ("ETPE($\max |g|=3$,pretrain)",["orange", "x", 'dashed']),
-    # "ultraopt-ETPE-g3-pretrain2": ("ETPE($\max |g|=3$,pretrain2)",["purple", "x", 'dashed']),
+
+    "ultraopt-ETPE-spearman-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,spearman)",["purple", "x", 'dashed']),
+    "ultraopt-ETPE-spearman3-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,spearman3)",["k", "x", 'dashed']),
+    "ultraopt-ETPE-mi-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,mi)",["r", "x", 'dashed']),
+    "ultraopt-ETPE-cmi-g3-pretrain3-expIter500": ("ETPE($\max |g|=3$,pretrain,cmi)",["g", "x", 'dashed']),
+    "ultraopt-ETPE-cmi-one-hot-g3-noPretrain-expIter500": ("ETPE($\max |g|=3$,OHE,cmi)",["b", "x", 'dashed']),
+    "ultraopt-ETPE-cmi-one-hot-noPretrain-expIter500": ("ETPE(OHE,cmi)",["orange", "x", 'dashed']),
 }
 
 neg_RNA_global_min = 30

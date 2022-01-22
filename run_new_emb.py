@@ -46,8 +46,11 @@ HDL = {
     },
 }
 opt = ETPEOptimizer(
-    consider_ord_as_cont=False, scale_cont_var=False,
+    consider_ord_as_cont=True, scale_cont_var=False,
     # pretrained_emb='test_emb_table.txt'
 )
 ret = fmin(lambda x: np.random.rand(), HDL, opt)
+losses=ret.budget2obvs[1]['losses']
+configs=ret.budget2obvs[1]['configs']
+
 ret.export_embedding_table('test_emb_table.txt')

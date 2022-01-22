@@ -114,7 +114,7 @@ if optimizer == "ETPE":
             # pretrained_emb=et_file if pretrain else None,
             consider_ord_as_cont=False,
             scale_cont_var=False,
-            embedding_encoder=encoder,
+            category_encoder=encoder,
         )
     else:
         raise NotImplementedError

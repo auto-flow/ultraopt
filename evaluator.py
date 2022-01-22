@@ -97,8 +97,8 @@ def evaluate(evaluator, i):
     optimizer = ETPEOptimizer(
         min_points_in_model=20,
         multivariate=True,
-        # embedding_encoder="default"
-        embedding_encoder=None,
+        # category_encoder="default"
+        category_encoder=None,
         overlap_bagging_ratio=0,
         min_points_in_kde=2,
         n_candidates_decay_ratio=0.9,

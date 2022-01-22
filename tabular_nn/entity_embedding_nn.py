@@ -8,7 +8,7 @@ from itertools import chain
 import numpy as np
 import torch
 from sklearn.impute import SimpleImputer
-from tabular_nn.base_tnn import BaseTNN, get_embed_dims, get_ord_embed_dims
+from tabular_nn.base_tnn import BaseTNN, get_embed_dims
 from tabular_nn.trainer import Trainer
 from tabular_nn.utils.logging_ import get_logger
 from torch import nn
@@ -132,7 +132,9 @@ class EntityEmbeddingNN(BaseTNN):
         # self.ord_embed_dims = get_ord_embed_dims(n_sequences_list)
         self.ord_embed_dims = get_embed_dims(n_sequences_list)
         embed_dims_size = self.cat_embed_dims.sum() + self.ord_embed_dims.sum()
-        sum_ = np.log(self.cat_embed_dims).sum() + np.log(self.ord_embed_dims).sum() + np.log(n_cont_variables)
+        sum_ = np.log(self.cat_embed_dims.tolist() + self.ord_embed_dims.tolist()).sum()
+        if n_cont_variables:
+            sum_ += np.log(n_cont_variables)
         n_discrete_variables = self.n_cat_variables + self.n_ord_variables
         self.n_layer1 = int(np.clip(int(A * (n_discrete_variables ** 0.5) * sum_ + 1), 100, 1000))
         self.n_layer2 = int(self.n_layer1 / B) + 2

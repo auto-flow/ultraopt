@@ -21,7 +21,7 @@ def main(data_dir, n_iters):
         # ["tpe", ""],
     ]
     for benchmark in ["protein_structure",
-                      # "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"
+                      "slice_localization", "naval_propulsion", "parkinsons_telemonitoring"
                       ]:
         for i in range(20):
             for algo, opt, mode in pairs:

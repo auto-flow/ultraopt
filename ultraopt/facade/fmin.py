@@ -59,7 +59,7 @@ def fmin(
     else:
         logging.basicConfig(level=logging.DEBUG)
     if verbose < 2:
-        logging.getLogger("tabular_nn.component.embedding_encoder.EmbeddingEncoder").setLevel(logging.WARNING)
+        logging.getLogger("tabular_nn.component.category_encoder.EmbeddingEncoder").setLevel(logging.WARNING)
         logging.getLogger("tabular_nn.entity_embedding_nn.TrainEntityEmbeddingNN").setLevel(logging.WARNING)
     # 设计目标：单机并行、多保真优化
     # ------------   config_space   ---------------#

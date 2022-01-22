@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # @Author  : qichun tang
 # @Contact    : qichun.tang@bupt.edu.cn
-import heapq
 import warnings
 from collections import defaultdict
 from copy import deepcopy
@@ -13,8 +12,8 @@ import pandas as pd
 from ConfigSpace import Configuration
 from sklearn.base import BaseEstimator
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.utils import check_random_state
+from ultraopt.tpe import SpearmanSimilarity
 from ultraopt.tpe import top15_gamma, SampleDisign
 # from ultraopt.tpe.kernel_density import MultivariateKernelDensity
 from ultraopt.tpe.kernel_density import NormalizedKernelDensity
@@ -23,16 +22,9 @@ from ultraopt.transform.config_transformer import ConfigTransformer
 from ultraopt.utils.config_space import add_configs_origin, sample_configurations
 from ultraopt.utils.hash import get_hash_of_array
 from ultraopt.utils.logging_ import get_logger
+from ultraopt.utils.misc import uniform_segmentation
 
 warnings.filterwarnings('ignore')
-
-
-def split(n: int, m: int = 4) -> np.ndarray:
-    g = round(n / m)
-    ans = np.array([n // g] * g)
-    sum_ = sum(ans)
-    ans[:int(n - sum_)] += 1
-    return ans
 
 
 class TreeParzenEstimator(BaseEstimator):
@@ -45,8 +37,10 @@ class TreeParzenEstimator(BaseEstimator):
             overlap_bagging_ratio=0.5,
             limit_max_groups=True,
             max_groups=8,
+            similarity=SpearmanSimilarity(K=10)
             # fill_deactivated_value=False
     ):
+        self.similarity = similarity
         self.max_groups = max_groups
         self.limit_max_groups = limit_max_groups
         self.embed_catVar = embed_catVar
@@ -70,9 +64,13 @@ class TreeParzenEstimator(BaseEstimator):
         self.n_groups = None
         self.hierarchical_groups_seq = []
         self.group_step = 0
+        self.meta_learning = None
 
-    def set_config_transformer(self, config_transformer):
-        self.config_transformer = config_transformer
+    def set_config_transformer(self, config_transformer: ConfigTransformer):
+        self.config_transformer: ConfigTransformer = config_transformer
+
+    def set_meta_learning(self, meta_learning: 'MetaLearning'):
+        self.meta_learning = meta_learning
 
     def calc_groups_by_hierarchy(self, X):
         N, M = X.shape
@@ -101,39 +99,49 @@ class TreeParzenEstimator(BaseEstimator):
         overlap_key2idxs = {k: np.array(v) for k, v in key2idxs.items()}
         return overlap_key2idxs
 
-    def estimate_group_kde(self, active_X, active_y,  uni_cat=0) \
-            -> Tuple[object, object]:
-        if active_X.shape[0] < 4:  # at least have 4 samples
-            return None, None
-        N, D = active_X.shape
-        # Each KDE contains at least 2 samples
-        n_good = self.gamma(N)
-        if n_good < self.min_points_in_kde or \
-                N - n_good < self.min_points_in_kde:
-            # Too few observation samples
-            return None, None
-        X_proj = active_X
-        idx = np.argsort(active_y)
-        X_good = X_proj[idx[:n_good]]
-        X_bad = X_proj[idx[n_good:]]
-        y_good = -active_y[idx[:n_good]]
+    def estimate_group_kde(
+            self, active_X=None, active_y=None, X_good=None, X_bad=None, uni_cat=0,
+            bw_factor=None
+    ) -> Tuple[object, object]:
+        # 得到X_good, X_bad
+        if active_X is not None:
+            if active_X.shape[0] < 4:  # at least have 4 samples
+                return None, None
+            N, D = active_X.shape
+            # Each KDE contains at least 2 samples
+            n_good = self.gamma(N)
+            if n_good < self.min_points_in_kde or \
+                    N - n_good < self.min_points_in_kde:
+                # Too few observation samples
+                return None, None
+            X_proj = active_X
+            idx = np.argsort(active_y)
+            X_good = X_proj[idx[:n_good]]
+            X_bad = X_proj[idx[n_good:]]
+        else:
+            assert X_good is not None
+            assert X_bad is not None
+            if X_good.shape[0] < 2 or X_bad.shape[0] < 2:
+                return None, None
         if uni_cat:
             klass = UnivariateCategoricalKernelDensity
         else:
-            # klass = MultivariateKernelDensity
             klass = NormalizedKernelDensity
         # todo: sample weight
         good_kde, bad_kde = klass(), klass()
+        if hasattr(good_kde, 'bw_factor'):
+            good_kde.bw_factor = bw_factor
+            bad_kde.bw_factor = bw_factor
         return (
-            good_kde.fit(X_good),
-            bad_kde.fit(X_bad)
+            good_kde.fit(X_good, bw_factor=bw_factor),
+            bad_kde.fit(X_bad, bw_factor=bw_factor)
         )
 
-    def cluster_algo_1(self, cur_X, spearman_corr):
+    def variable_clustering_algorithm(self, cur_X, similarity_matrix):
         M = cur_X.shape[1]
         if M <= max(self.max_groups, 3):
             return None, None
-        new_group_alloc_list = split(M, self.max_groups)
+        new_group_alloc_list = uniform_segmentation(M, self.max_groups)
         n_clusters = new_group_alloc_list.size
         if n_clusters == 1:
             return None, None
@@ -141,7 +149,7 @@ class TreeParzenEstimator(BaseEstimator):
         corr_pairs = []
         for i in range(M):
             for j in range(i + 1, M):
-                corr_pairs.append([spearman_corr[i, j], i, j])
+                corr_pairs.append([similarity_matrix[i, j], i, j])
         corr_pairs = sorted(corr_pairs)[::-1]
         varId2cluster = {}
         cluster2varId = defaultdict(list)
@@ -164,77 +172,13 @@ class TreeParzenEstimator(BaseEstimator):
             for cluster_id in range(n_clusters):
                 if cluster2quota[cluster_id] == 0:
                     continue
-                corr = np.mean(spearman_corr[np.array(cluster2varId[cluster_id]), i])
+                corr = np.mean(similarity_matrix[np.array(cluster2varId[cluster_id]), i])
                 if corr > best_corr:
                     best_cluster = cluster_id
                     best_corr = corr
             varId2cluster[i] = best_cluster
             cluster2varId[best_cluster] += [i]
             cluster2quota[best_cluster] -= 1
-        return n_clusters, varId2cluster
-
-    def cluster_algo_hierarchical_clustering(self, cur_X, spearman_corr):
-        M = cur_X.shape[1]
-        corr_pairs = []
-        solved_cluster_ids = set()
-        id2children = defaultdict(list)  # 用于存储聚类ID对应的顶点ID
-        for i in range(M):
-            for j in range(i + 1, M):
-                corr_pairs.append((-spearman_corr[i, j], i, j))
-        heapq.heapify(corr_pairs)
-        cur_id = M
-        id2parent = {}
-        memo = {}
-
-        def find_flatten_children(p):
-            if p in memo: return memo[p]
-            # 找到一组最底层的children(<=M)
-            if p < M:
-                return [p]
-            ans = []
-            for child in id2children[p]:
-                if child < M:
-                    ans.append(child)
-                else:
-                    ans.extend(find_flatten_children(child))
-            memo[p] = ans
-            return ans
-
-        while corr_pairs:
-            neg_corr, i, j = heapq.heappop(corr_pairs)
-            if i in solved_cluster_ids or j in solved_cluster_ids:
-                continue
-            # 最大相似度小于阈值, 退出程序
-            if -neg_corr < 0.9:
-                break
-            solved_cluster_ids.add(i)
-            solved_cluster_ids.add(j)
-            new_cluster = find_flatten_children(i) + find_flatten_children(j)
-            id2children[cur_id] = new_cluster
-            id2parent[i] = cur_id
-            id2parent[j] = cur_id
-            # 合成新结点后, 计算新结点到每个结点的距离
-            for other_id in range(cur_id):
-                if other_id in solved_cluster_ids:
-                    continue
-                other_cluster = find_flatten_children(other_id)
-                sum_corr = 0
-                for a in new_cluster:
-                    for b in other_cluster:
-                        sum_corr += spearman_corr[a, b]
-                avg_corr = sum_corr / (len(new_cluster) * len(other_cluster))
-                heapq.heappush(corr_pairs, (-avg_corr, cur_id, other_id))
-            cur_id += 1
-
-        top_cluster_ids = [i for i in range(cur_id) if i not in id2parent]  # 无父节点的root
-        n_clusters = len(top_cluster_ids)
-        varId2cluster = {}
-        for i, top_cluster_id in enumerate(top_cluster_ids):
-            children_ids = find_flatten_children(top_cluster_id)
-            for j in children_ids:
-                varId2cluster[j] = i
-        groups = [varId2cluster[i] for i in range(M)]
-        print(groups)
         return n_clusters, varId2cluster
 
     def adaptive_multivariate_grouping(
@@ -245,37 +189,18 @@ class TreeParzenEstimator(BaseEstimator):
         groups = groups.copy()
         hierarchical_groups = []
         cur_group = 0
-        K = 10
         for _ in range(n_groups):
             group_mask = groups == cur_group
             cur_X = X[:, group_mask]
             inactive_mask = np.isnan(cur_X[:, 0])
             cur_X = cur_X[~inactive_mask, :]
             cur_y = y[~inactive_mask]
-            n_bins = min(len(set(cur_y)), K)
-            bins = KBinsDiscretizer(n_bins=n_bins, strategy='quantile', encode='ordinal'). \
-                fit_transform(cur_y[:, np.newaxis]).flatten().astype('int32')
-            bins_set = np.unique(bins)
-            n_bins = len(bins)
             M = cur_X.shape[1]
-            # 数据不足， 返回原来的分组
-            if n_bins < K:
+            similarity_matrix = self.similarity.similarity_matrix(cur_X, cur_y)
+            if similarity_matrix is None:
                 hierarchical_groups.append([0] * n_groups)
                 continue
-            X_avg = np.zeros([n_bins, M])
-            for i, bin_id in enumerate(bins_set):
-                # np.count_nonzero(bins == bin_id)==0
-                X_avg[i, :] = np.mean(cur_X[bins == bin_id, :], axis=0)
-            # fixme : 相关系数矩阵 不准?
-            spearman_corr = np.abs(pd.DataFrame(X_avg).corr(method="spearman").values)
-            top_right_corr_list = []
-            for i in range(M):
-                for j in range(i + 1, M):
-                    top_right_corr_list.append(spearman_corr[i, j])
-            # print(np.mean(top_right_corr_list))
-            # print(np.median(top_right_corr_list))
-            # print(np.std(top_right_corr_list))
-            n_clusters, varId2cluster = self.cluster_algo_1(cur_X, spearman_corr)
+            n_clusters, varId2cluster = self.variable_clustering_algorithm(cur_X, similarity_matrix)
             # n_clusters, varId2cluster = self.cluster_algo_hierarchical_clustering(cur_X, spearman_corr)
             if n_clusters is None:
                 hierarchical_groups.append([0] * n_groups)
@@ -293,7 +218,9 @@ class TreeParzenEstimator(BaseEstimator):
             cur_group = nxt_group
         return groups, n_groups, hierarchical_groups
 
-    def calc_variable_groups(self, X, y):
+    def calc_variable_groups(self, X, y=None):
+        if y is None:
+            self.groups, self.n_groups = self.calc_groups_by_hierarchy(X)
         if self.multivariate:
             # 当时设计的时候，构造config_transformer时算了分组， 现在fit也算了分组
             self.groups, self.n_groups = self.calc_groups_by_hierarchy(X)
@@ -312,33 +239,48 @@ class TreeParzenEstimator(BaseEstimator):
                 n_groups += 1
             self.groups, self.n_groups = np.array(groups), n_groups
 
-    def fit(self, X: np.ndarray, y: np.ndarray):
-        N, D = X.shape
+    def fit(self,
+            X: np.ndarray,
+            y: Optional[np.ndarray] = None,
+            X_bad: Optional[np.ndarray] = None,
+            bw_factor=None,
+            ):
+        self.n_samples = X.shape[0] + (0 if X_bad is None else X_bad.shape[0])
         if self.n_groups is None:
             self.calc_variable_groups(X, y)
         elif self.group_step % 10 == 0:
             self.calc_variable_groups(X, y)
         self.group_step += 1
         n_choices_list = self.config_transformer.n_choices_list
-        # =============================================
-        # =              group kde                    =
-        # =============================================
         self.good_kde_groups = [None] * self.n_groups
         self.bad_kde_groups = self.good_kde_groups[:]
-        # todo: 不每次都拟合一个NN
-        # end for debug
         for group in range(self.n_groups):
             group_mask = self.groups == group
             grouped_X = X[:, group_mask]
             inactive_mask = np.isnan(grouped_X[:, 0])
             active_X = grouped_X[~inactive_mask, :]
-            active_y = y[~inactive_mask]
-            self.good_kde_groups[group], self.bad_kde_groups[group] = \
-                self.estimate_group_kde(
-                    active_X, active_y,
-                    uni_cat=n_choices_list[group] if not self.embed_catVar else 0
-                    # self.nn_projectors[group]
-                )
+            if y is not None:
+                active_y = y[~inactive_mask]
+            else:
+                active_y = None
+            if X_bad is not None:
+                grouped_X_bad = X_bad[:, group_mask]
+                inactive_mask_bad = np.isnan(grouped_X_bad[:, 0])
+                active_X_bad = grouped_X_bad[~inactive_mask_bad, :]
+            else:
+                active_X_bad = None
+            uni_cat = n_choices_list[group] if not self.embed_catVar else 0
+            if X_bad is None:
+                self.good_kde_groups[group], self.bad_kde_groups[group] = \
+                    self.estimate_group_kde(
+                        active_X=active_X, active_y=active_y,
+                        uni_cat=uni_cat, bw_factor=bw_factor
+                    )
+            else:
+                self.good_kde_groups[group], self.bad_kde_groups[group] = \
+                    self.estimate_group_kde(
+                        X_good=active_X, X_bad=active_X_bad, bw_factor=bw_factor
+                    )
         return self
 
     def predict_group_multivariant(self, X: np.ndarray, return_each_varGroups=False):
@@ -383,7 +325,10 @@ class TreeParzenEstimator(BaseEstimator):
         return good_log_pdf.sum(axis=1) - bad_log_pdf.sum(axis=1)
 
     def predict(self, X: np.ndarray):
-        return self.predict_group_multivariant(X)
+        logEI = self.predict_group_multivariant(X)
+        if self.meta_learning is None:
+            return logEI
+        return self.meta_learning.merge_predict(X, logEI, self.n_samples)
 
     def __sample(self, n_candidates, random_state, bandwidth_factor,
                  is_random_sample, optimize_each_varGroups):
@@ -472,7 +417,7 @@ class TreeParzenEstimator(BaseEstimator):
                     X_trans[:, group_mask] = X_trans[:, group_mask][np.argsort(-EI_groups[:, group]), :]
                 candidates = self.config_transformer.inverse_transform(X_trans)
             else:
-                EI = self.predict_group_multivariant(X_trans)
+                EI = self.predict(X_trans)
                 indexes = np.argsort(-EI)
                 candidates = [candidates[ix] for ix in indexes]
             # except Exception as e:

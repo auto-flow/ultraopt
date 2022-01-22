@@ -140,4 +140,9 @@ if __name__ == '__main__':
     print(df_map_get)
 
 
-
+def uniform_segmentation(n: int, m: int = 4) -> np.ndarray:
+    g = round(n / m)
+    ans = np.array([n // g] * g)
+    sum_ = sum(ans)
+    ans[:int(n - sum_)] += 1
+    return ans

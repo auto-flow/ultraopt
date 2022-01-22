@@ -40,12 +40,25 @@ ylims = [
 info = {
     "ultraopt_Random": ("Random", ["r", '.', 'solid']),
     "tpe": ("HyperOpt-TPE", ["purple", 'v', 'solid']),
+    "tpe_init_pts(slice_localization,10)": ("HyperOpt-TPE", ["purple", 'v', 'dashed']),
     "optuna": ("Optuna-TPE", ["g", '^', 'solid']),
     "bohb-kde": ("BOHB-KDE", ["olive", 's', 'solid']),
-    "ultraopt_ETPE_18": ("ETPE", ["b", 's', 'dashed']),
+    # "ultraopt_ETPE_18": ("ETPE", ["b", 's', 'dashed']),
+    "ultraopt_ETPE_ord": ("ETPE", ["b", 's', 'dashed']),
     # "ultraopt_ETPE_univar": ("ETPE (univar)", ["brown", "x", 'dashed']),
-    "ultraopt_ETPE_ord": ("ETPE (ord)", ["brown", "x", 'dashed']),
-}
+    # "ultraopt_ETPE_ord": ("ETPE (ord)", ["g", "x", 'dashed']),
+    # "ultraopt_ETPE_init_pts(slice_localization,20)": ("ETPE (init pts)", ["brown", "x", 'dashed']),
+    "ultraopt_ETPE_init_pts(slice_localization,10)": ("ETPE (init pts)", ["k", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(slice_localization,1.0,50,150)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(slice_localization,0.5,50,150)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    #protein_structure-
+    # "ultraopt_ETPE_meta_learn(slice_localization,0.51,50,100)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    "ultraopt_ETPE_meta_learn(parkinsons_telemonitoring,0.55,50,150)": ("ETPE (meta learn)", ["r", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(slice_localization,0.3,30,100)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(parkinsons_telemonitoring,0.5,50,150)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(naval_propulsion,0.5,50,150)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+    # "ultraopt_ETPE_meta_learn(parkinsons_telemonitoring,1.0,50,150)": ("ETPE (meta learn)", ["g", "x", 'dashed']),
+}# protein_structure-ultraopt_ETPE_init_pts(slice_localization,20)
 dir_name = 'tubular_benchmark_figures'
 os.system(f'mkdir -p {dir_name}')
 benchmarks = [

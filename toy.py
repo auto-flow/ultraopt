@@ -147,7 +147,7 @@ class Evaluator():
         model_name = None
         model_type=0
         if AS.startswith('LR') or AS.startswith('LSVM'):
-            # model_name, scale_name, reg_method, solver = AS.split('-')
+            # model_name, scale_name, reg_method, solver = AS.uniform_segmentation('-')
             # HP['solver'] = solver
             model_name, scale_name, reg_method = AS.split('-')
             HP['penalty'] = reg_method
@@ -234,7 +234,7 @@ os.environ['MAX_DIM'] = '3'
 ee_encoder = EmbeddingEncoder(
     max_epoch=100, early_stopping_rounds=50, n_jobs=1, verbose=1,
 )
-opt = ETPEOptimizer(min_points_in_model=20, embedding_encoder=ee_encoder, pretrained_emb='titanic_emb_table.txt')
+opt = ETPEOptimizer(min_points_in_model=20, category_encoder=ee_encoder, pretrained_emb='titanic_emb_table.txt')
 
 ret = fmin(evaluator, HDL, opt, n_iterations=40,auto_identify_serial_strategy=True)
 df_pair = ret.optimizer.config_transformer.embedding_encoder_history[-1][1]
@@ -259,7 +259,7 @@ plt.xlim(-2.5, 3)
 plt.ylim(-2.5, 3)
 plt.show()
 df_emb.to_csv('emb_ans.csv')
-print(ret.optimizer.embedding_encoder.model.cont_scaler.weight)
-print(ret.optimizer.embedding_encoder.model.cont_scaler.running_mean)
+print(ret.optimizer.category_encoder.model.cont_scaler.weight)
+print(ret.optimizer.category_encoder.model.cont_scaler.running_mean)
 ret.export_embedding_table('titanic_emb_table.txt')
 print(ret)

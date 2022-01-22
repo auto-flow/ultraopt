@@ -10,6 +10,7 @@ import category_encoders.utils as util
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils._random import check_random_state
 from sklearn.utils.multiclass import type_of_target
@@ -18,6 +19,12 @@ from tabular_nn.utils.data import pairwise_distance
 from tabular_nn.utils.logging_ import get_logger
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
+
+
+def get_array(obj):
+    if isinstance(obj, np.ndarray):
+        return obj
+    return obj.detach().numpy()
 
 
 class EmbeddingEncoder(BaseEstimator, TransformerMixin):
@@ -47,7 +54,10 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             update_epoch=10,
             update_accepted_samples=10,
             update_used_samples=100,
+            category_encoder='embedding'
     ):
+        assert category_encoder in {'embedding', 'one-hot'}
+        self.category_encoder = category_encoder
         self.n_sequences_list = n_sequences_list
         self.n_choices_list = n_choices_list
         self.ord_cols = ord_cols
@@ -150,6 +160,12 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
         self.label_scaler.fit(y[:, self.label_reg_mask])
         self.fitted = True
         self.model = None
+        self.cat_ohes = [
+            OneHotEncoder(categories=[list(range(n_choices))], sparse=False).fit(np.arange(n_choices)[:, None])
+            for n_choices in self.n_choices_list]
+        self.ord_ohes = [
+            OneHotEncoder(categories=[list(range(n_sequences))], sparse=False).fit(np.arange(n_sequences)[:, None])
+            for n_sequences in self.n_sequences_list]
 
     @property
     def n_cont_variables(self):
@@ -169,6 +185,8 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
                 self.n_cont_variables,
                 n_class=int(np.sum(self.label_reg_mask) + np.sum(self.clf_n_classes))
             )
+        if self.category_encoder != 'embedding':
+            return
         self.model = self.trainer.train(
             self.model, np.hstack([X_cat, X_ord, X_cont]), y, None, None,
             label_reg_mask=self.label_reg_mask,
@@ -196,7 +214,6 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
             self.stage = "Initial fitting"
             self.is_initial_fit = False
             self.final_observations = self.get_initial_final_observations()
-
             # todo : early_stopping choose best model
         else:
             self.model.max_epoch = 0
@@ -236,20 +253,24 @@ class EmbeddingEncoder(BaseEstimator, TransformerMixin):
     def output_embs(self, X_cat, X_ord):
         X_cat = X_cat.values if isinstance(X_cat, pd.DataFrame) else X_cat
         X_ord = X_ord.values if isinstance(X_ord, pd.DataFrame) else X_ord
-        cat_embeds, ord_embeds, _ = self.model(self.fake_input(X_cat, X_ord))
+        if self.category_encoder == 'embedding':
+            cat_embeds, ord_embeds, _ = self.model(self.fake_input(X_cat, X_ord))
+        else:
+            cat_embeds = [cat_ohe.transform(X_cat[:, [i]]) for i, cat_ohe in enumerate(self.cat_ohes)]
+            ord_embeds = [ord_ohe.transform(X_ord[:, [i]]) for i, ord_ohe in enumerate(self.ord_ohes)]
         out_cat_embeds, out_ord_embeds = [], []
         for i, cat_embed in enumerate(cat_embeds):
             col = self.cat_cols[i]
             if col in self.pretrained_emb:
                 out_cat_embeds.append(self.pretrained_emb[col][X_cat[:, i].astype('int')])
             else:
-                out_cat_embeds.append(cat_embed.detach().numpy())
+                out_cat_embeds.append(get_array(cat_embed))
         for i, ord_embed in enumerate(ord_embeds):
             col = self.ord_cols[i]
             if col in self.pretrained_emb:
                 out_ord_embeds.append(self.pretrained_emb[col][X_ord[:, i].astype('int')])
             else:
-                out_ord_embeds.append(ord_embed.detach().numpy())
+                out_ord_embeds.append(get_array(ord_embed))
         return out_cat_embeds, out_ord_embeds
 
     def get_transform_matrix(self) -> Tuple[List[np.ndarray], List[np.ndarray]]:

@@ -5,16 +5,17 @@
 # @Contact    : qichun.tang@bupt.edu.cn
 from copy import deepcopy
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 from tabular_nn import EmbeddingEncoder
-from tabular_nn import EquidistanceEncoder
 from ultraopt.optimizer.base_opt import BaseOptimizer
-from ultraopt.tpe import SampleDisign
+from ultraopt.tpe import SampleDisign, SpearmanSimilarity, BaseSimilarity
 from ultraopt.tpe.estimator import TreeParzenEstimator
+from ultraopt.tpe.meta import MetaLearning
 from ultraopt.transform.config_transformer import ConfigTransformer
-from ultraopt.utils.config_space import add_configs_origin, initial_design_2, sample_configurations
+from ultraopt.utils.config_space import add_configs_origin, initial_design_2
 from ultraopt.utils.misc import content_to_dfMap
 
 
@@ -28,6 +29,7 @@ class ETPEOptimizer(BaseOptimizer):
             # if config space is all joint and dim > 10, and hyperparameter are Homogeneous, use it
             limit_max_groups='auto',
             max_groups=3,  # optimal meta-parameter by a lot of experiments
+            similarity=SpearmanSimilarity(K=10),
             optimize_each_varGroups=False,
             # fixme : 这个超参和 limit_max_groups 机制都值得深入探究
             overlap_bagging_ratio=0,
@@ -41,14 +43,23 @@ class ETPEOptimizer(BaseOptimizer):
                     SampleDisign(ratio=0.1, is_random=True),
                     SampleDisign(ratio=0.2, bw_factor=3),
             ),
+
             # embedding
-            embedding_encoder="default",
+            category_encoder="embedding",
             pretrained_emb=None,
             pretrained_emb_expire_iter=-1,
             consider_ord_as_cont=True,
-            scale_cont_var=True
+            scale_cont_var=False,
+            # meta learning
+            meta_learning: Optional[MetaLearning] = None
     ):
+        assert isinstance(category_encoder, (str, EmbeddingEncoder))
+        if isinstance(category_encoder, str):
+            assert category_encoder in ['embedding', 'one-hot']
+        assert isinstance(similarity, BaseSimilarity)
         super(ETPEOptimizer, self).__init__()
+        self.similarity = similarity
+        self.meta_learning = meta_learning
         self.scale_cont_var = scale_cont_var
         self.consider_ord_as_cont = consider_ord_as_cont
         self.pretrained_emb_expire_iter = pretrained_emb_expire_iter
@@ -61,7 +72,7 @@ class ETPEOptimizer(BaseOptimizer):
         self.multivariate = multivariate
         self.min_bw_factor = min_bw_factor
         self.max_bw_factor = max_bw_factor
-        self.embedding_encoder = embedding_encoder
+        self.category_encoder = category_encoder
         # self.lambda_ = lambda_
         # fixme: 推公式确认一下min_bw_factor
         assert anneal_steps >= 0
@@ -92,36 +103,27 @@ class ETPEOptimizer(BaseOptimizer):
             multivariate=multivariate,
             embed_catVar=embed_catVar,
             limit_max_groups=limit_max_groups,
-            max_groups=max_groups
+            max_groups=max_groups,
+            similarity=similarity
         )
 
     def initialize(self, config_space, budgets=(1,), random_state=42, initial_points=None, budget2obvs=None):
         super(ETPEOptimizer, self).initialize(config_space, budgets, random_state, initial_points, budget2obvs)
-        if not self.embedding_encoder:
-            # do not use embedding_encoder, use One Hot Encoder
-            encoder = EquidistanceEncoder()
-        elif isinstance(self.embedding_encoder, str):
-            if self.embedding_encoder == "default":
-                encoder = EmbeddingEncoder(
-                    max_epoch=100, n_jobs=1, verbose=0)
-            else:
-                raise ValueError(f"Invalid Indicate string '{self.embedding_encoder}' for embedding_encoder'")
+        if isinstance(self.category_encoder, str):
+            encoder = EmbeddingEncoder(
+                max_epoch=100, n_jobs=1, verbose=0)
+            if self.category_encoder == 'one-hot':
+                encoder.category_encoder = 'one-hot'
         else:
-            encoder = self.embedding_encoder
+            encoder = self.category_encoder
         # todo: 如果自动构建了Embedding encoder， 后续需要保证initial point覆盖所有的类别
         # todo: auto_enrich_initial_points
-
         self.config_transformer = ConfigTransformer(
             impute=None, encoder=encoder, pretrained_emb=self.pretrained_emb,
             consider_ord_as_cont=self.consider_ord_as_cont,
             scale_cont_var=self.scale_cont_var
         )
         self.config_transformer.fit(config_space)
-        encoder = self.config_transformer.encoder
-        # fixme: 对于EmbeddingEncoder 需要这么做吗
-        if isinstance(encoder, EquidistanceEncoder):
-            vectors = np.array([config.get_array() for config in sample_configurations(self.config_space, 5000)])
-            self.config_transformer.fit_encoder(vectors)
         self.budget2epm = {budget: None for budget in budgets}
         if self.n_candidates is None:
             # 对于结构空间，通过采样的方法得到一个平均的变量长度
@@ -167,6 +169,9 @@ class ETPEOptimizer(BaseOptimizer):
                 assert self.max_groups >= 3
         self.tpe.limit_max_groups = self.limit_max_groups
         self.tpe.max_groups = self.max_groups
+        if self.meta_learning is not None:
+            self.meta_learning.init(self.tpe, self.config_transformer, self.min_points_in_model,
+                                    random_state=self.random_state, n_candidates=self.n_candidates)
 
     def tpe_sampling(self, epm, budget):
         info_dict = {"model_based_pick": True}
@@ -200,13 +205,17 @@ class ETPEOptimizer(BaseOptimizer):
         if epm is None:
             # return self.pick_random_initial_config(budget)
             info_dict = {"model_based_pick": False}
-            if self.initial_design_ix < len(self.initial_design_configs):
-                config = self.initial_design_configs[self.initial_design_ix]
-                add_configs_origin(config, "Initial Design")
-                self.initial_design_ix += 1
-                return self.process_config_info_pair(config, info_dict, budget)
+            if self.meta_learning is not None:
+                return self.pick_random_initial_config(
+                    budget, origin='MetaLearning Design',
+                    sample_func=self.meta_learning.sample)
             else:
-                return self.pick_random_initial_config(budget)
+                if self.initial_design_ix < len(self.initial_design_configs):
+                    config = self.initial_design_configs[self.initial_design_ix]
+                    add_configs_origin(config, "Initial Design")
+                    self.initial_design_ix += 1
+                    return self.process_config_info_pair(config, info_dict, budget)
+            return self.pick_random_initial_config(budget)
         # model based pick
         config, info_dict = self.tpe_sampling(epm, budget)
         self._bw_factor = max(self.lambda_ * self._bw_factor, self.min_bw_factor)
@@ -254,6 +263,7 @@ class ETPEOptimizer(BaseOptimizer):
             # new epm
             epm = deepcopy(self.tpe)
             epm.set_config_transformer(self.config_transformer)
+            epm.set_meta_learning(self.meta_learning)
         else:
             epm = self.budget2epm[budget]
         X_obvs = self.config_transformer.transform(vectors)

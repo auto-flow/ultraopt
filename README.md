@@ -198,7 +198,7 @@ def evaluate(config: dict, budget: float) -> float:
     AS, HP = AS_HP.popitem()
     ML_model = eval(AS)(**HP)
     scores = []
-    for i, (train_ix, valid_ix) in enumerate(cv.split(X, y)):
+    for i, (train_ix, valid_ix) in enumerate(cv.uniform_segmentation(X, y)):
         rng = np.random.RandomState(i)
         size = int(train_ix.size * budget)
         train_ix = rng.choice(train_ix, size, replace=False)

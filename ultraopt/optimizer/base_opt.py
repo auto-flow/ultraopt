@@ -236,12 +236,16 @@ class BaseOptimizer():
         info_dict.update({"sampling_different_samples_failed": True, "seed": seed})
         return self.process_config_info_pair(config, info_dict, budget)
 
-    def pick_random_initial_config(self, budget, max_sample=1000, origin="Initial Design"):
+    def pick_random_initial_config(
+            self, budget, max_sample=1000,
+            origin="Initial Design", sample_func=None):
+        if sample_func is None:
+            sample_func = self.config_space.sample_configuration
         i = 0
         info_dict = {"model_based_pick": False}
         while i < max_sample:
             i += 1
-            config = self.config_space.sample_configuration()
+            config = sample_func()
             add_configs_origin(config, origin)
             if self.is_config_exist(budget, config):
                 self.logger.debug(f"The sample already exists and needs to be resampled. "
